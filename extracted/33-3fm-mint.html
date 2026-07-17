@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>33.3FM × OAC // MINT // WIRED CHAOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Major+Mono+Display&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cyan:#00ffe6;
+  --red:#ff1a2e;
+  --gold:#c2a633;
+  --base:#0052ff;
+  --sol:#9945ff;
+  --green:#00ff88;
+  --void:#000000;
+  --ink:#0a0a0c;
+  --hud:rgba(0,255,230,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  background:
+    radial-gradient(ellipse at 70% 20%, rgba(153,69,255,.06), transparent 60%),
+    radial-gradient(ellipse at 20% 80%, rgba(0,82,255,.05), transparent 60%),
+    var(--void);
+  color:var(--cyan);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;
+}
+
+/* SCANLINES + GRAIN */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;background:repeating-linear-gradient(0deg,rgba(0,255,230,.03) 0,rgba(0,255,230,.03) 1px,transparent 1px,transparent 3px);mix-blend-mode:overlay}
+
+/* HUD BRACKETS */
+.brackets{position:fixed;inset:14px;pointer-events:none;z-index:50}
+.brackets::before,.brackets::after,.brackets > span{position:absolute;width:28px;height:28px;border:1px solid var(--cyan);content:""}
+.brackets::before{top:0;left:0;border-right:0;border-bottom:0}
+.brackets::after{top:0;right:0;border-left:0;border-bottom:0}
+.brackets span:nth-child(1){bottom:0;left:0;border-right:0;border-top:0}
+.brackets span:nth-child(2){bottom:0;right:0;border-left:0;border-top:0}
+
+/* TOPBAR */
+.topbar{
+  display:grid;grid-template-columns:auto 1fr auto auto;gap:20px;align-items:center;
+  padding:16px 32px;border-bottom:1px solid var(--hud);
+  background:linear-gradient(180deg,rgba(153,69,255,.04),transparent);
+  position:sticky;top:0;z-index:100;backdrop-filter:blur(6px);
+}
+.brand{font-family:'Orbitron',sans-serif;font-weight:900;font-size:18px;letter-spacing:.15em}
+.brand .red{color:var(--red)}
+.brand .purple{color:var(--sol)}
+.brand .sub{display:block;font-size:9px;color:var(--gold);letter-spacing:.35em;margin-top:2px;opacity:.7}
+
+.crumbs{font-size:10px;letter-spacing:.3em;text-align:center;opacity:.7}
+.crumbs a{color:var(--cyan);text-decoration:none}
+.crumbs a:hover{color:var(--gold)}
+.crumbs span{color:var(--red);margin:0 8px}
+
+.balance-chip{
+  display:flex;align-items:center;gap:8px;padding:8px 14px;
+  border:1px solid var(--gold);background:rgba(194,166,51,.06);
+  color:var(--gold);font-family:'Orbitron';font-size:11px;letter-spacing:.15em;cursor:pointer;
+  transition:all .2s;
+}
+.balance-chip:hover{background:var(--gold);color:var(--void);box-shadow:0 0 16px var(--gold)}
+.balance-chip .sym{font-size:16px}
+
+.back-btn{padding:6px 14px;border:1px solid var(--cyan);color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:.3em;background:transparent;text-decoration:none}
+.back-btn:hover{background:var(--cyan);color:var(--void)}
+
+/* ============= GATE OVERLAY ============= */
+.gate{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.85);backdrop-filter:blur(10px);
+  display:flex;align-items:center;justify-content:center;
+}
+.gate.hidden{display:none}
+.gate-card{
+  width:480px;max-width:92vw;padding:36px 32px;
+  background:linear-gradient(180deg,#1a0a18,#0a0008);
+  border:2px solid var(--red);
+  box-shadow:0 0 60px rgba(255,26,46,.3),0 30px 80px rgba(0,0,0,.9);
+  text-align:center;position:relative;
+}
+.gate-card::before{
+  content:"◉ ACCESS GATE";position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+  background:var(--void);padding:0 12px;font-family:'Orbitron';font-size:10px;letter-spacing:.4em;color:var(--red);
+}
+.gate-glyph{font-size:48px;color:var(--gold);margin-bottom:14px;text-shadow:0 0 30px rgba(194,166,51,.6)}
+.gate-title{font-family:'Orbitron';font-weight:900;font-size:22px;letter-spacing:.15em;color:var(--cyan);margin-bottom:10px;text-shadow:0 0 16px rgba(0,255,230,.4)}
+.gate-msg{font-size:13px;line-height:1.6;margin-bottom:24px;color:var(--cyan);opacity:.85}
+.gate-msg .gold{color:var(--gold);font-weight:bold}
+.gate-actions{display:flex;flex-direction:column;gap:10px}
+.gate-btn{
+  padding:14px;border:2px solid var(--gold);background:linear-gradient(180deg,#c2a633,#7a6a20);
+  color:#000;font-family:'Orbitron';font-size:12px;font-weight:900;letter-spacing:.3em;cursor:pointer;
+  text-shadow:0 1px 0 rgba(255,255,255,.3);
+  box-shadow:0 0 24px rgba(194,166,51,.4),inset 0 2px 0 rgba(255,255,255,.3),inset 0 -3px 0 rgba(0,0,0,.3);
+  transition:all .15s;
+}
+.gate-btn:hover{box-shadow:0 0 32px rgba(194,166,51,.7),inset 0 2px 0 rgba(255,255,255,.3),inset 0 -3px 0 rgba(0,0,0,.3)}
+.gate-btn:active{transform:translateY(2px)}
+.gate-btn.ghost{background:transparent;color:var(--cyan);border-color:var(--cyan);box-shadow:none;text-shadow:none}
+.gate-btn.ghost:hover{background:var(--cyan);color:var(--void);box-shadow:0 0 20px var(--cyan)}
+
+.gate-judge{margin-top:16px;padding-top:16px;border-top:1px dashed rgba(0,255,230,.2);font-size:10px;color:rgba(0,255,230,.5);letter-spacing:.15em}
+.gate-judge input{
+  width:100%;margin-top:8px;background:#000;border:1px solid #2a2d33;color:var(--cyan);
+  padding:8px 12px;font-family:'Share Tech Mono';font-size:11px;letter-spacing:.2em;text-align:center;
+}
+.gate-judge input:focus{outline:0;border-color:var(--gold)}
+.gate-judge .hint{font-size:9px;opacity:.6;margin-top:4px;letter-spacing:.2em}
+
+/* ============= MAIN STAGE ============= */
+.stage{
+  display:grid;grid-template-columns:1fr 1fr;gap:24px;
+  padding:30px;max-width:1500px;margin:0 auto;
+}
+@media(max-width:1100px){.stage{grid-template-columns:1fr;padding:18px}}
+
+.panel{
+  border:1px solid var(--hud);background:rgba(0,255,230,.015);
+  position:relative;padding:24px;margin-bottom:24px;
+}
+.panel::before{
+  content:attr(data-label);position:absolute;top:-9px;left:14px;
+  background:var(--void);padding:0 8px;font-size:10px;letter-spacing:.3em;
+  color:var(--cyan);font-family:'Orbitron',sans-serif;
+}
+.panel h2{font-family:'Orbitron';font-size:14px;letter-spacing:.25em;color:var(--cyan);margin-bottom:6px}
+.panel .desc{font-size:11px;color:var(--cyan);opacity:.6;margin-bottom:18px;line-height:1.5}
+
+/* ============= UPLOAD ZONE ============= */
+.upload{
+  border:2px dashed var(--cyan);background:rgba(0,255,230,.03);
+  padding:40px 24px;text-align:center;cursor:pointer;transition:all .2s;
+  margin-bottom:18px;
+}
+.upload:hover{border-color:var(--gold);background:rgba(194,166,51,.04)}
+.upload.has-file{border-color:var(--green);background:rgba(0,255,136,.05);border-style:solid}
+.upload .glyph{font-size:42px;color:var(--cyan);margin-bottom:10px;line-height:1}
+.upload.has-file .glyph{color:var(--green)}
+.upload .text{font-family:'Orbitron';font-size:14px;letter-spacing:.2em;color:var(--cyan);margin-bottom:6px}
+.upload .hint{font-size:10px;color:var(--cyan);opacity:.5;letter-spacing:.2em}
+.upload .filename{font-family:'Share Tech Mono';font-size:12px;color:var(--green);margin-top:6px;letter-spacing:.1em}
+
+/* FORM FIELDS */
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.row.full{grid-template-columns:1fr}
+.row.three{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:600px){.row,.row.three{grid-template-columns:1fr}}
+
+label{display:block;font-size:10px;letter-spacing:.25em;color:var(--cyan);opacity:.7;margin-bottom:6px;font-family:'Orbitron'}
+input,select,textarea{
+  width:100%;background:rgba(0,0,0,.6);border:1px solid var(--hud);
+  color:var(--cyan);padding:10px 12px;font-family:'Share Tech Mono';font-size:13px;outline:none;transition:all .2s;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 10px rgba(194,166,51,.25)}
+textarea{min-height:80px;resize:vertical}
+
+/* DISTRIBUTION TOGGLES */
+.dist-section{padding:14px;border:1px solid var(--hud);background:rgba(0,82,255,.03);margin-bottom:14px}
+.dist-section h3{font-family:'Orbitron';font-size:11px;letter-spacing:.25em;color:var(--base);margin-bottom:4px}
+.dist-section .sub{font-size:10px;color:var(--cyan);opacity:.6;margin-bottom:12px;letter-spacing:.05em;line-height:1.5}
+
+.toggle-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:500px){.toggle-grid{grid-template-columns:1fr}}
+.toggle{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;
+  border:1px solid var(--hud);background:rgba(0,0,0,.4);cursor:pointer;transition:all .15s;
+}
+.toggle:hover{border-color:var(--cyan)}
+.toggle.on{border-color:var(--green);background:rgba(0,255,136,.06)}
+.toggle .box{
+  width:18px;height:18px;border:2px solid var(--cyan);background:transparent;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-family:'Orbitron';color:var(--green);font-weight:900;
+}
+.toggle.on .box{border-color:var(--green);background:var(--green);color:#000}
+.toggle .box::after{content:"✓";display:none}
+.toggle.on .box::after{display:block}
+.toggle .name{font-family:'Orbitron';font-size:11px;letter-spacing:.15em;color:var(--cyan)}
+.toggle.on .name{color:var(--green)}
+.toggle .meta{font-size:9px;color:var(--cyan);opacity:.5;letter-spacing:.1em;margin-top:2px}
+
+/* CHAIN PICKER */
+.chain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.chain-card{
+  padding:14px 10px;border:1px solid var(--hud);background:rgba(0,0,0,.4);
+  text-align:center;cursor:pointer;transition:all .15s;
+}
+.chain-card.on{border-color:currentColor;box-shadow:0 0 16px currentColor}
+.chain-card[data-chain="sol"]{color:var(--sol)}.chain-card[data-chain="sol"].on{background:rgba(153,69,255,.08)}
+.chain-card[data-chain="base"]{color:var(--base)}.chain-card[data-chain="base"].on{background:rgba(0,82,255,.08)}
+.chain-card[data-chain="doge"]{color:var(--gold)}.chain-card[data-chain="doge"].on{background:rgba(194,166,51,.08)}
+.chain-card .gly{font-size:24px;margin-bottom:4px;font-family:'Orbitron';font-weight:900}
+.chain-card .nm{font-family:'Orbitron';font-size:10px;letter-spacing:.2em}
+.chain-card .role{font-size:8px;opacity:.7;margin-top:3px;letter-spacing:.1em}
+
+/* COST PREVIEW */
+.cost-card{
+  margin-top:14px;padding:18px;background:radial-gradient(circle at 50% 0%,rgba(194,166,51,.1),transparent 70%);
+  border:1px solid var(--gold);text-align:center;
+}
+.cost-card .lbl{font-family:'Orbitron';font-size:10px;letter-spacing:.3em;color:var(--gold);opacity:.7}
+.cost-card .amt{font-family:'Orbitron';font-weight:900;font-size:36px;color:var(--gold);text-shadow:0 0 20px rgba(194,166,51,.5);margin:6px 0}
+.cost-card .amt::before{content:"⟁ ";color:var(--cyan)}
+.cost-card .usd{font-size:11px;color:var(--cyan);opacity:.6;letter-spacing:.2em}
+.cost-card .breakdown{margin-top:10px;font-size:10px;color:var(--cyan);opacity:.7;letter-spacing:.05em;line-height:1.6}
+
+/* MINT BUTTON */
+.mint-btn{
+  width:100%;padding:18px;margin-top:18px;
+  background:linear-gradient(180deg,#9945ff 0%,#5a2a99 100%);
+  border:2px solid var(--sol);color:#fff;
+  font-family:'Orbitron';font-size:14px;font-weight:900;letter-spacing:.35em;cursor:pointer;
+  box-shadow:0 0 24px rgba(153,69,255,.5),inset 0 2px 0 rgba(255,255,255,.2),inset 0 -3px 0 rgba(0,0,0,.4);
+  text-shadow:0 1px 0 rgba(0,0,0,.5);transition:all .15s;
+}
+.mint-btn:hover:not(:disabled){box-shadow:0 0 32px rgba(153,69,255,.7),inset 0 2px 0 rgba(255,255,255,.25),inset 0 -3px 0 rgba(0,0,0,.4)}
+.mint-btn:active:not(:disabled){transform:translateY(2px)}
+.mint-btn:disabled{background:linear-gradient(180deg,#3a3a3a,#1a1a1a);border-color:#3a3a3a;color:#666;cursor:not-allowed;box-shadow:none}
+
+/* ============= OAC PIPELINE ============= */
+.pipeline{display:flex;flex-direction:column;gap:10px}
+.agent-row{
+  display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;
+  padding:14px;border:1px solid var(--hud);background:rgba(0,0,0,.4);
+  transition:all .25s;position:relative;overflow:hidden;
+}
+.agent-row::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:0;background:currentColor;opacity:.1;transition:width .8s;
+}
+.agent-row.running{border-color:currentColor;box-shadow:inset 0 0 20px rgba(255,255,255,.03)}
+.agent-row.running::before{width:100%;animation:runningPulse 1.4s ease-in-out infinite}
+@keyframes runningPulse{0%,100%{opacity:.08}50%{opacity:.18}}
+.agent-row.complete{border-color:var(--green)}
+.agent-row.complete::before{width:100%;background:var(--green);opacity:.05}
+
+.agent-glyph{
+  width:42px;height:42px;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron';font-size:18px;font-weight:900;
+}
+.agent-row.running .agent-glyph{animation:glyphSpin 2s linear infinite}
+@keyframes glyphSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.agent-row.complete .agent-glyph::after{content:"✓";position:absolute;color:var(--green);font-size:24px}
+
+.agent-info{min-width:0}
+.agent-info .nm{font-family:'Orbitron';font-size:12px;letter-spacing:.2em;color:var(--cyan);margin-bottom:3px}
+.agent-info .role{font-size:10px;color:var(--cyan);opacity:.6;letter-spacing:.03em;line-height:1.4}
+.agent-info .output{margin-top:6px;font-size:9px;color:var(--green);opacity:.85;line-height:1.5;letter-spacing:.02em;display:none}
+.agent-row.complete .agent-info .output{display:block}
+
+.agent-status{
+  font-family:'Orbitron';font-size:9px;letter-spacing:.25em;padding:4px 10px;border:1px solid currentColor;
+  white-space:nowrap;
+}
+.agent-row[data-status="pending"]{color:#555}
+.agent-row[data-status="queued"]{color:var(--gold)}
+.agent-row[data-status="running"]{color:var(--cyan)}
+.agent-row[data-status="complete"]{color:var(--green)}
+
+.empty-pipeline{
+  padding:40px;text-align:center;color:var(--cyan);opacity:.4;font-family:'Major Mono Display';font-size:11px;letter-spacing:.4em;
+}
+
+/* RELEASE CARD (above pipeline) */
+.release-card{
+  padding:18px;border:1px solid var(--sol);background:linear-gradient(135deg,rgba(153,69,255,.08),rgba(0,82,255,.04));
+  margin-bottom:18px;
+}
+.release-card .title{font-family:'Orbitron';font-weight:900;font-size:20px;color:var(--cyan);letter-spacing:.05em;text-shadow:0 0 12px rgba(0,255,230,.4)}
+.release-card .artist{font-size:11px;color:var(--sol);letter-spacing:.25em;font-family:'Orbitron';margin-top:4px}
+.release-card .meta{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.release-card .pill{padding:3px 9px;border:1px solid currentColor;font-size:9px;letter-spacing:.15em;font-family:'Orbitron'}
+.release-card .pill.sol{color:var(--sol)}
+.release-card .pill.base{color:var(--base)}
+.release-card .pill.doge{color:var(--gold)}
+.release-card .pill.ddex{color:var(--green)}
+
+.progress-bar{margin-top:12px;height:4px;background:rgba(0,255,230,.1);position:relative;overflow:hidden}
+.progress-fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--sol),var(--cyan));transition:width .4s;box-shadow:0 0 12px var(--cyan)}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:30px;right:30px;padding:14px 22px;
+  background:var(--void);border:1px solid var(--gold);color:var(--gold);
+  font-family:'Orbitron';font-size:11px;letter-spacing:.25em;z-index:9999;
+  transform:translateY(100px);opacity:0;transition:all .3s;
+  box-shadow:0 0 30px rgba(194,166,51,.3);
+}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.err{border-color:var(--red);color:var(--red);box-shadow:0 0 30px rgba(255,26,46,.3)}
+.toast.win{border-color:var(--green);color:var(--green);box-shadow:0 0 30px rgba(0,255,136,.4)}
+</style>
+</head>
+<body>
+<div class="brackets"><span></span><span></span></div>
+
+<!-- ============= GATE ============= -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="gate-glyph">⟁</div>
+    <div class="gate-title">$XENTS REQUIRED</div>
+    <div class="gate-msg">
+      Minting on 33.3FM × OAC requires <span class="gold">⟁5,000 $XENTS</span> per release.<br><br>
+      Your current balance: <span class="gold" id="gateBalance">⟁ 0</span><br>
+      Needed: <span class="gold" id="gateNeeded">⟁ 5,000</span>
+    </div>
+    <div class="gate-actions">
+      <button class="gate-btn" id="gateBuyBtn">⟁ TOP UP $XENTS</button>
+      <button class="gate-btn ghost" onclick="location.href='33-3fm-broadcast.html'">◄ RETURN TO BROADCAST</button>
+    </div>
+    <div class="gate-judge">
+      ◉ JUDGE / EVALUATOR ACCESS CODE
+      <input type="text" id="judgeCode" placeholder="ENTER CODE" maxlength="32" autocomplete="off">
+      <div class="hint">// CODE GRANTS ⟁10,000 EVAL CREDIT //</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============= TOPBAR ============= -->
+<header class="topbar">
+  <div class="brand">
+    33.3<span class="red">●</span>FM <span style="opacity:.5">×</span> <span class="purple">OAC</span>
+    <span class="sub">// OPEN AGENTIC COMMERCE FOR MUSIC //</span>
+  </div>
+  <div class="crumbs">
+    <a href="33-3fm-broadcast.html">BROADCAST</a><span>·</span>
+    <a href="33-3fm-studio.html">STUDIO</a><span>·</span>
+    <a href="xents-change-machine.html">CHANGE MACHINE</a>
+  </div>
+  <div class="balance-chip" id="balanceChip">
+    <span class="sym">⟁</span>
+    <span id="topBalance">0</span>
+  </div>
+  <a href="33-3fm-broadcast.html" class="back-btn">◄ ON-AIR</a>
+</header>
+
+<!-- ============= STAGE ============= -->
+<main class="stage">
+
+  <!-- LEFT: UPLOAD + METADATA + DISTRIBUTION -->
+  <section>
+    <div class="panel" data-label="STEP 01 // UPLOAD">
+      <h2>◢ BRING THE TRACK</h2>
+      <p class="desc">Audio file (WAV/MP3/FLAC). Release Agent fingerprints, generates ISRC/UPC, signs C2PA provenance.</p>
+      <div class="upload" id="uploadZone">
+        <div class="glyph">◢</div>
+        <div class="text">DROP AUDIO HERE</div>
+        <div class="hint">OR TAP TO BROWSE · WAV / MP3 / FLAC</div>
+        <div class="filename" id="filename"></div>
+        <input type="file" id="audioFile" accept="audio/*" style="display:none">
+      </div>
+    </div>
+
+    <div class="panel" data-label="STEP 02 // METADATA">
+      <h2>◢ TRACK DETAILS</h2>
+      <p class="desc">Minimum viable metadata. Release Agent auto-fills genre/BPM/mood after upload.</p>
+      <div class="row">
+        <div><label>TRACK TITLE</label><input id="trkTitle" placeholder="MIDNIGHT GHOSTS"></div>
+        <div><label>ARTIST</label><input id="trkArtist" placeholder="XENT-K0RE"></div>
+      </div>
+      <div class="row three">
+        <div><label>GENRE</label>
+          <select id="trkGenre">
+            <option>Phonk</option><option>Lo-fi Hip Hop</option><option>Ambient</option>
+            <option>Synthwave</option><option>Industrial</option><option>Trap</option>
+            <option>Drill</option><option>Cyberpunk</option><option>Sleep / Meditation</option>
+          </select>
+        </div>
+        <div><label>BPM</label><input type="number" id="trkBpm" value="92"></div>
+        <div><label>KEY</label><input id="trkKey" value="F# MIN"></div>
+      </div>
+      <div class="row">
+        <div><label>RELEASE DATE</label><input type="date" id="trkDate"></div>
+        <div><label>EXPLICIT</label>
+          <select id="trkExplicit"><option>NO</option><option>YES</option></select>
+        </div>
+      </div>
+      <div class="row full">
+        <div><label>NOTES (OPTIONAL)</label>
+          <textarea id="trkNotes" placeholder="Sample sources, collaborators, story behind the track..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" data-label="STEP 03 // DISTRIBUTION">
+      <h2>◢ PARALLEL DISTRIBUTION</h2>
+      <p class="desc">Mint on-chain AND ship to 150+ stores from the same upload. Equal weight. You own the catalog forever — no Leave-a-Legacy fees, no takedowns on cancellation.</p>
+
+      <div class="dist-section">
+        <h3>◉ MINT ON-CHAIN</h3>
+        <div class="sub">Native ownership. Sync-licenseable via MCP. No middleman.</div>
+        <div class="chain-grid">
+          <div class="chain-card on" data-chain="sol">
+            <div class="gly">◈</div>
+            <div class="nm">SOLANA</div>
+            <div class="role">NFT MINT</div>
+          </div>
+          <div class="chain-card on" data-chain="base">
+            <div class="gly">▣</div>
+            <div class="nm">BASE</div>
+            <div class="role">$XENTS RAIL</div>
+          </div>
+          <div class="chain-card" data-chain="doge">
+            <div class="gly">Ð</div>
+            <div class="nm">DOGE</div>
+            <div class="role">TIP LAYER</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dist-section">
+        <h3>◉ DDEX PUSH TO STORES</h3>
+        <div class="sub">Same upload, simultaneous delivery to streaming platforms. Optional but on by default.</div>
+        <div class="toggle-grid">
+          <div class="toggle on" data-store="spotify">
+            <div class="box"></div>
+            <div><div class="name">SPOTIFY</div><div class="meta">DDEX ERN-4</div></div>
+          </div>
+          <div class="toggle on" data-store="apple">
+            <div class="box"></div>
+            <div><div class="name">APPLE MUSIC</div><div class="meta">DDEX</div></div>
+          </div>
+          <div class="toggle on" data-store="youtube">
+            <div class="box"></div>
+            <div><div class="name">YOUTUBE</div><div class="meta">Content ID</div></div>
+          </div>
+          <div class="toggle on" data-store="amazon">
+            <div class="box"></div>
+            <div><div class="name">AMAZON MUSIC</div><div class="meta">DDEX</div></div>
+          </div>
+          <div class="toggle" data-store="tidal">
+            <div class="box"></div>
+            <div><div class="name">TIDAL</div><div class="meta">DDEX</div></div>
+          </div>
+          <div class="toggle" data-store="deezer">
+            <div class="box"></div>
+            <div><div class="name">DEEZER</div><div class="meta">DDEX</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cost-card">
+        <div class="lbl">TOTAL COST</div>
+        <div class="amt"><span id="costXents">5,000</span></div>
+        <div class="usd">≈ $<span id="costUsd">50.00</span> USD VALUE</div>
+        <div class="breakdown" id="costBreakdown">
+          5,000 ⟁ mint fee · 2 chains selected · 4 DDEX targets · C2PA signing included
+        </div>
+      </div>
+
+      <button class="mint-btn" id="mintBtn">⟁ MINT &amp; DISTRIBUTE</button>
+    </div>
+  </section>
+
+  <!-- RIGHT: OAC PIPELINE -->
+  <section>
+    <div class="panel" data-label="OAC PIPELINE">
+      <h2>◢ AGENT WORKFLOW</h2>
+      <p class="desc">8 OAC agents work the release in dependency order. Watch them fire. Each agent's output appears live when complete.</p>
+
+      <div id="releaseCardWrap"></div>
+
+      <div class="pipeline" id="pipeline">
+        <div class="empty-pipeline">// AWAITING RELEASE //<br>// SUBMIT A TRACK TO BEGIN //</div>
+      </div>
+    </div>
+
+    <div class="panel" data-label="WHAT YOU OWN AFTER MINT">
+      <h2>◢ THE BYPASS</h2>
+      <p class="desc">No DistroKid. No labels. No takedowns. No Leave-a-Legacy fees. You keep:</p>
+      <div style="display:grid;grid-template-columns:1fr;gap:8px;font-size:11px;line-height:1.5">
+        <div style="padding:10px;border-left:2px solid var(--sol);background:rgba(153,69,255,.04)">
+          <strong style="color:var(--sol);font-family:'Orbitron';font-size:10px;letter-spacing:.2em">⟁ ON-CHAIN MINT</strong><br>
+          NFT on SOL · Royalty splits on BASE · Tips on DOGE
+        </div>
+        <div style="padding:10px;border-left:2px solid var(--cyan);background:rgba(0,255,230,.04)">
+          <strong style="color:var(--cyan);font-family:'Orbitron';font-size:10px;letter-spacing:.2em">⟁ MCP CATALOG ENDPOINT</strong><br>
+          Every AI agent on Earth can discover, preview, license your track
+        </div>
+        <div style="padding:10px;border-left:2px solid var(--green);background:rgba(0,255,136,.04)">
+          <strong style="color:var(--green);font-family:'Orbitron';font-size:10px;letter-spacing:.2em">⟁ DDEX DELIVERY</strong><br>
+          Spotify, Apple, YouTube, Amazon — same upload, no extra fee
+        </div>
+        <div style="padding:10px;border-left:2px solid var(--gold);background:rgba(194,166,51,.04)">
+          <strong style="color:var(--gold);font-family:'Orbitron';font-size:10px;letter-spacing:.2em">⟁ DAY-ONE 33.3FM ROTATION</strong><br>
+          Track gets airtime on DJ RED FANG, PACK, LENS, MINT shows by mood match
+        </div>
+        <div style="padding:10px;border-left:2px solid var(--red);background:rgba(255,26,46,.04)">
+          <strong style="color:var(--red);font-family:'Orbitron';font-size:10px;letter-spacing:.2em">⟁ DIRECT-TO-FAN STORE</strong><br>
+          Fan Agent runs merch, tips, subscriptions via ACP merchant endpoint
+        </div>
+        <div style="padding:10px;border-left:2px solid #ff66cc;background:rgba(255,102,204,.04)">
+          <strong style="color:#ff66cc;font-family:'Orbitron';font-size:10px;letter-spacing:.2em">⟁ REAL-TIME ROYALTIES</strong><br>
+          MPP streaming payouts — not 2x/week, real-time as plays happen
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<!-- ============= LOAD WIDGET + OAC AGENTS ============= -->
+<script src="xents-widget.js"></script>
+<script src="oac-agents.js"></script>
+
+<script>
+/* ============================================
+   33.3FM × OAC MINT — RUNTIME
+============================================ */
+
+const MINT_COST = 5000; // $XENTS per release
+const JUDGE_CODE = 'WC-MUSICATHON-2026';
+const JUDGE_GRANT = 10000;
+
+const state = {
+  audioFile: null,
+  chains: { sol:true, base:true, doge:false },
+  stores: { spotify:true, apple:true, youtube:true, amazon:true, tidal:false, deezer:false },
+  currentRelease: null
+};
+
+// ---------- GATE LOGIC ----------
+function checkGate(){
+  const bal = window.XentsChange.balance();
+  document.getElementById('gateBalance').textContent = '⟁ ' + bal.toLocaleString();
+  document.getElementById('gateNeeded').textContent = '⟁ ' + MINT_COST.toLocaleString();
+  if(bal >= MINT_COST){
+    document.getElementById('gate').classList.add('hidden');
+  } else {
+    document.getElementById('gate').classList.remove('hidden');
+  }
+}
+document.getElementById('gateBuyBtn').addEventListener('click', () => {
+  window.XentsChange.open({
+    context: 'mint-gate',
+    minBalance: MINT_COST,
+    reason: `Minting requires ⟁${MINT_COST.toLocaleString()}. Top up to continue.`,
+    onSuccess: () => checkGate()
+  });
+});
+document.getElementById('judgeCode').addEventListener('keydown', (e) => {
+  if(e.key !== 'Enter') return;
+  const val = (e.target.value || '').trim().toUpperCase();
+  if(val === JUDGE_CODE){
+    window.XentsChange.bonus({ amount: JUDGE_GRANT, label: 'JUDGE/EVALUATOR GRANT' });
+    paintBalance();
+    checkGate();
+    toast('⟁' + JUDGE_GRANT.toLocaleString() + ' EVAL CREDIT APPLIED', 'win');
+  } else {
+    e.target.style.borderColor = '#ff1a2e';
+    setTimeout(() => e.target.style.borderColor = '', 800);
+  }
+});
+
+// ---------- BALANCE PAINT ----------
+function paintBalance(){
+  const b = window.XentsChange.balance();
+  document.getElementById('topBalance').textContent = b.toLocaleString();
+  document.getElementById('gateBalance').textContent = '⟁ ' + b.toLocaleString();
+}
+window.XentsChange.onChange(paintBalance);
+document.getElementById('balanceChip').addEventListener('click', () => window.XentsChange.open());
+
+// ---------- UPLOAD ----------
+const upload = document.getElementById('uploadZone');
+const fileInput = document.getElementById('audioFile');
+upload.addEventListener('click', () => fileInput.click());
+upload.addEventListener('dragover', (e) => { e.preventDefault(); upload.style.borderColor = 'var(--gold)'; });
+upload.addEventListener('dragleave', () => { upload.style.borderColor = ''; });
+upload.addEventListener('drop', (e) => {
+  e.preventDefault();
+  upload.style.borderColor = '';
+  if(e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', (e) => {
+  if(e.target.files.length) handleFile(e.target.files[0]);
+});
+function handleFile(f){
+  state.audioFile = f;
+  upload.classList.add('has-file');
+  upload.querySelector('.glyph').textContent = '◉';
+  upload.querySelector('.text').textContent = 'AUDIO LOCKED';
+  upload.querySelector('.hint').textContent = 'TAP TO CHANGE FILE';
+  document.getElementById('filename').textContent = '► ' + f.name + ' (' + (f.size/1024/1024).toFixed(2) + ' MB)';
+  toast('AUDIO INGESTED', 'win');
+}
+
+// ---------- CHAIN PICKER ----------
+document.querySelectorAll('.chain-card').forEach(card => {
+  card.addEventListener('click', () => {
+    card.classList.toggle('on');
+    state.chains[card.dataset.chain] = card.classList.contains('on');
+    updateCost();
+  });
+});
+
+// ---------- STORE TOGGLES ----------
+document.querySelectorAll('.toggle').forEach(t => {
+  t.addEventListener('click', () => {
+    t.classList.toggle('on');
+    state.stores[t.dataset.store] = t.classList.contains('on');
+    updateCost();
+  });
+});
+
+// ---------- COST CALCULATION ----------
+function updateCost(){
+  const chains = Object.values(state.chains).filter(Boolean).length;
+  const stores = Object.values(state.stores).filter(Boolean).length;
+  const cost = MINT_COST; // flat for now; could scale with chain/store count
+  document.getElementById('costXents').textContent = cost.toLocaleString();
+  document.getElementById('costUsd').textContent = (cost / 100).toFixed(2);
+  document.getElementById('costBreakdown').textContent =
+    `${cost.toLocaleString()} ⟁ mint fee · ${chains} chain${chains!==1?'s':''} selected · ${stores} DDEX target${stores!==1?'s':''} · C2PA signing included`;
+}
+
+// ---------- MINT ACTION ----------
+document.getElementById('mintBtn').addEventListener('click', () => {
+  // Validation
+  const title = document.getElementById('trkTitle').value.trim();
+  const artist = document.getElementById('trkArtist').value.trim();
+  if(!title || !artist){ toast('TITLE + ARTIST REQUIRED', 'err'); return; }
+  if(!state.audioFile){ toast('AUDIO FILE REQUIRED', 'err'); return; }
+
+  const chainList = Object.entries(state.chains).filter(([k,v]) => v).map(([k]) => k);
+  const storeList = Object.entries(state.stores).filter(([k,v]) => v).map(([k]) => k);
+  if(!chainList.length && !storeList.length){
+    toast('SELECT AT LEAST ONE DESTINATION', 'err'); return;
+  }
+
+  // Spend $XENTS (this both debits and ledgers)
+  const ok = window.XentsChange.spend({
+    amount: MINT_COST,
+    label: `MINT: ${title}`,
+    category: 'mint',
+    autoTopUp: true
+  });
+  if(!ok){ checkGate(); return; }
+
+  // Start OAC pipeline
+  const release = window.OAC.startRelease({
+    trackTitle: title,
+    artist,
+    audioUrl: state.audioFile.name,
+    distribution: { mintChains: chainList, ddexTargets: storeList }
+  });
+  state.currentRelease = release;
+
+  // Render release card
+  renderReleaseCard(release);
+
+  // Subscribe to updates
+  window.OAC.onRelease(release.id, (r) => renderPipeline(r));
+
+  // Initial pipeline paint
+  renderPipeline(release);
+
+  // Also write to wc_radio_tracks (so broadcast surface picks it up)
+  pushToRadioTracks(title, artist);
+
+  toast('RELEASE COMMITTED — AGENTS DISPATCHED', 'win');
+});
+
+// ---------- RENDER RELEASE CARD ----------
+function renderReleaseCard(r){
+  const chainPills = r.distribution.mintChains.map(c =>
+    `<span class="pill ${c}">◈ ${c.toUpperCase()}</span>`
+  ).join('');
+  const ddexPills = r.distribution.ddexTargets.length
+    ? `<span class="pill ddex">▤ ${r.distribution.ddexTargets.length} DDEX TARGETS</span>`
+    : '';
+  document.getElementById('releaseCardWrap').innerHTML = `
+    <div class="release-card">
+      <div class="title">${escapeHtml(r.trackTitle)}</div>
+      <div class="artist">// ${escapeHtml(r.artist)}</div>
+      <div class="meta">${chainPills}${ddexPills}</div>
+      <div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+    </div>
+  `;
+}
+function escapeHtml(s){ return String(s||'').replace(/[<>&'"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;',"'":'&apos;','"':'&quot;'}[c])); }
+
+// ---------- RENDER PIPELINE ----------
+function renderPipeline(r){
+  const pipe = document.getElementById('pipeline');
+  const AGENTS = window.OAC.AGENTS;
+  const ORDER = window.OAC.ORDER;
+
+  pipe.innerHTML = ORDER.map(id => {
+    const a = AGENTS[id];
+    const s = (r.agents && r.agents[id]) || { status: 'pending' };
+    const outputHtml = s.output ? renderOutput(s.output) : '';
+    return `
+      <div class="agent-row ${s.status}" data-status="${s.status}" style="color:${a.color}">
+        <div class="agent-glyph">${a.glyph}</div>
+        <div class="agent-info">
+          <div class="nm" style="color:${a.color}">${a.name}</div>
+          <div class="role">${a.role}</div>
+          ${outputHtml}
+        </div>
+        <div class="agent-status">${s.status.toUpperCase()}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Update progress bar
+  const fill = document.getElementById('progFill');
+  if(fill) fill.style.width = (window.OAC.progress(r.id) * 100).toFixed(0) + '%';
+
+  // If complete, celebrate
+  if(r.status === 'complete' && !r._celebrated){
+    r._celebrated = true;
+    toast('◉ RELEASE COMPLETE — LIVE ON ALL TARGETS', 'win');
+  }
+}
+function renderOutput(out){
+  return '<div class="output">' + Object.entries(out).map(([k,v]) =>
+    `► ${k.replace(/([A-Z])/g,' $1').toUpperCase()}: ${escapeHtml(String(v))}`
+  ).join('<br>') + '</div>';
+}
+
+// ---------- BROADCAST INTEGRATION ----------
+function pushToRadioTracks(title, artist){
+  try {
+    const tracks = JSON.parse(localStorage.getItem('wc_radio_tracks') || '[]');
+    tracks.unshift({
+      title, artist,
+      district: 'D7 — VOID-7',
+      bpm: Number(document.getElementById('trkBpm').value) || 92,
+      key: document.getElementById('trkKey').value,
+      chain: 'multi',
+      status: 'queued',
+      mintedAt: Date.now(),
+      oacRelease: true
+    });
+    localStorage.setItem('wc_radio_tracks', JSON.stringify(tracks.slice(0, 50)));
+  } catch(e){}
+}
+
+// ---------- TOAST ----------
+function toast(msg, kind=''){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + kind;
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ---------- INIT ----------
+paintBalance();
+checkGate();
+updateCost();
+document.getElementById('trkDate').valueAsDate = new Date();
+</script>
+</body>
+</html>

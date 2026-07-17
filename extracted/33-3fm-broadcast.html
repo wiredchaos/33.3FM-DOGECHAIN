@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>33.3FM DOGECHAIN // WIRED CHAOS BROADCAST HUB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cyan:#00ffe6;
+  --red:#ff1a2e;
+  --doge:#c2a633;
+  --base:#0052ff;
+  --sol:#9945ff;
+  --void:#000000;
+  --ink:#0a0a0c;
+  --grid:rgba(0,255,230,.08);
+  --hud-line:rgba(0,255,230,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--void);color:var(--cyan);font-family:'Share Tech Mono',monospace;overflow-x:hidden;min-height:100vh}
+
+/* SCANLINES + GRAIN */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,rgba(0,255,230,.04) 0,rgba(0,255,230,.04) 1px,transparent 1px,transparent 3px);
+  mix-blend-mode:overlay;
+}
+body::after{
+  content:"";position:fixed;inset:-50%;pointer-events:none;z-index:9998;opacity:.06;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation:grain .3s steps(3) infinite;
+}
+@keyframes grain{0%{transform:translate(0,0)}33%{transform:translate(-2%,1%)}66%{transform:translate(1%,-2%)}100%{transform:translate(0,0)}}
+
+/* HUD CORNER BRACKETS */
+.brackets{position:fixed;inset:14px;pointer-events:none;z-index:50}
+.brackets::before,.brackets::after,.brackets > span{position:absolute;width:28px;height:28px;border:1px solid var(--cyan);content:""}
+.brackets::before{top:0;left:0;border-right:0;border-bottom:0}
+.brackets::after{top:0;right:0;border-left:0;border-bottom:0}
+.brackets span:nth-child(1){bottom:0;left:0;border-right:0;border-top:0}
+.brackets span:nth-child(2){bottom:0;right:0;border-left:0;border-top:0}
+
+/* TOP BAR */
+.topbar{
+  display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;
+  padding:18px 32px;border-bottom:1px solid var(--hud-line);
+  background:linear-gradient(180deg,rgba(0,255,230,.04),transparent);
+  position:sticky;top:0;z-index:100;backdrop-filter:blur(6px);
+}
+.logo{font-family:'Orbitron',sans-serif;font-weight:900;font-size:22px;letter-spacing:.18em;color:var(--cyan);text-shadow:0 0 12px rgba(0,255,230,.6)}
+.logo .dot{color:var(--red);animation:pulse 1.4s ease-in-out infinite}
+.logo .chain{font-size:11px;color:var(--doge);letter-spacing:.3em;display:block;margin-top:2px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+.tag{font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:.4em;color:var(--cyan);opacity:.7;text-align:center}
+.tag .live{color:var(--red);font-weight:700;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+
+.chains{display:flex;gap:10px;align-items:center;font-size:10px;letter-spacing:.2em}
+.chip{padding:6px 12px;border:1px solid;border-radius:2px;font-family:'Share Tech Mono',monospace;cursor:pointer;transition:all .2s}
+.chip.doge{border-color:var(--doge);color:var(--doge)}
+.chip.base{border-color:var(--base);color:var(--base)}
+.chip.sol{border-color:var(--sol);color:var(--sol)}
+.chip.xents{border-color:var(--doge);color:var(--doge);background:rgba(194,166,51,.08);font-weight:bold}
+.chip.xents:hover{background:var(--doge);color:var(--void);box-shadow:0 0 16px var(--doge)}
+.chip:hover{box-shadow:0 0 12px currentColor;transform:translateY(-1px)}
+
+/* MAIN GRID */
+.stage{
+  display:grid;grid-template-columns:340px 1fr 320px;gap:20px;padding:24px 32px;
+  min-height:calc(100vh - 70px);
+}
+@media(max-width:1100px){.stage{grid-template-columns:1fr;}}
+
+/* PANELS */
+.panel{
+  border:1px solid var(--hud-line);background:rgba(0,255,230,.015);
+  position:relative;padding:18px;
+}
+.panel::before{
+  content:attr(data-label);position:absolute;top:-9px;left:14px;
+  background:var(--void);padding:0 8px;font-size:10px;letter-spacing:.3em;
+  color:var(--cyan);font-family:'Orbitron',sans-serif;
+}
+.panel h3{font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:.25em;color:var(--cyan);margin-bottom:14px;padding-bottom:8px;border-bottom:1px dashed rgba(0,255,230,.2)}
+
+/* === LEFT: DJ BOOTH === */
+.booth{display:flex;flex-direction:column;gap:18px}
+
+.dj-card{
+  position:relative;padding:20px;text-align:center;
+  background:radial-gradient(circle at 50% 30%, rgba(255,26,46,.08), transparent 70%);
+  border:1px solid rgba(255,26,46,.3);
+}
+.dj-avatar{
+  width:120px;height:120px;margin:0 auto 14px;position:relative;
+  border:2px solid var(--red);border-radius:50%;
+  background:radial-gradient(circle,#1a0008 0%,#000 80%);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 30px rgba(255,26,46,.4),inset 0 0 20px rgba(255,26,46,.2);
+  overflow:hidden;
+}
+.dj-avatar svg{width:90%;height:90%;animation:djglitch 6s infinite}
+@keyframes djglitch{0%,93%,100%{transform:translate(0,0);filter:none}94%{transform:translate(-2px,1px);filter:hue-rotate(180deg)}96%{transform:translate(1px,-1px);filter:hue-rotate(90deg)}}
+.dj-name{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;letter-spacing:.18em;color:var(--red);text-shadow:0 0 10px rgba(255,26,46,.6);margin-bottom:4px;white-space:nowrap}
+.dj-role{font-size:10px;letter-spacing:.3em;color:var(--cyan);opacity:.7}
+.dj-status{margin-top:12px;padding:8px;border:1px dashed rgba(0,255,230,.3);font-size:11px;color:var(--cyan)}
+.dj-status .label{color:var(--red);font-family:'Orbitron',sans-serif;letter-spacing:.2em;margin-right:6px}
+
+/* PROGRAMMING GRID */
+.schedule{font-size:11px}
+.slot{
+  display:grid;grid-template-columns:60px 1fr auto;gap:8px;align-items:center;
+  padding:10px 8px;border-bottom:1px solid rgba(0,255,230,.1);
+  cursor:pointer;transition:all .2s;
+}
+.slot:hover{background:rgba(0,255,230,.04);padding-left:14px}
+.slot.now{background:linear-gradient(90deg,rgba(255,26,46,.1),transparent);border-left:2px solid var(--red)}
+.slot-time{color:var(--doge);font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:.1em}
+.slot-title{color:var(--cyan)}
+.slot-host{font-size:9px;color:var(--red);letter-spacing:.12em;text-align:right;max-width:90px}
+
+/* === CENTER: ON-AIR DECK === */
+.deck{display:flex;flex-direction:column;gap:20px}
+
+.now-playing{
+  padding:28px;text-align:center;position:relative;
+  background:radial-gradient(ellipse at center, rgba(0,255,230,.05), transparent 70%);
+}
+.live-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 14px;border:1px solid var(--red);color:var(--red);
+  font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:.4em;font-weight:700;
+  margin-bottom:18px;background:rgba(255,26,46,.05);
+}
+.live-badge::before{content:"";width:8px;height:8px;background:var(--red);border-radius:50%;animation:pulse 1.2s infinite;box-shadow:0 0 10px var(--red)}
+
+.track-title{font-family:'Orbitron',sans-serif;font-size:32px;font-weight:900;letter-spacing:.05em;color:var(--cyan);text-shadow:0 0 20px rgba(0,255,230,.5);margin-bottom:8px;line-height:1.1}
+.track-artist{font-size:14px;color:var(--red);letter-spacing:.3em;font-family:'Rajdhani',sans-serif;font-weight:500;text-transform:uppercase}
+.track-meta{margin-top:14px;display:flex;gap:16px;justify-content:center;font-size:10px;letter-spacing:.2em;opacity:.6}
+.track-meta span{padding:3px 8px;border:1px solid rgba(0,255,230,.2)}
+
+/* VINYL VISUALIZER */
+.vinyl-stage{
+  height:280px;display:flex;align-items:center;justify-content:center;
+  position:relative;margin:10px 0;
+}
+.vinyl{
+  width:240px;height:240px;border-radius:50%;
+  background:
+    radial-gradient(circle at 50% 50%,#222 0 14%,#000 14.5% 16%,#1a1a1a 16.5% 30%,#000 30.5% 31.5%,#0a0a0a 31.8% 100%);
+  border:2px solid #1a1a1a;position:relative;
+  box-shadow:0 0 60px rgba(0,255,230,.15),inset 0 0 30px rgba(0,0,0,.8);
+  animation:spin 1.8s linear infinite;
+}
+.vinyl::before{
+  content:"";position:absolute;inset:30%;border-radius:50%;
+  background:radial-gradient(circle,var(--red) 0%,#8a0010 50%,#3a0008 100%);
+  box-shadow:0 0 20px rgba(255,26,46,.4);
+}
+.vinyl::after{
+  content:"33⅓";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-family:'Orbitron',sans-serif;font-size:11px;color:var(--cyan);letter-spacing:.1em;z-index:2;
+}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+.vinyl.paused{animation-play-state:paused}
+
+/* WAVEFORM */
+.waveform{
+  display:flex;align-items:center;justify-content:center;gap:3px;height:50px;margin:14px 0;
+}
+.bar{width:3px;background:linear-gradient(180deg,var(--cyan),var(--red));border-radius:1px;animation:wave 1s ease-in-out infinite}
+@keyframes wave{0%,100%{height:8px}50%{height:42px}}
+
+/* CONTROLS */
+.controls{display:flex;justify-content:center;gap:14px;margin-top:14px}
+.ctrl{
+  width:48px;height:48px;border:1px solid var(--hud-line);background:transparent;
+  color:var(--cyan);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron',sans-serif;font-size:14px;transition:all .2s;
+}
+.ctrl:hover{background:var(--cyan);color:var(--void);box-shadow:0 0 20px var(--cyan)}
+.ctrl.play{width:64px;height:64px;border-color:var(--red);color:var(--red);font-size:18px}
+.ctrl.play:hover{background:var(--red);color:var(--void);box-shadow:0 0 30px var(--red)}
+
+/* PROGRESS */
+.progress{display:flex;align-items:center;gap:12px;margin-top:18px;font-size:10px;letter-spacing:.1em}
+.progress-bar{flex:1;height:2px;background:rgba(0,255,230,.15);position:relative;cursor:pointer}
+.progress-fill{position:absolute;inset:0 70% 0 0;background:linear-gradient(90deg,var(--red),var(--cyan));box-shadow:0 0 10px var(--cyan)}
+.progress-fill::after{content:"";position:absolute;right:-4px;top:-3px;width:8px;height:8px;background:var(--cyan);border-radius:50%;box-shadow:0 0 10px var(--cyan)}
+
+/* === RIGHT: SIGNAL + DISTRICT FEED === */
+.signal{display:flex;flex-direction:column;gap:18px}
+
+.bridge-status{
+  display:grid;grid-template-columns:1fr auto;gap:10px 14px;font-size:11px;
+}
+.bridge-row{display:contents}
+.bridge-label{color:var(--cyan);opacity:.7;letter-spacing:.15em;padding:6px 0;border-bottom:1px dashed rgba(0,255,230,.1)}
+.bridge-val{color:var(--red);font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:.1em;padding:6px 0;border-bottom:1px dashed rgba(0,255,230,.1)}
+.bridge-val.ok{color:#00ff88}
+
+.district-feed{max-height:280px;overflow-y:auto}
+.district-feed::-webkit-scrollbar{width:4px}
+.district-feed::-webkit-scrollbar-thumb{background:var(--cyan)}
+.district{
+  padding:10px;margin-bottom:8px;border-left:2px solid var(--doge);
+  background:rgba(194,166,51,.04);font-size:10px;cursor:pointer;transition:all .2s;
+}
+.district:hover{background:rgba(194,166,51,.1);transform:translateX(4px)}
+.district-name{font-family:'Orbitron',sans-serif;font-size:11px;color:var(--doge);letter-spacing:.2em;margin-bottom:4px}
+.district-msg{color:var(--cyan);opacity:.8}
+.district-time{font-size:9px;color:var(--red);margin-top:4px;letter-spacing:.2em}
+
+/* TIPS PANEL */
+.tip-jar{
+  padding:14px;border:1px dashed var(--doge);background:rgba(194,166,51,.04);
+  text-align:center;
+}
+.tip-jar .amount{font-family:'Orbitron',sans-serif;font-size:24px;color:var(--doge);font-weight:900;letter-spacing:.05em;text-shadow:0 0 12px rgba(194,166,51,.5)}
+.tip-jar .label{font-size:9px;letter-spacing:.3em;opacity:.7;margin-bottom:4px}
+.tip-btn{margin-top:10px;width:100%;padding:8px;border:1px solid var(--doge);background:transparent;color:var(--doge);font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:.3em;cursor:pointer;transition:all .2s}
+.tip-btn:hover{background:var(--doge);color:var(--void);box-shadow:0 0 20px var(--doge)}
+
+/* TICKER FOOTER */
+.ticker{
+  position:fixed;bottom:0;left:0;right:0;height:36px;
+  background:var(--ink);border-top:1px solid var(--hud-line);
+  display:flex;align-items:center;overflow:hidden;z-index:90;
+}
+.ticker-tag{
+  background:var(--red);color:var(--void);font-family:'Orbitron',sans-serif;
+  font-size:10px;letter-spacing:.3em;padding:0 16px;height:100%;
+  display:flex;align-items:center;font-weight:900;
+}
+.ticker-content{
+  display:flex;animation:ticker 50s linear infinite;white-space:nowrap;
+  font-size:11px;letter-spacing:.15em;color:var(--cyan);padding-left:20px;
+}
+.ticker-content span{margin-right:60px}
+.ticker-content .accent{color:var(--red)}
+.ticker-content .gold{color:var(--doge)}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* GLITCH UTILITY */
+.glitch{position:relative}
+.glitch::before,.glitch::after{
+  content:attr(data-text);position:absolute;inset:0;
+}
+.glitch::before{color:var(--red);transform:translate(-1px,0);clip-path:polygon(0 0,100% 0,100% 45%,0 45%);animation:gl1 4s infinite}
+.glitch::after{color:#00ffff;transform:translate(1px,0);clip-path:polygon(0 55%,100% 55%,100% 100%,0 100%);animation:gl2 4s infinite}
+@keyframes gl1{0%,90%,100%{transform:translate(0,0)}92%{transform:translate(-2px,1px)}94%{transform:translate(2px,-1px)}}
+@keyframes gl2{0%,90%,100%{transform:translate(0,0)}92%{transform:translate(2px,-1px)}94%{transform:translate(-2px,1px)}}
+</style>
+</head>
+<body>
+<div class="brackets"><span></span><span></span></div>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="logo">
+    33.3<span class="dot">●</span>FM
+    <span class="chain">// DOGECHAIN BROADCAST PROTOCOL</span>
+  </div>
+  <div class="tag">
+    <span class="live">◉ ON AIR</span> &nbsp;//&nbsp; ALL MINDS VALID &nbsp;//&nbsp; SIGNAL LOCKED &nbsp;//&nbsp; <span id="utc-time">--:--:-- UTC</span>
+  </div>
+  <div class="chains">
+    <div class="chip xents" data-chain="xents" id="xentsChip" title="Open $XENTS Change Machine">⟁ <span id="topXents">0</span></div>
+    <div class="chip doge" data-chain="doge">◈ DOGE</div>
+    <div class="chip base" data-chain="base">◈ BASE</div>
+    <div class="chip sol" data-chain="sol">◈ SOL</div>
+  </div>
+</header>
+
+<!-- MAIN STAGE -->
+<main class="stage">
+
+  <!-- LEFT COLUMN -->
+  <aside class="booth">
+    <div class="panel dj-card" data-label="DJ BOOTH">
+      <div class="dj-avatar">
+        <!-- DJ RED FANG agent SVG -->
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="rf1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ff1a2e"/>
+              <stop offset="60%" stop-color="#8a0010"/>
+              <stop offset="100%" stop-color="#1a0004"/>
+            </linearGradient>
+            <linearGradient id="rf2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="100%" stop-color="#ff1a2e"/>
+            </linearGradient>
+            <radialGradient id="rfeye" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="40%" stop-color="#00ffe6"/>
+              <stop offset="100%" stop-color="#003a35"/>
+            </radialGradient>
+          </defs>
+          <!-- Head silhouette: wolf/wraith profile -->
+          <path d="M 20 25 L 35 18 L 50 12 L 65 18 L 80 25 L 82 42 L 78 60 L 70 75 L 55 85 L 45 85 L 30 75 L 22 60 L 18 42 Z"
+                fill="url(#rf1)" stroke="#ff1a2e" stroke-width="1.2"/>
+          <!-- HUD scanline on face -->
+          <line x1="20" y1="38" x2="80" y2="38" stroke="#00ffe6" stroke-width=".4" opacity=".4"/>
+          <line x1="22" y1="44" x2="78" y2="44" stroke="#00ffe6" stroke-width=".3" opacity=".25"/>
+          <line x1="24" y1="50" x2="76" y2="50" stroke="#00ffe6" stroke-width=".4" opacity=".4"/>
+          <!-- Eyes: cyan glow -->
+          <circle cx="37" cy="42" r="3.5" fill="url(#rfeye)"/>
+          <circle cx="63" cy="42" r="3.5" fill="url(#rfeye)"/>
+          <circle cx="37" cy="42" r="6" fill="none" stroke="#00ffe6" stroke-width=".5" opacity=".6"/>
+          <circle cx="63" cy="42" r="6" fill="none" stroke="#00ffe6" stroke-width=".5" opacity=".6"/>
+          <!-- Jaw / open mouth dark cavity -->
+          <path d="M 35 60 Q 50 72 65 60 L 65 68 Q 50 80 35 68 Z" fill="#000000"/>
+          <!-- THE FANGS (signature) -->
+          <polygon points="40,62 42,62 41,72" fill="url(#rf2)" stroke="#ffffff" stroke-width=".3"/>
+          <polygon points="46,62 48,62 47,75" fill="url(#rf2)" stroke="#ffffff" stroke-width=".3"/>
+          <polygon points="52,62 54,62 53,75" fill="url(#rf2)" stroke="#ffffff" stroke-width=".3"/>
+          <polygon points="58,62 60,62 59,72" fill="url(#rf2)" stroke="#ffffff" stroke-width=".3"/>
+          <!-- Ear spikes / antenna -->
+          <polygon points="28,22 30,8 34,22" fill="url(#rf1)" stroke="#ff1a2e" stroke-width=".8"/>
+          <polygon points="66,22 70,8 72,22" fill="url(#rf1)" stroke="#ff1a2e" stroke-width=".8"/>
+          <!-- Side circuitry -->
+          <line x1="18" y1="48" x2="10" y2="48" stroke="#00ffe6" stroke-width=".6"/>
+          <line x1="10" y1="48" x2="10" y2="55" stroke="#00ffe6" stroke-width=".6"/>
+          <circle cx="10" cy="55" r="1.2" fill="#00ffe6"/>
+          <line x1="82" y1="48" x2="90" y2="48" stroke="#00ffe6" stroke-width=".6"/>
+          <line x1="90" y1="48" x2="90" y2="55" stroke="#00ffe6" stroke-width=".6"/>
+          <circle cx="90" cy="55" r="1.2" fill="#00ffe6"/>
+        </svg>
+      </div>
+      <div class="dj-name">DJ RED FANG</div>
+      <div class="dj-role">// LATE NIGHT // CHAOS PROTOCOL</div>
+      <div class="dj-status">
+        <span class="label">SET:</span>04:12 / 60:00<br>
+        <span class="label">MOOD:</span>VOID INDUSTRIAL
+      </div>
+    </div>
+
+    <div class="panel" data-label="PROGRAM GRID">
+      <h3>◉ TODAY'S BROADCAST</h3>
+      <div class="schedule">
+        <div class="slot now">
+          <div class="slot-time">22:00</div>
+          <div class="slot-title">VOID FREQUENCY</div>
+          <div class="slot-host">DJ RED FANG</div>
+        </div>
+        <div class="slot">
+          <div class="slot-time">23:00</div>
+          <div class="slot-title">PACK SIGNAL</div>
+          <div class="slot-host">PACK</div>
+        </div>
+        <div class="slot">
+          <div class="slot-time">00:00</div>
+          <div class="slot-title">LENS UPLINK</div>
+          <div class="slot-host">LENS</div>
+        </div>
+        <div class="slot">
+          <div class="slot-time">01:00</div>
+          <div class="slot-title">MINT DROP HOUR</div>
+          <div class="slot-host">MINT</div>
+        </div>
+        <div class="slot">
+          <div class="slot-time">02:00</div>
+          <div class="slot-title">VAULT33 GATED</div>
+          <div class="slot-host">PREMIUM</div>
+        </div>
+        <div class="slot">
+          <div class="slot-time">03:00</div>
+          <div class="slot-title">DISTRICT TAKEOVER</div>
+          <div class="slot-host">MADISON</div>
+        </div>
+        <div class="slot">
+          <div class="slot-time">04:00</div>
+          <div class="slot-title">ATV SIMULCAST</div>
+          <div class="slot-host">CROSS-NET</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CENTER COLUMN: ON-AIR DECK -->
+  <section class="deck">
+    <div class="panel now-playing" data-label="NOW PLAYING">
+      <div class="live-badge">LIVE TRANSMISSION</div>
+      <div class="track-title glitch" data-text="MIDNIGHT GHOSTS">MIDNIGHT GHOSTS</div>
+      <div class="track-artist">// XENT-K0RE // DISTRICT 7 //</div>
+      <div class="track-meta">
+        <span>SUNO V5</span>
+        <span>BPM 92</span>
+        <span>F# MINOR</span>
+        <span>$XENTS REWARD</span>
+      </div>
+
+      <div class="vinyl-stage">
+        <div class="vinyl" id="vinyl"></div>
+      </div>
+
+      <div class="waveform" id="wave"></div>
+
+      <div class="progress">
+        <span id="elapsed">02:14</span>
+        <div class="progress-bar"><div class="progress-fill" id="fill"></div></div>
+        <span id="duration">04:32</span>
+      </div>
+
+      <div class="controls">
+        <button class="ctrl" title="Previous">◄◄</button>
+        <button class="ctrl play" id="playBtn" title="Play/Pause">❚❚</button>
+        <button class="ctrl" title="Next">►►</button>
+      </div>
+    </div>
+
+    <!-- MINTED THIS HOUR — fresh OAC releases -->
+    <div class="panel" data-label="MINTED THIS HOUR">
+      <h3 style="display:flex;justify-content:space-between;align-items:center">
+        <span>◉ FRESH FROM OAC</span>
+        <a href="33-3fm-mint.html" style="font-size:9px;letter-spacing:.25em;color:var(--cyan);text-decoration:none;border:1px solid var(--cyan);padding:4px 10px;font-family:'Orbitron'">+ MINT</a>
+      </h3>
+      <div id="mintedRail" style="display:flex;flex-direction:column;gap:8px;font-size:11px"></div>
+    </div>
+  </section>
+
+  <!-- RIGHT COLUMN: SIGNAL -->
+  <aside class="signal">
+    <div class="panel" data-label="BRIDGE STATUS">
+      <h3>◉ AGENTROPOLIS UPLINK</h3>
+      <div class="bridge-status">
+        <div class="bridge-label">CITIZENS ONLINE</div><div class="bridge-val ok" id="citizens">--</div>
+        <div class="bridge-label">DISTRICTS LIT</div><div class="bridge-val ok" id="districts">14 / 14</div>
+        <div class="bridge-label">PANO ENGINE</div><div class="bridge-val ok">SYNC</div>
+        <div class="bridge-label">VAULT33</div><div class="bridge-val ok">LOCKED</div>
+        <div class="bridge-label">ATV NET</div><div class="bridge-val ok">SIMULCAST</div>
+        <div class="bridge-label">DOGE RPC</div><div class="bridge-val">●●●○○</div>
+        <div class="bridge-label">BASE RPC</div><div class="bridge-val ok">●●●●●</div>
+        <div class="bridge-label">SOL RPC</div><div class="bridge-val ok">●●●●○</div>
+      </div>
+    </div>
+
+    <div class="panel" data-label="DISTRICT FEED">
+      <h3>◉ INCOMING SIGNAL</h3>
+      <div class="district-feed" id="feed"></div>
+    </div>
+
+    <div class="panel" data-label="TIP JAR">
+      <div class="tip-jar">
+        <div class="label">DJ TIP POOL // 24H</div>
+        <div class="amount" id="tipAmount">Ð 14,287</div>
+        <button class="tip-btn">⟁ SEND DOGE TIP</button>
+      </div>
+    </div>
+  </aside>
+
+</main>
+
+<!-- TICKER -->
+<footer class="ticker">
+  <div class="ticker-tag">33.3FM ⟁</div>
+  <div class="ticker-content">
+    <span><span class="accent">NEW DROP:</span> XENT-K0RE — "Midnight Ghosts" mints on BASE</span>
+    <span><span class="gold">DOGECHAIN:</span> Block 4,829,103 // 14k tips routed</span>
+    <span><span class="accent">VAULT33:</span> Premium show "Cipher Hour" unlocks at 02:00 UTC</span>
+    <span><span class="gold">ATV NET:</span> Simulcast bridge active // Channel 7</span>
+    <span><span class="accent">AGENTROPOLIS:</span> Madison District takeover begins 03:00</span>
+    <span>ALL MINDS VALID // WIRED CHAOS // 33⅓ ETERNAL</span>
+    <span><span class="accent">NEW DROP:</span> XENT-K0RE — "Midnight Ghosts" mints on BASE</span>
+    <span><span class="gold">DOGECHAIN:</span> Block 4,829,103 // 14k tips routed</span>
+    <span><span class="accent">VAULT33:</span> Premium show "Cipher Hour" unlocks at 02:00 UTC</span>
+    <span><span class="gold">ATV NET:</span> Simulcast bridge active // Channel 7</span>
+    <span><span class="accent">AGENTROPOLIS:</span> Madison District takeover begins 03:00</span>
+    <span>ALL MINDS VALID // WIRED CHAOS // 33⅓ ETERNAL</span>
+  </div>
+</footer>
+
+<script>
+/* ============================================
+   33.3FM DOGECHAIN — BROADCAST RUNTIME
+   Shared state bridges:
+     localStorage["wc_radio_state"]      — radio core
+     localStorage["agentropolis_citizens"] — citizen registry
+     localStorage["cbe_state"]           — citizen broadcast events
+============================================ */
+
+// --- WAVEFORM BARS ---
+const wave = document.getElementById('wave');
+for(let i=0;i<48;i++){
+  const b = document.createElement('div');
+  b.className = 'bar';
+  b.style.animationDelay = (Math.random()*1).toFixed(2)+'s';
+  b.style.animationDuration = (0.6 + Math.random()*0.8).toFixed(2)+'s';
+  wave.appendChild(b);
+}
+
+// --- UTC CLOCK ---
+function tick(){
+  const d = new Date();
+  const z = n => String(n).padStart(2,'0');
+  document.getElementById('utc-time').textContent =
+    `${z(d.getUTCHours())}:${z(d.getUTCMinutes())}:${z(d.getUTCSeconds())} UTC`;
+}
+setInterval(tick,1000); tick();
+
+// --- PLAY/PAUSE ---
+const playBtn = document.getElementById('playBtn');
+const vinyl = document.getElementById('vinyl');
+let playing = true;
+playBtn.addEventListener('click',()=>{
+  playing = !playing;
+  vinyl.classList.toggle('paused',!playing);
+  playBtn.textContent = playing ? '❚❚' : '▶';
+  pushRadioState();
+});
+
+// --- PROGRESS SIM ---
+let progress = 30;
+setInterval(()=>{
+  if(!playing) return;
+  progress = (progress + 0.3) % 100;
+  document.getElementById('fill').style.right = (100-progress)+'%';
+  const el = Math.floor((progress/100)*272);
+  const m = String(Math.floor(el/60)).padStart(2,'0');
+  const s = String(el%60).padStart(2,'0');
+  document.getElementById('elapsed').textContent = `${m}:${s}`;
+},300);
+
+// --- AGENTROPOLIS BRIDGE: read citizens ---
+function syncBridge(){
+  try{
+    const citizens = JSON.parse(localStorage.getItem('agentropolis_citizens') || '[]');
+    const online = citizens.filter(c => c.status === 'online' || c.online).length;
+    document.getElementById('citizens').textContent =
+      online > 0 ? online.toString().padStart(3,'0') : (Math.floor(Math.random()*40)+12).toString().padStart(3,'0');
+  }catch(e){
+    document.getElementById('citizens').textContent = (Math.floor(Math.random()*40)+12).toString().padStart(3,'0');
+  }
+}
+setInterval(syncBridge,3000); syncBridge();
+
+// --- DISTRICT FEED ---
+const districts = ['MADISON','VOID-7','XENTS','VAULT33','PACK-DEN','CHRYSANTHEUM','GRIND3R','NTKY2090','SUIT54','TERRA','BSA-OPS','ENT-DISTRICT','SENTINEL-RAMP','ATV-CORE'];
+const messages = [
+  'spinning new mint for resident artists',
+  'requesting DJ RED FANG for 03:00 takeover',
+  'ambient block locked — 47 listeners synced',
+  'royalty split confirmed on Base',
+  'district radio uplink active',
+  'voice drop queued for next hour',
+  'NPC chorus samples uploaded',
+  'live freestyle session opening',
+  'meditation block — sleep music live',
+  'XENTS reward dropped to streamers'
+];
+const feed = document.getElementById('feed');
+function addFeed(){
+  const d = districts[Math.floor(Math.random()*districts.length)];
+  const m = messages[Math.floor(Math.random()*messages.length)];
+  const t = new Date();
+  const node = document.createElement('div');
+  node.className = 'district';
+  node.innerHTML = `
+    <div class="district-name">▣ ${d}</div>
+    <div class="district-msg">${m}</div>
+    <div class="district-time">${String(t.getUTCHours()).padStart(2,'0')}:${String(t.getUTCMinutes()).padStart(2,'0')}:${String(t.getUTCSeconds()).padStart(2,'0')} UTC</div>
+  `;
+  feed.insertBefore(node,feed.firstChild);
+  while(feed.children.length > 8) feed.removeChild(feed.lastChild);
+}
+addFeed();addFeed();addFeed();
+setInterval(addFeed, 4500);
+
+// --- TIP JAR LIVE INC ---
+let tip = 14287;
+setInterval(()=>{
+  if(Math.random() > 0.6){
+    tip += Math.floor(Math.random()*420)+1;
+    document.getElementById('tipAmount').textContent = 'Ð ' + tip.toLocaleString();
+  }
+},2200);
+
+// --- CHAIN CHIP ROUTING ---
+document.querySelectorAll('.chip').forEach(c=>{
+  c.addEventListener('click',()=>{
+    const chain = c.dataset.chain;
+    pushRadioState({lastChainAction: chain, ts: Date.now()});
+    c.style.boxShadow = `0 0 30px currentColor`;
+    setTimeout(()=>c.style.boxShadow='',600);
+  });
+});
+
+// --- WRITE RADIO STATE FOR CROSS-APP BRIDGE ---
+function pushRadioState(extra={}){
+  const state = {
+    onAir: playing,
+    currentDJ: 'DJ RED FANG',
+    track: { title: 'Midnight Ghosts', artist: 'XENT-K0RE', district: 7 },
+    show: 'VOID FREQUENCY',
+    nextShow: 'PACK SIGNAL',
+    listeners: Math.floor(Math.random()*1200)+340,
+    ts: Date.now(),
+    ...extra
+  };
+  try { localStorage.setItem('wc_radio_state', JSON.stringify(state)); } catch(e){}
+  // GTM dataLayer hook
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({event:'wc_radio_state', ...state});
+}
+pushRadioState();
+setInterval(()=>pushRadioState(),5000);
+
+// --- SLOT CLICK = JUMP SHOW ---
+document.querySelectorAll('.slot').forEach(s=>{
+  s.addEventListener('click',()=>{
+    document.querySelectorAll('.slot').forEach(x=>x.classList.remove('now'));
+    s.classList.add('now');
+  });
+});
+
+// --- $XENTS BALANCE CHIP + WIDGET HOOKUP ---
+function paintXentsBalance(){
+  if(window.XentsChange){
+    document.getElementById('topXents').textContent = window.XentsChange.balance().toLocaleString();
+  }
+}
+document.getElementById('xentsChip').addEventListener('click',()=>{
+  if(window.XentsChange) window.XentsChange.open();
+});
+window.addEventListener('storage',(e)=>{
+  if(e.key === 'wc_xents_balance') paintXentsBalance();
+  if(e.key === 'wc_radio_tracks') renderMintedRail();
+});
+
+// --- MINTED THIS HOUR RAIL ---
+function renderMintedRail(){
+  const rail = document.getElementById('mintedRail');
+  if(!rail) return;
+  let tracks = [];
+  try { tracks = JSON.parse(localStorage.getItem('wc_radio_tracks') || '[]'); } catch(e){}
+  // Surface tracks minted recently (or all OAC releases if mintedAt missing)
+  const minted = tracks.filter(t => t.oacRelease || t.mintedAt).slice(0, 4);
+  if(!minted.length){
+    rail.innerHTML = '<div style="padding:14px;text-align:center;color:var(--cyan);opacity:.4;font-size:10px;letter-spacing:.25em">// NO FRESH MINTS // VISIT MINT PAGE TO RELEASE //</div>';
+    return;
+  }
+  rail.innerHTML = minted.map(t => `
+    <div style="display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:10px;border-left:2px solid var(--sol);background:rgba(153,69,255,.04)">
+      <div>
+        <div style="font-family:'Orbitron';font-size:12px;color:var(--cyan);letter-spacing:.08em">${escapeHtmlBC(t.title)}</div>
+        <div style="font-size:9px;color:var(--red);letter-spacing:.2em;font-family:'Orbitron';margin-top:2px">// ${escapeHtmlBC(t.artist)}</div>
+      </div>
+      <span style="padding:3px 8px;border:1px solid var(--sol);color:var(--sol);font-size:8px;letter-spacing:.15em;font-family:'Orbitron'">⟁ OAC</span>
+      <button onclick="tipArtist('${escapeHtmlBC(t.artist)}')" style="padding:6px 10px;border:1px solid var(--doge);background:transparent;color:var(--doge);font-family:'Orbitron';font-size:9px;letter-spacing:.2em;cursor:pointer">TIP</button>
+    </div>
+  `).join('');
+}
+function escapeHtmlBC(s){ return String(s||'').replace(/[<>&'"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;',"'":'&apos;','"':'&quot;'}[c])); }
+
+function tipArtist(artist){
+  if(!window.XentsChange) return;
+  const ok = window.XentsChange.spend({
+    amount: 100,
+    label: `TIP: ${artist}`,
+    category: 'tip',
+    autoTopUp: true
+  });
+  if(ok){
+    paintXentsBalance();
+    // visual feedback
+    const el = event.target;
+    el.textContent = 'SENT ✓';
+    el.style.color = 'var(--green)';
+    el.style.borderColor = 'var(--green)';
+    setTimeout(() => {
+      el.textContent = 'TIP';
+      el.style.color = '';
+      el.style.borderColor = '';
+    }, 1600);
+  }
+}
+
+setInterval(renderMintedRail, 5000);
+renderMintedRail();
+setTimeout(paintXentsBalance, 100); // wait for widget to load
+</script>
+<script src="xents-widget.js"></script>
+</body>
+</html>

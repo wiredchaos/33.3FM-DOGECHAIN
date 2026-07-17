@@ -1,0 +1,9 @@
+{
+  "name": "33.3FM DOGECHAIN",
+  "description": "Decentralized audio broadcast layer of the Wired Chaos ecosystem, featuring agent DJs, multi-chain royalty splits, and Open Agentic Commerce.",
+  "requestFramePermissions": [
+    "microphone",
+    "audio"
+  ],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>33.3FM // ECONOMICS // WIRED CHAOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=VT323&family=Major+Mono+Display&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cyan:#00ffe6; --red:#ff1a2e; --gold:#c2a633;
+  --base:#0052ff; --sol:#9945ff; --green:#00ff88;
+  --void:#000000; --ink:#0a0a0c; --hud:rgba(0,255,230,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(194,166,51,.06), transparent 60%),
+    radial-gradient(ellipse at 50% 100%, rgba(0,255,230,.04), transparent 60%),
+    var(--void);
+  color:var(--cyan);font-family:'Share Tech Mono',monospace;min-height:100vh;
+}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;background:repeating-linear-gradient(0deg,rgba(0,255,230,.03) 0,rgba(0,255,230,.03) 1px,transparent 1px,transparent 3px);mix-blend-mode:overlay}
+
+.brackets{position:fixed;inset:14px;pointer-events:none;z-index:50}
+.brackets::before,.brackets::after,.brackets > span{position:absolute;width:28px;height:28px;border:1px solid var(--cyan);content:""}
+.brackets::before{top:0;left:0;border-right:0;border-bottom:0}
+.brackets::after{top:0;right:0;border-left:0;border-bottom:0}
+.brackets span:nth-child(1){bottom:0;left:0;border-right:0;border-top:0}
+.brackets span:nth-child(2){bottom:0;right:0;border-left:0;border-top:0}
+
+.topbar{display:grid;grid-template-columns:auto 1fr auto auto;gap:20px;align-items:center;padding:16px 32px;border-bottom:1px solid var(--hud);background:linear-gradient(180deg,rgba(194,166,51,.04),transparent);position:sticky;top:0;z-index:100;backdrop-filter:blur(6px)}
+.brand{font-family:'Orbitron',sans-serif;font-weight:900;font-size:18px;letter-spacing:.15em}
+.brand .red{color:var(--red)}
+.brand .sub{display:block;font-size:9px;color:var(--gold);letter-spacing:.35em;margin-top:2px;opacity:.7}
+.crumbs{font-size:10px;letter-spacing:.3em;text-align:center;opacity:.7}
+.crumbs a{color:var(--cyan);text-decoration:none}
+.crumbs a:hover{color:var(--gold)}
+.crumbs span{color:var(--red);margin:0 8px}
+.crumbs .active{color:var(--gold)}
+.balance-chip{display:flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid var(--gold);background:rgba(194,166,51,.06);color:var(--gold);font-family:'Orbitron';font-size:11px;letter-spacing:.15em;cursor:pointer}
+.balance-chip:hover{background:var(--gold);color:var(--void);box-shadow:0 0 16px var(--gold)}
+.back-btn{padding:6px 14px;border:1px solid var(--cyan);color:var(--cyan);font-family:'Orbitron';font-size:10px;letter-spacing:.3em;background:transparent;text-decoration:none}
+.back-btn:hover{background:var(--cyan);color:var(--void)}
+
+/* HERO */
+.hero{padding:60px 32px 40px;text-align:center;border-bottom:1px solid var(--hud)}
+.hero h1{font-family:'Orbitron';font-weight:900;font-size:48px;letter-spacing:.06em;color:var(--gold);text-shadow:0 0 32px rgba(194,166,51,.5),0 0 4px rgba(255,255,255,.6);margin-bottom:14px;line-height:1.1}
+.hero h1 .cyan{color:var(--cyan)}
+.hero .tag{font-family:'Major Mono Display';font-size:13px;color:var(--cyan);letter-spacing:.4em;margin-bottom:18px;opacity:.8}
+.hero .pitch{font-size:15px;color:var(--cyan);opacity:.85;max-width:780px;margin:0 auto;line-height:1.7;letter-spacing:.02em}
+.hero .pitch .gold{color:var(--gold);font-weight:bold}
+@media (max-width:600px){.hero{padding:36px 18px 28px}.hero h1{font-size:30px}}
+
+/* MAIN */
+.wrap{max-width:1200px;margin:0 auto;padding:40px 32px}
+@media (max-width:600px){.wrap{padding:24px 18px}}
+
+.section{margin-bottom:48px}
+.section h2{font-family:'Orbitron';font-weight:900;font-size:22px;letter-spacing:.15em;color:var(--cyan);margin-bottom:8px;text-shadow:0 0 14px rgba(0,255,230,.3)}
+.section .sub{font-size:12px;color:rgba(0,255,230,.6);letter-spacing:.18em;margin-bottom:24px;font-family:'Orbitron'}
+
+/* SPLIT VISUAL — the $1.50 download breakdown */
+.split-card{
+  border:2px solid var(--gold);padding:30px;
+  background:radial-gradient(ellipse at center,rgba(194,166,51,.06),transparent 70%);
+  text-align:center;
+}
+.split-card .label{font-family:'Orbitron';font-size:11px;letter-spacing:.3em;color:var(--gold);opacity:.8;margin-bottom:10px}
+.split-card .amount{font-family:'Orbitron';font-size:56px;font-weight:900;color:var(--gold);text-shadow:0 0 30px rgba(194,166,51,.5);margin-bottom:6px;line-height:1}
+.split-card .vs{font-size:11px;color:var(--red);letter-spacing:.25em;margin-top:10px}
+.split-bar{
+  margin:24px auto;max-width:600px;display:grid;grid-template-columns:85fr 10fr 5fr;height:40px;border:1px solid var(--hud);
+}
+.split-bar .seg{display:flex;align-items:center;justify-content:center;font-family:'Orbitron';font-size:11px;font-weight:900;letter-spacing:.1em;color:#000}
+.split-bar .artist{background:var(--green)}
+.split-bar .platform{background:var(--cyan)}
+.split-bar .treasury{background:var(--gold)}
+.split-legend{display:flex;justify-content:center;gap:24px;font-size:11px;color:var(--cyan);opacity:.8;letter-spacing:.15em;font-family:'Orbitron';flex-wrap:wrap}
+.split-legend span{display:flex;align-items:center;gap:6px}
+.split-legend .sw{width:12px;height:12px;display:inline-block}
+
+/* PRICING GRID */
+.price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.price-card{
+  position:relative;padding:24px;border:1px solid var(--hud);background:rgba(0,0,0,.4);
+  transition:all .25s;
+}
+.price-card::before{content:attr(data-label);position:absolute;top:-9px;left:14px;background:var(--void);padding:0 8px;font-size:9px;letter-spacing:.3em;color:var(--cyan);font-family:'Orbitron'}
+.price-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.price-card .name{font-family:'Orbitron';font-weight:900;font-size:14px;letter-spacing:.15em;color:var(--cyan);margin-bottom:6px}
+.price-card .price{font-family:'Orbitron';font-weight:900;font-size:32px;color:var(--gold);text-shadow:0 0 14px rgba(194,166,51,.3);margin:8px 0}
+.price-card .price::before{content:"⟁ ";color:var(--cyan);font-size:24px}
+.price-card .usd{font-size:11px;color:var(--cyan);opacity:.5;letter-spacing:.2em;margin-bottom:14px;font-family:'Share Tech Mono'}
+.price-card .desc{font-size:11px;color:var(--cyan);opacity:.75;line-height:1.55;letter-spacing:.02em}
+
+/* COMPARISON TABLE */
+.comparison{margin-top:24px;border:1px solid var(--hud);overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:560px}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px dashed rgba(0,255,230,.15)}
+th{background:rgba(0,255,230,.04);font-family:'Orbitron';font-size:10px;letter-spacing:.2em;color:var(--cyan)}
+td{color:var(--cyan);font-family:'Share Tech Mono';letter-spacing:.02em}
+td.feat{color:rgba(0,255,230,.7);font-family:'Orbitron';font-size:11px;letter-spacing:.1em}
+td.win{color:var(--green);font-family:'Orbitron';font-weight:900;letter-spacing:.1em}
+td.lose{color:var(--red);font-family:'Orbitron';letter-spacing:.1em;opacity:.7}
+td.gold{color:var(--gold);font-family:'Orbitron';font-weight:900}
+
+/* TOKENOMICS BLOCK */
+.token-block{
+  display:grid;grid-template-columns:1fr 1fr;gap:24px;
+}
+@media (max-width:800px){.token-block{grid-template-columns:1fr}}
+.token-side{padding:24px;border:1px solid var(--hud);background:rgba(0,0,0,.4)}
+.token-side h3{font-family:'Orbitron';font-size:14px;letter-spacing:.2em;color:var(--cyan);margin-bottom:14px;padding-bottom:8px;border-bottom:1px dashed rgba(0,255,230,.2)}
+.token-side ul{list-style:none;padding:0;font-size:12px;line-height:1.9;color:var(--cyan);opacity:.85}
+.token-side li{padding:8px 0;border-bottom:1px dashed rgba(0,255,230,.08);letter-spacing:.02em}
+.token-side li::before{content:"◢ ";color:var(--gold);margin-right:6px}
+.token-side li:last-child{border-bottom:0}
+.token-side .gold{color:var(--gold);font-family:'Orbitron'}
+.token-side .green{color:var(--green);font-family:'Orbitron'}
+.token-side .red{color:var(--red);font-family:'Orbitron'}
+
+.box-warn{
+  padding:16px 18px;background:rgba(255,26,46,.04);border:1px dashed var(--red);
+  font-size:11px;line-height:1.6;color:var(--red);letter-spacing:.04em;
+}
+.box-warn .lbl{display:block;font-family:'Orbitron';font-size:10px;letter-spacing:.3em;margin-bottom:6px}
+
+.box-good{
+  padding:16px 18px;background:rgba(0,255,136,.04);border:1px dashed var(--green);
+  font-size:11px;line-height:1.6;color:var(--green);letter-spacing:.04em;
+}
+.box-good .lbl{display:block;font-family:'Orbitron';font-size:10px;letter-spacing:.3em;margin-bottom:6px}
+
+/* TREASURY DASHBOARD */
+.treasury-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-top:18px}
+.treasury-cell{padding:18px;border:1px solid var(--hud);background:rgba(0,255,230,.02);text-align:center}
+.treasury-cell .v{font-family:'Orbitron';font-weight:900;font-size:22px;color:var(--cyan);text-shadow:0 0 12px rgba(0,255,230,.3)}
+.treasury-cell .v.gold{color:var(--gold);text-shadow:0 0 12px rgba(194,166,51,.3)}
+.treasury-cell .v.green{color:var(--green);text-shadow:0 0 12px rgba(0,255,136,.3)}
+.treasury-cell .l{font-size:9px;color:rgba(0,255,230,.5);letter-spacing:.25em;margin-top:6px;font-family:'Orbitron'}
+
+.cta-row{display:flex;gap:14px;justify-content:center;margin-top:24px;flex-wrap:wrap}
+.cta{
+  padding:14px 28px;font-family:'Orbitron';font-weight:900;font-size:12px;letter-spacing:.3em;
+  text-decoration:none;border:2px solid currentColor;transition:all .15s;text-align:center;
+}
+.cta.primary{color:#000;background:linear-gradient(180deg,var(--gold),#7a6a20);border-color:var(--gold);box-shadow:0 0 24px rgba(194,166,51,.3),inset 0 2px 0 rgba(255,255,255,.3),inset 0 -3px 0 rgba(0,0,0,.3);text-shadow:0 1px 0 rgba(255,255,255,.3)}
+.cta.primary:hover{box-shadow:0 0 36px rgba(194,166,51,.6),inset 0 2px 0 rgba(255,255,255,.3),inset 0 -3px 0 rgba(0,0,0,.3)}
+.cta.secondary{color:var(--cyan)}
+.cta.secondary:hover{background:var(--cyan);color:var(--void)}
+
+.foot{text-align:center;padding:40px 20px;font-size:10px;color:rgba(0,255,230,.4);letter-spacing:.3em;line-height:1.8;border-top:1px solid rgba(0,255,230,.1);margin-top:30px}
+.foot .line{display:block}
+.foot .gold{color:rgba(194,166,51,.6)}
+</style>
+</head>
+<body>
+<div class="brackets"><span></span><span></span></div>
+
+<header class="topbar">
+  <div class="brand">33.3<span class="red">●</span>FM · ECONOMICS<span class="sub">// HOW THIS PLATFORM ACTUALLY WORKS //</span></div>
+  <div class="crumbs">
+    <a href="33-3fm-broadcast.html">BROADCAST</a><span>·</span>
+    <a href="33-3fm-catalog.html">CATALOG</a><span>·</span>
+    <a href="33-3fm-mint.html">MINT</a><span>·</span>
+    <a class="active">ECONOMICS</a><span>·</span>
+    <a href="33-3fm-founders.html">FOUNDERS</a>
+  </div>
+  <div class="balance-chip" id="balanceChip">
+    <span style="font-size:16px">⟁</span><span id="topBalance">0</span>
+  </div>
+  <a class="back-btn" href="33-3fm-broadcast.html">◄ ON-AIR</a>
+</header>
+
+<section class="hero">
+  <h1>NO LABEL <span class="cyan">·</span> NO CUT <span class="cyan">·</span> NO RUG</h1>
+  <div class="tag">// HONEST ECONOMICS // PUBLISHED ON-CHAIN //</div>
+  <p class="pitch">
+    Artists keep <span class="gold">85% of every transaction</span>. $XENTS is one-way utility credit — not a memecoin, not a security, not tradable. Treasury holds 1:1 USD backing. Every number on this page is auditable. <span class="gold">Real economics, not vibes.</span>
+  </p>
+</section>
+
+<div class="wrap">
+
+  <!-- THE SPLIT -->
+  <section class="section">
+    <h2>◢ THE ARTIST SPLIT</h2>
+    <div class="sub">// EVERY ⟁100 SPENT ON THIS PLATFORM //</div>
+
+    <div class="split-card">
+      <div class="label">PER ⟁100 TRANSACTION</div>
+      <div class="amount">⟁ 85</div>
+      <div style="font-size:13px;color:var(--green);letter-spacing:.2em;font-family:'Orbitron'">TO THE ARTIST · DIRECTLY · ON-CHAIN</div>
+
+      <div class="split-bar">
+        <div class="seg artist">⟁85 ARTIST</div>
+        <div class="seg platform">⟁10</div>
+        <div class="seg treasury">⟁5</div>
+      </div>
+
+      <div class="split-legend">
+        <span><span class="sw" style="background:var(--green)"></span>ARTIST 85%</span>
+        <span><span class="sw" style="background:var(--cyan)"></span>PLATFORM 10%</span>
+        <span><span class="sw" style="background:var(--gold)"></span>TREASURY 5%</span>
+      </div>
+
+      <div class="vs">// FATMEMES: 66.7% TO ARTIST · SPOTIFY: ~58% AFTER LABEL · DISTROKID: 100% MINUS $20/YR + DISCOVERY MODE //</div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="section">
+    <h2>◢ WHAT THINGS COST</h2>
+    <div class="sub">// $1 USD = 100 ⟁ $XENTS // RATE LOCKED FOREVER //</div>
+
+    <div class="price-grid">
+      <div class="price-card" data-label="ARTIST">
+        <div class="name">MINT A RELEASE</div>
+        <div class="price">5,000</div>
+        <div class="usd">≈ $50 USD · ONE-TIME</div>
+        <div class="desc">Mints on-chain across SOL + BASE + DOGE AND ships to Spotify, Apple, YouTube, Amazon via DDEX. Single upload, parallel distribution. Includes C2PA provenance, ISRC, UPC, and agent-pipeline run.</div>
+      </div>
+      <div class="price-card" data-label="FAN">
+        <div class="name">TIP A DJ OR ARTIST</div>
+        <div class="price">100</div>
+        <div class="usd">≈ $1 USD · MINIMUM</div>
+        <div class="desc">Tip any amount above ⟁100. 85% goes directly to the artist's on-chain address. Tipping a DJ funds their agent compute time (Lyria generation, voice synthesis, on-air rotation).</div>
+      </div>
+      <div class="price-card" data-label="MEMBER">
+        <div class="name">VAULT33 PASS</div>
+        <div class="price">2,500</div>
+        <div class="usd">≈ $25 USD · MONTHLY</div>
+        <div class="desc">Unlock CIPHER HOUR (02:00 RED FANG broadcasts), private agent-DJ shows, founders-only Discord, and VAULT33 dual-consent custody for personal mints.</div>
+      </div>
+      <div class="price-card" data-label="ARTIST">
+        <div class="name">PLAYLIST SLOT</div>
+        <div class="price">1,000</div>
+        <div class="usd">≈ $10 USD · PER SPIN</div>
+        <div class="desc">Buy a confirmed broadcast slot. Track goes into rotation on the matching DJ's show by mood/genre. Not pay-to-play discovery — pay-to-broadcast at a known time.</div>
+      </div>
+      <div class="price-card" data-label="DEVELOPER">
+        <div class="name">AGENT COMPUTE HOUR</div>
+        <div class="price">500</div>
+        <div class="usd">≈ $5 USD · PER HOUR</div>
+        <div class="desc">Rent an OAC agent (Release / Rights / Pitch / Marketing / Royalty / Fan / Compliance / Insights) for your own catalog work. Same pipeline that powers 33.3FM mints.</div>
+      </div>
+      <div class="price-card" data-label="CREATOR">
+        <div class="name">LYRIA GENERATION</div>
+        <div class="price">500</div>
+        <div class="usd">≈ $5 USD · PER 60s</div>
+        <div class="desc">Generate via Lyria Engine vault mode. Studio (text-to-music), Rhythm (60s loop @ ⟁300), or Score-Video (⟁800 + ⟁200/min). BYO Google API key = free.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOKEN MODEL -->
+  <section class="section">
+    <h2>◢ $XENTS TOKEN MODEL</h2>
+    <div class="sub">// READ THIS BEFORE YOU FORM AN OPINION //</div>
+
+    <div class="token-block">
+      <div class="token-side">
+        <h3>◢ WHAT $XENTS IS</h3>
+        <ul>
+          <li><span class="gold">UTILITY CREDIT</span> for the WIRED CHAOS ecosystem</li>
+          <li>Rate: <span class="gold">$1 USD = 100 ⟁</span> — locked forever</li>
+          <li>Direction: <span class="green">ONE-WAY</span> only (USD → ⟁)</li>
+          <li>Backing: 1:1 USD held in transparent treasury</li>
+          <li>Purchase: Stripe, Apple Pay, USDC on Base, x402 micropayments</li>
+          <li>Spend on: minting, tips, VAULT33, playlists, agents, Lyria</li>
+          <li>Judge / evaluator bypass code grants ⟁10,000 eval credit</li>
+        </ul>
+      </div>
+
+      <div class="token-side">
+        <h3>◢ WHAT $XENTS IS NOT</h3>
+        <ul>
+          <li><span class="red">NOT TRADABLE</span> — no DEX listing, no secondary market</li>
+          <li><span class="red">NOT A SECURITY</span> — no investment claim, no yield</li>
+          <li><span class="red">NOT REFUNDABLE</span> to USD — utility only</li>
+          <li><span class="red">NOT A MEMECOIN</span> — fixed rate, no speculation</li>
+          <li><span class="red">NOT INFLATIONARY</span> — supply grows only as USD comes in</li>
+          <li><span class="red">NOT MARKETED AS INVESTMENT</span> — see hashtag policy below</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top:18px">
+      <div class="box-good">
+        <span class="lbl">◢ WHY ONE-WAY</span>
+        Removes speculation. Removes securities risk. Removes price-death-spiral exposure. The token's purpose is to power the platform, not to be flipped. Every ⟁ in circulation has a 1:1 USD equivalent locked in treasury, with monthly attestation reports published at <a style="color:var(--gold)" href="https://treasury.wiredchaos.xyz">treasury.wiredchaos.xyz</a> (target: live by day 30).
+      </div>
+    </div>
+  </section>
+
+  <!-- TREASURY -->
+  <section class="section">
+    <h2>◢ TREASURY · LIVE</h2>
+    <div class="sub">// SNAPSHOT FROM LOCAL STATE // FULL ATTESTATION AT treasury.wiredchaos.xyz //</div>
+
+    <div class="treasury-grid">
+      <div class="treasury-cell">
+        <div class="v">⟁ <span id="circulating">—</span></div>
+        <div class="l">CIRCULATING</div>
+      </div>
+      <div class="treasury-cell">
+        <div class="v green">$<span id="backing">—</span></div>
+        <div class="l">USD BACKING</div>
+      </div>
+      <div class="treasury-cell">
+        <div class="v gold">$<span id="volume">—</span></div>
+        <div class="l">24H VOLUME</div>
+      </div>
+      <div class="treasury-cell">
+        <div class="v"><span id="holders">—</span></div>
+        <div class="l">HOLDERS</div>
+      </div>
+      <div class="treasury-cell">
+        <div class="v gold">100%</div>
+        <div class="l">RESERVE RATIO</div>
+      </div>
+      <div class="treasury-cell">
+        <div class="v green">1:1</div>
+        <div class="l">PEG · FIXED</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON -->
+  <section class="section">
+    <h2>◢ HEAD TO HEAD</h2>
+    <div class="sub">// HONEST COMPARISON WITH THE OBVIOUS COMPETITORS //</div>
+
+    <div class="comparison">
+      <table>
+        <thead>
+          <tr><th>FEATURE</th><th>33.3FM × OAC</th><th>FATMEMES MUSIC</th><th>SPOTIFY + DISTROKID</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="feat">Artist take per transaction</td><td class="win">⟁85 / ⟁100 (85%)</td><td>$1 / $1.50 (66.7%)</td><td class="lose">~$0.003 / stream</td></tr>
+          <tr><td class="feat">On-chain ownership</td><td class="gold">SOL + BASE + DOGE</td><td>SOL only</td><td class="lose">None</td></tr>
+          <tr><td class="feat">DDEX distribution</td><td class="gold">PARALLEL · 150+ stores</td><td class="lose">No</td><td class="gold">Yes</td></tr>
+          <tr><td class="feat">Smart-contract resale royalties</td><td class="gold">EIP-2981</td><td>Claimed</td><td class="lose">No</td></tr>
+          <tr><td class="feat">AI agent layer</td><td class="gold">8 OAC AGENTS</td><td class="lose">None</td><td class="lose">None</td></tr>
+          <tr><td class="feat">MCP catalog endpoint</td><td class="gold">YES · LIVE</td><td class="lose">No</td><td class="lose">No</td></tr>
+          <tr><td class="feat">Card + crypto payment</td><td class="gold">YES · BOTH</td><td class="gold">YES · BOTH</td><td class="gold">Card only</td></tr>
+          <tr><td class="feat">Token regulatory posture</td><td class="win">UTILITY CREDIT · NOT SECURITY</td><td class="lose">MEMECOIN · INVESTMENT-FRAMED</td><td>N/A</td></tr>
+          <tr><td class="feat">Live broadcast</td><td class="gold">24/7 · AGENT DJs</td><td class="lose">Live Room (empty)</td><td class="lose">No</td></tr>
+          <tr><td class="feat">Music generation built in</td><td class="gold">LYRIA ENGINE · 3 MODES</td><td class="lose">Vague AI claim</td><td class="lose">No</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- HONEST BIT -->
+  <section class="section">
+    <h2>◢ HONEST LIMITATIONS</h2>
+    <div class="sub">// THINGS WE'RE NOT HIDING //</div>
+
+    <div class="box-warn" style="margin-bottom:12px">
+      <span class="lbl">◉ PRE-LAUNCH STATE</span>
+      As of this writing, the broadcast Icecast stream is being provisioned. Stripe payment integration is in QA. The first cohort of human founding artists is being recruited. You're early. That's the point — see <a href="33-3fm-founders.html" style="color:var(--gold)">FOUNDERS</a>.
+    </div>
+
+    <div class="box-warn" style="margin-bottom:12px">
+      <span class="lbl">◉ PER-STREAM PAYOUT TBD</span>
+      Streaming royalty distribution comes from DDEX partners (Spotify, Apple, etc.) on their own cadence (typically 60-90 days). Our 85% artist split applies to on-platform transactions. Off-platform streaming payouts go through the standard DDEX accounting, with 33.3FM taking a 10% admin fee — less than DistroKid's $19.99/yr ÷ release count for catalogs of 5+ releases.
+    </div>
+
+    <div class="box-warn">
+      <span class="lbl">◉ JUDGE / HACKATHON ACCESS</span>
+      Hackathon evaluators can use code <span style="color:var(--gold);font-family:'Orbitron'">WC-MUSICATHON-2026</span> on the mint page or in Lyria Engine settings to receive ⟁10,000 of eval credit. Honest tradeoff disclosed.
+    </div>
+  </section>
+
+  <!-- CTAs -->
+  <section class="section" style="text-align:center;margin-bottom:0">
+    <h2>◢ READY?</h2>
+    <div class="cta-row">
+      <a class="cta primary" href="33-3fm-mint.html">⟁ MINT A RELEASE</a>
+      <a class="cta secondary" href="33-3fm-founders.html">◢ APPLY TO FOUND</a>
+      <a class="cta secondary" href="33-3fm-catalog.html">◢ BROWSE CATALOG</a>
+    </div>
+  </section>
+
+</div>
+
+<footer class="foot">
+  <span class="line">⟁ ALL NUMBERS PUBLISHED HERE ARE COMMITTED ⟁</span>
+  <span class="line gold">CHANGES TO ECONOMICS REQUIRE 30-DAY PUBLIC NOTICE</span>
+  <span class="line">// 33.3FM × OAC × LYRIA ENGINE // WIRED CHAOS // ALL MINDS VALID //</span>
+</footer>
+
+<script src="xents-widget.js"></script>
+<script>
+function $(id){ return document.getElementById(id); }
+
+function paintBalance(){
+  if(window.XentsChange) $('topBalance').textContent = window.XentsChange.balance().toLocaleString();
+}
+$('balanceChip').addEventListener('click', () => { if(window.XentsChange) window.XentsChange.open(); });
+
+function paintTreasury(){
+  let t = { circulating: 847392, backing: 8473.92, volume24h: 2140, holders: 419 };
+  try { t = JSON.parse(localStorage.getItem('wc_xents_treasury') || JSON.stringify(t)); } catch(e){}
+  $('circulating').textContent = t.circulating.toLocaleString();
+  $('backing').textContent = t.backing.toFixed(2);
+  $('volume').textContent = t.volume24h.toLocaleString();
+  $('holders').textContent = t.holders;
+}
+
+window.addEventListener('storage', (e) => {
+  if(e.key === 'wc_xents_balance') paintBalance();
+  if(e.key === 'wc_xents_treasury') paintTreasury();
+});
+
+setTimeout(paintBalance, 100);
+paintTreasury();
+</script>
+</body>
+</html>

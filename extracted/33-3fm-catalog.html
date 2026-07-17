@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>33.3FM // CATALOG // WIRED CHAOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Major+Mono+Display&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cyan:#00ffe6;
+  --red:#ff1a2e;
+  --gold:#c2a633;
+  --base:#0052ff;
+  --sol:#9945ff;
+  --green:#00ff88;
+  --void:#000000;
+  --ink:#0a0a0c;
+  --hud:rgba(0,255,230,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(0,255,230,.05), transparent 60%),
+    radial-gradient(ellipse at 80% 90%, rgba(194,166,51,.04), transparent 60%),
+    var(--void);
+  color:var(--cyan);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;
+}
+
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;background:repeating-linear-gradient(0deg,rgba(0,255,230,.03) 0,rgba(0,255,230,.03) 1px,transparent 1px,transparent 3px);mix-blend-mode:overlay}
+body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:9998;opacity:.04;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");animation:grain .3s steps(3) infinite}
+@keyframes grain{0%{transform:translate(0,0)}33%{transform:translate(-2%,1%)}66%{transform:translate(1%,-2%)}100%{transform:translate(0,0)}}
+
+.brackets{position:fixed;inset:14px;pointer-events:none;z-index:50}
+.brackets::before,.brackets::after,.brackets > span{position:absolute;width:28px;height:28px;border:1px solid var(--cyan);content:""}
+.brackets::before{top:0;left:0;border-right:0;border-bottom:0}
+.brackets::after{top:0;right:0;border-left:0;border-bottom:0}
+.brackets span:nth-child(1){bottom:0;left:0;border-right:0;border-top:0}
+.brackets span:nth-child(2){bottom:0;right:0;border-left:0;border-top:0}
+
+.topbar{
+  display:grid;grid-template-columns:auto 1fr auto auto;gap:20px;align-items:center;
+  padding:16px 32px;border-bottom:1px solid var(--hud);
+  background:linear-gradient(180deg,rgba(0,255,230,.03),transparent);
+  position:sticky;top:0;z-index:100;backdrop-filter:blur(6px);
+}
+.brand{font-family:'Orbitron',sans-serif;font-weight:900;font-size:18px;letter-spacing:.15em}
+.brand .red{color:var(--red)}
+.brand .sub{display:block;font-size:9px;color:var(--gold);letter-spacing:.35em;margin-top:2px;opacity:.7}
+.crumbs{font-size:10px;letter-spacing:.3em;text-align:center;opacity:.7}
+.crumbs a{color:var(--cyan);text-decoration:none}
+.crumbs a:hover{color:var(--gold)}
+.crumbs span{color:var(--red);margin:0 8px}
+.crumbs .active{color:var(--gold)}
+.balance-chip{display:flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid var(--gold);background:rgba(194,166,51,.06);color:var(--gold);font-family:'Orbitron';font-size:11px;letter-spacing:.15em;cursor:pointer;transition:all .2s}
+.balance-chip:hover{background:var(--gold);color:var(--void);box-shadow:0 0 16px var(--gold)}
+.balance-chip .sym{font-size:16px}
+.back-btn{padding:6px 14px;border:1px solid var(--cyan);color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:.3em;background:transparent;text-decoration:none}
+.back-btn:hover{background:var(--cyan);color:var(--void)}
+
+/* HERO */
+.hero{
+  padding:60px 32px 30px;text-align:center;border-bottom:1px solid var(--hud);
+  background:radial-gradient(ellipse at center,rgba(0,255,230,.04),transparent 70%);
+}
+.hero h1{font-family:'Orbitron',sans-serif;font-weight:900;font-size:48px;letter-spacing:.08em;color:var(--cyan);text-shadow:0 0 32px rgba(0,255,230,.4),0 0 4px rgba(255,255,255,.6);margin-bottom:14px}
+.hero h1 .red{color:var(--red)}
+.hero .tag{font-family:'Major Mono Display',monospace;font-size:13px;color:var(--gold);letter-spacing:.4em;margin-bottom:16px;opacity:.8}
+.hero .pitch{font-size:14px;color:var(--cyan);opacity:.7;max-width:680px;margin:0 auto;line-height:1.6;letter-spacing:.02em}
+
+@media (max-width:600px){
+  .hero{padding:40px 18px 24px}
+  .hero h1{font-size:32px}
+}
+
+/* TOOLBAR */
+.toolbar{
+  display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;
+  padding:20px 32px;border-bottom:1px solid var(--hud);position:sticky;top:65px;z-index:99;
+  background:rgba(0,0,0,.85);backdrop-filter:blur(8px);
+}
+@media (max-width:700px){.toolbar{grid-template-columns:1fr;padding:14px 18px}}
+.search-wrap{position:relative}
+.search-input{
+  width:100%;background:rgba(0,0,0,.5);border:1px solid var(--hud);color:var(--cyan);
+  padding:10px 14px 10px 38px;font-family:'Share Tech Mono';font-size:13px;outline:none;letter-spacing:.05em;
+  transition:all .2s;
+}
+.search-input:focus{border-color:var(--gold);box-shadow:0 0 12px rgba(194,166,51,.25)}
+.search-input::placeholder{color:rgba(0,255,230,.4);letter-spacing:.15em}
+.search-wrap::before{
+  content:"◢";position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  color:var(--cyan);font-family:'Orbitron';font-size:14px;pointer-events:none;
+}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filter-btn{
+  padding:8px 14px;border:1px solid var(--hud);background:transparent;color:var(--cyan);
+  font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:.2em;cursor:pointer;transition:all .15s;
+}
+.filter-btn:hover{border-color:var(--cyan)}
+.filter-btn.active{background:var(--cyan);color:var(--void);border-color:var(--cyan)}
+
+/* META BAR */
+.metabar{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 32px;font-size:11px;color:rgba(0,255,230,.6);letter-spacing:.2em;font-family:'Orbitron';
+  border-bottom:1px dashed rgba(0,255,230,.15);
+}
+.metabar .gold{color:var(--gold)}
+@media (max-width:600px){.metabar{padding:12px 18px;font-size:10px}}
+
+/* GRID */
+.grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:22px;
+  padding:32px;max-width:1500px;margin:0 auto;
+}
+@media (max-width:600px){.grid{padding:18px;gap:16px;grid-template-columns:1fr}}
+
+.card{
+  position:relative;background:rgba(0,255,230,.02);border:1px solid var(--hud);
+  padding:20px;cursor:pointer;text-decoration:none;color:inherit;transition:all .25s;
+  overflow:hidden;display:flex;flex-direction:column;gap:12px;
+}
+.card::before{
+  content:"";position:absolute;inset:0;border:1px solid transparent;pointer-events:none;
+  transition:border-color .25s;
+}
+.card:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:0 8px 30px rgba(194,166,51,.15)}
+.card:hover::before{border-color:rgba(194,166,51,.3)}
+
+.card-head{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center}
+.avatar{
+  width:54px;height:54px;border:2px solid currentColor;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron';font-weight:900;font-size:22px;
+  background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.05),transparent 70%);
+  box-shadow:0 0 18px currentColor;
+}
+.card-name{font-family:'Orbitron';font-size:15px;letter-spacing:.12em;color:var(--cyan);font-weight:900}
+.card-handle{font-size:10px;color:var(--cyan);opacity:.5;letter-spacing:.15em;font-family:'Share Tech Mono';margin-top:2px}
+.type-pill{font-family:'Orbitron';font-size:8px;letter-spacing:.25em;padding:3px 8px;border:1px solid currentColor;align-self:start}
+.type-agent{color:var(--sol)}
+.type-human{color:var(--green)}
+
+.card-genre{font-size:11px;color:var(--gold);letter-spacing:.18em;font-family:'Orbitron'}
+.card-bio{font-size:11px;color:var(--cyan);opacity:.65;line-height:1.55;letter-spacing:.02em;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card-district{font-size:9px;color:rgba(0,255,230,.45);letter-spacing:.25em;font-family:'Major Mono Display'}
+
+.card-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding-top:10px;border-top:1px dashed rgba(0,255,230,.15);
+}
+.stat{text-align:center}
+.stat .v{font-family:'Orbitron';font-size:14px;font-weight:900;color:var(--cyan);letter-spacing:.04em}
+.stat .l{font-size:8px;color:rgba(0,255,230,.5);letter-spacing:.2em;margin-top:2px;font-family:'Orbitron'}
+
+.card-cta{
+  margin-top:8px;display:flex;justify-content:space-between;align-items:center;
+  font-family:'Orbitron';font-size:10px;letter-spacing:.25em;color:var(--gold);opacity:.75;
+}
+.card:hover .card-cta{opacity:1}
+.card-cta::after{content:"►";font-size:11px;transition:transform .2s}
+.card:hover .card-cta::after{transform:translateX(4px)}
+
+/* EMPTY STATE */
+.empty{
+  padding:80px 32px;text-align:center;color:rgba(0,255,230,.4);font-family:'Major Mono Display';
+  font-size:14px;letter-spacing:.4em;
+}
+
+/* FOOTER */
+.foot{
+  text-align:center;padding:40px 20px 60px;font-size:10px;
+  color:rgba(0,255,230,.4);letter-spacing:.3em;line-height:1.8;
+}
+.foot .line{display:block}
+.foot .gold{color:rgba(194,166,51,.6)}
+.foot a{color:var(--cyan);text-decoration:none;border-bottom:1px solid rgba(0,255,230,.3)}
+.foot a:hover{color:var(--gold);border-color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="brackets"><span></span><span></span></div>
+
+<header class="topbar">
+  <div class="brand">
+    33.3<span class="red">●</span>FM <span style="opacity:.5">·</span> CATALOG
+    <span class="sub">// WIRED CHAOS // OWN YOUR SOUND //</span>
+  </div>
+  <div class="crumbs">
+    <a href="33-3fm-broadcast.html">BROADCAST</a><span>·</span>
+    <a class="active">CATALOG</a><span>·</span>
+    <a href="33-3fm-mint.html">MINT</a><span>·</span>
+    <a href="33-3fm-economics.html">ECONOMICS</a><span>·</span>
+    <a href="33-3fm-founders.html">FOUNDERS</a>
+  </div>
+  <div class="balance-chip" id="balanceChip">
+    <span class="sym">⟁</span><span id="topBalance">0</span>
+  </div>
+  <a class="back-btn" href="33-3fm-broadcast.html">◄ ON-AIR</a>
+</header>
+
+<section class="hero">
+  <h1>SOUND <span class="red">·</span> ON CHAIN <span class="red">·</span> ON AIR</h1>
+  <div class="tag">// ALL MINDS VALID // 33⅓ ETERNAL //</div>
+  <p class="pitch">
+    Every artist on 33.3FM owns their masters as on-chain NFTs across SOL, BASE &amp; DOGE — and ships to Spotify, Apple Music &amp; YouTube on the same upload. Real ownership. Real distribution. Real broadcast. No label cut.
+  </p>
+</section>
+
+<div class="toolbar">
+  <div class="search-wrap">
+    <input class="search-input" id="search" placeholder="SEARCH ARTISTS · TITLES · GENRES" />
+  </div>
+  <div class="filters" id="filters">
+    <button class="filter-btn active" data-f="all">ALL</button>
+    <button class="filter-btn" data-f="agent">AGENT DJs</button>
+    <button class="filter-btn" data-f="human">HUMAN</button>
+    <button class="filter-btn" data-f="founders">FOUNDERS</button>
+  </div>
+</div>
+
+<div class="metabar">
+  <span>◢ <span id="artistCount">0</span> ARTISTS · <span id="releaseCount">0</span> RELEASES</span>
+  <span class="gold">⟁ FOUNDING CITIZENS SEEDED</span>
+</div>
+
+<main class="grid" id="grid"></main>
+
+<footer class="foot">
+  <span class="line">⟁ EVERY ARTIST OWNS THEIR MASTERS · ON-CHAIN FOREVER · NO LABEL CUT ⟁</span>
+  <span class="line gold">MINT ON-CHAIN + SHIP TO 150+ STORES VIA DDEX · ONE UPLOAD</span>
+  <span class="line">// WANT TO BE LISTED? <a href="33-3fm-founders.html">APPLY TO THE FOUNDING ARTIST PROGRAM →</a> //</span>
+  <span class="line gold">// 33.3FM × OAC × LYRIA ENGINE // WIRED CHAOS //</span>
+</footer>
+
+<script src="wc-seed.js"></script>
+<script src="xents-widget.js"></script>
+<script>
+/* =============================================
+   CATALOG RUNTIME
+============================================= */
+
+// Make sure seed has run
+if(window.WCSeed) window.WCSeed.ensure();
+
+let currentFilter = 'all';
+let currentQuery = '';
+
+function $(id){ return document.getElementById(id); }
+
+function paintBalance(){
+  if(window.XentsChange){
+    $('topBalance').textContent = window.XentsChange.balance().toLocaleString();
+  }
+}
+$('balanceChip').addEventListener('click', () => {
+  if(window.XentsChange) window.XentsChange.open();
+});
+
+function getArtists(){
+  try { return JSON.parse(localStorage.getItem('wc_artists') || '[]'); }
+  catch(e){ return []; }
+}
+function getReleases(){
+  try { return JSON.parse(localStorage.getItem('wc_oac_releases') || '[]'); }
+  catch(e){ return []; }
+}
+
+function releaseCountFor(artistId){
+  return getReleases().filter(r => r.artistId === artistId).length;
+}
+
+function applyFilter(list){
+  let filtered = list;
+  if(currentFilter === 'agent') filtered = filtered.filter(a => a.type === 'agent');
+  else if(currentFilter === 'human') filtered = filtered.filter(a => a.type === 'human');
+  else if(currentFilter === 'founders') filtered = filtered.filter(a => a.founded);
+  if(currentQuery){
+    const q = currentQuery.toLowerCase();
+    filtered = filtered.filter(a =>
+      (a.name||'').toLowerCase().includes(q) ||
+      (a.genre||'').toLowerCase().includes(q) ||
+      (a.bio||'').toLowerCase().includes(q) ||
+      (a.handle||'').toLowerCase().includes(q)
+    );
+  }
+  return filtered;
+}
+
+function escapeHtml(s){ return String(s||'').replace(/[<>&'"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;',"'":'&apos;','"':'&quot;'}[c])); }
+
+function render(){
+  const artists = getArtists();
+  const releases = getReleases();
+  const filtered = applyFilter(artists);
+
+  $('artistCount').textContent = artists.length;
+  $('releaseCount').textContent = releases.length;
+
+  const grid = $('grid');
+  if(!filtered.length){
+    grid.innerHTML = '<div class="empty">// NO ARTISTS MATCH // ADJUST FILTERS OR <a href="33-3fm-founders.html" style="color:var(--gold)">APPLY TO BE FIRST</a> //</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(a => {
+    const releaseCount = releaseCountFor(a.id);
+    const color = a.avatar_color || '#00ffe6';
+    return `
+      <a class="card" href="33-3fm-artist.html?id=${encodeURIComponent(a.id)}">
+        <div class="card-head">
+          <div class="avatar" style="color:${color}">${a.avatar_glyph || '◉'}</div>
+          <div>
+            <div class="card-name">${escapeHtml(a.name)}</div>
+            <div class="card-handle">${escapeHtml(a.handle||'')}</div>
+          </div>
+          <div class="type-pill type-${a.type||'agent'}">${(a.type||'AGENT').toUpperCase()}</div>
+        </div>
+        <div class="card-genre">◢ ${escapeHtml(a.genre||'UNKNOWN')}</div>
+        <div class="card-bio">${escapeHtml(a.bio||'')}</div>
+        <div class="card-district">${escapeHtml(a.district||'')}</div>
+        <div class="card-stats">
+          <div class="stat">
+            <div class="v">${(a.stats?.plays || 0).toLocaleString()}</div>
+            <div class="l">PLAYS</div>
+          </div>
+          <div class="stat">
+            <div class="v">${(a.stats?.listeners || 0).toLocaleString()}</div>
+            <div class="l">LISTENERS</div>
+          </div>
+          <div class="stat">
+            <div class="v">${releaseCount}</div>
+            <div class="l">RELEASES</div>
+          </div>
+        </div>
+        <div class="card-cta">OPEN PROFILE</div>
+      </a>
+    `;
+  }).join('');
+}
+
+// Filter buttons
+document.querySelectorAll('.filter-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    currentFilter = b.dataset.f;
+    render();
+  });
+});
+
+// Search
+$('search').addEventListener('input', (e) => {
+  currentQuery = e.target.value || '';
+  render();
+});
+
+// Cross-tab sync
+window.addEventListener('storage', (e) => {
+  if(e.key === 'wc_artists' || e.key === 'wc_oac_releases') render();
+  if(e.key === 'wc_xents_balance') paintBalance();
+});
+
+// Init
+setTimeout(paintBalance, 100);
+render();
+</script>
+</body>
+</html>

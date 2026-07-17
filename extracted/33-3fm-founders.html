@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>33.3FM // FOUNDING ARTISTS // WIRED CHAOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=VT323&family=Major+Mono+Display&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cyan:#00ffe6; --red:#ff1a2e; --gold:#c2a633;
+  --base:#0052ff; --sol:#9945ff; --green:#00ff88;
+  --void:#000000; --ink:#0a0a0c; --hud:rgba(0,255,230,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(194,166,51,.07), transparent 60%),
+    radial-gradient(ellipse at 50% 100%, rgba(255,26,46,.04), transparent 60%),
+    var(--void);
+  color:var(--cyan);font-family:'Share Tech Mono',monospace;min-height:100vh;
+}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;background:repeating-linear-gradient(0deg,rgba(0,255,230,.03) 0,rgba(0,255,230,.03) 1px,transparent 1px,transparent 3px);mix-blend-mode:overlay}
+
+.brackets{position:fixed;inset:14px;pointer-events:none;z-index:50}
+.brackets::before,.brackets::after,.brackets > span{position:absolute;width:28px;height:28px;border:1px solid var(--cyan);content:""}
+.brackets::before{top:0;left:0;border-right:0;border-bottom:0}
+.brackets::after{top:0;right:0;border-left:0;border-bottom:0}
+.brackets span:nth-child(1){bottom:0;left:0;border-right:0;border-top:0}
+.brackets span:nth-child(2){bottom:0;right:0;border-left:0;border-top:0}
+
+.topbar{display:grid;grid-template-columns:auto 1fr auto auto;gap:20px;align-items:center;padding:16px 32px;border-bottom:1px solid var(--hud);background:linear-gradient(180deg,rgba(194,166,51,.04),transparent);position:sticky;top:0;z-index:100;backdrop-filter:blur(6px)}
+.brand{font-family:'Orbitron',sans-serif;font-weight:900;font-size:18px;letter-spacing:.15em}
+.brand .red{color:var(--red)}
+.brand .sub{display:block;font-size:9px;color:var(--gold);letter-spacing:.35em;margin-top:2px;opacity:.7}
+.crumbs{font-size:10px;letter-spacing:.3em;text-align:center;opacity:.7}
+.crumbs a{color:var(--cyan);text-decoration:none}
+.crumbs a:hover{color:var(--gold)}
+.crumbs span{color:var(--red);margin:0 8px}
+.crumbs .active{color:var(--gold)}
+.balance-chip{display:flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid var(--gold);background:rgba(194,166,51,.06);color:var(--gold);font-family:'Orbitron';font-size:11px;letter-spacing:.15em;cursor:pointer}
+.balance-chip:hover{background:var(--gold);color:var(--void);box-shadow:0 0 16px var(--gold)}
+.back-btn{padding:6px 14px;border:1px solid var(--cyan);color:var(--cyan);font-family:'Orbitron';font-size:10px;letter-spacing:.3em;background:transparent;text-decoration:none}
+.back-btn:hover{background:var(--cyan);color:var(--void)}
+
+/* HERO */
+.hero{padding:70px 32px 50px;text-align:center;border-bottom:1px solid var(--hud);position:relative;overflow:hidden}
+.hero::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse at center,rgba(194,166,51,.08),transparent 60%);
+  pointer-events:none;
+}
+.hero h1{font-family:'Orbitron';font-weight:900;font-size:56px;letter-spacing:.06em;color:var(--gold);text-shadow:0 0 40px rgba(194,166,51,.6),0 0 4px rgba(255,255,255,.7);margin-bottom:18px;line-height:1.05;position:relative;z-index:1}
+.hero h1 .red{color:var(--red)}
+.hero h1 .cyan{color:var(--cyan)}
+.hero .tag{font-family:'Major Mono Display';font-size:13px;color:var(--cyan);letter-spacing:.4em;margin-bottom:22px;opacity:.85;position:relative;z-index:1}
+.hero .pitch{font-size:15px;color:var(--cyan);opacity:.85;max-width:760px;margin:0 auto;line-height:1.7;letter-spacing:.02em;position:relative;z-index:1}
+.hero .pitch .gold{color:var(--gold);font-weight:bold}
+.hero .pitch .green{color:var(--green);font-weight:bold}
+.hero .seats{margin-top:24px;display:inline-block;padding:8px 18px;border:2px solid var(--red);color:var(--red);font-family:'Orbitron';font-size:11px;letter-spacing:.25em;animation:pulse 2s ease-in-out infinite;position:relative;z-index:1}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,26,46,.3)}50%{box-shadow:0 0 24px 4px rgba(255,26,46,.4)}}
+
+@media (max-width:600px){.hero{padding:40px 18px 32px}.hero h1{font-size:32px}}
+
+/* WRAP */
+.wrap{max-width:1100px;margin:0 auto;padding:48px 32px}
+@media (max-width:600px){.wrap{padding:28px 18px}}
+
+.section{margin-bottom:48px}
+.section h2{font-family:'Orbitron';font-weight:900;font-size:22px;letter-spacing:.15em;color:var(--cyan);margin-bottom:8px;text-shadow:0 0 14px rgba(0,255,230,.3)}
+.section .sub{font-size:12px;color:rgba(0,255,230,.6);letter-spacing:.18em;margin-bottom:24px;font-family:'Orbitron'}
+
+/* DEAL GRID */
+.deal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.deal-card{
+  position:relative;padding:24px;border:1px solid var(--hud);background:rgba(0,0,0,.4);
+  transition:all .25s;display:flex;flex-direction:column;gap:10px;
+}
+.deal-card::before{
+  content:attr(data-num);position:absolute;top:14px;right:14px;
+  font-family:'Orbitron';font-weight:900;font-size:36px;color:rgba(194,166,51,.15);letter-spacing:0;line-height:1;
+}
+.deal-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 30px rgba(194,166,51,.12)}
+.deal-card .glyph{font-family:'Orbitron';font-weight:900;font-size:28px;color:var(--gold);text-shadow:0 0 18px rgba(194,166,51,.4);line-height:1;margin-bottom:4px}
+.deal-card .name{font-family:'Orbitron';font-weight:900;font-size:14px;letter-spacing:.15em;color:var(--cyan)}
+.deal-card .value{font-family:'Orbitron';font-size:18px;color:var(--gold);letter-spacing:.04em;font-weight:900}
+.deal-card .desc{font-size:11px;color:var(--cyan);opacity:.75;line-height:1.6;letter-spacing:.02em;margin-top:auto;padding-top:6px}
+
+/* TRUE COST */
+.cost-card{
+  padding:24px;border:2px dashed var(--gold);background:rgba(194,166,51,.04);
+  display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;
+}
+@media (max-width:600px){.cost-card{grid-template-columns:1fr;text-align:center}}
+.cost-card .left .lbl{font-family:'Orbitron';font-size:11px;letter-spacing:.3em;color:var(--gold);margin-bottom:8px}
+.cost-card .left .head{font-family:'Orbitron';font-weight:900;font-size:22px;color:var(--cyan);letter-spacing:.06em;margin-bottom:10px}
+.cost-card .left .body{font-size:13px;color:var(--cyan);opacity:.75;line-height:1.6}
+.cost-card .right{font-family:'Orbitron';font-weight:900;font-size:64px;color:var(--green);text-shadow:0 0 30px rgba(0,255,136,.4);line-height:1}
+.cost-card .right .usd{font-size:14px;color:var(--cyan);opacity:.6;letter-spacing:.2em;margin-top:4px;font-family:'Share Tech Mono'}
+
+/* WHO WE WANT / WHO WE DONT */
+.who-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:700px){.who-grid{grid-template-columns:1fr}}
+.who-card{padding:22px;border:1px solid var(--hud);background:rgba(0,0,0,.4)}
+.who-card.want{border-color:var(--green)}
+.who-card.skip{border-color:var(--red)}
+.who-card h3{font-family:'Orbitron';font-size:13px;letter-spacing:.2em;margin-bottom:14px;padding-bottom:8px;border-bottom:1px dashed rgba(255,255,255,.1)}
+.who-card.want h3{color:var(--green)}
+.who-card.skip h3{color:var(--red)}
+.who-card ul{list-style:none;padding:0;font-size:12px;line-height:1.9;color:var(--cyan);opacity:.85}
+.who-card li{padding:6px 0;letter-spacing:.02em}
+.who-card.want li::before{content:"✓ ";color:var(--green);font-weight:900;margin-right:6px}
+.who-card.skip li::before{content:"✕ ";color:var(--red);font-weight:900;margin-right:6px}
+
+/* APPLICATION FORM */
+.form-panel{
+  position:relative;padding:32px;border:2px solid var(--gold);background:rgba(0,0,0,.5);
+  box-shadow:0 0 40px rgba(194,166,51,.15);
+}
+.form-panel::before{content:"◉ FOUNDING ARTIST APPLICATION";position:absolute;top:-12px;left:24px;background:var(--void);padding:0 12px;font-size:11px;letter-spacing:.35em;color:var(--gold);font-family:'Orbitron'}
+
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.row.full{grid-template-columns:1fr}
+@media (max-width:600px){.row{grid-template-columns:1fr}}
+
+label{display:block;font-size:10px;letter-spacing:.25em;color:var(--cyan);opacity:.7;margin-bottom:6px;font-family:'Orbitron'}
+label .req{color:var(--red)}
+input,select,textarea{
+  width:100%;background:rgba(0,0,0,.6);border:1px solid var(--hud);color:var(--cyan);
+  padding:10px 12px;font-family:'Share Tech Mono';font-size:13px;outline:none;transition:all .2s;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 12px rgba(194,166,51,.25)}
+textarea{min-height:90px;resize:vertical;line-height:1.5}
+
+.toggle-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:14px}
+.toggle{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--hud);background:rgba(0,0,0,.4);cursor:pointer;transition:all .15s}
+.toggle:hover{border-color:var(--cyan)}
+.toggle.on{border-color:var(--green);background:rgba(0,255,136,.06)}
+.toggle .box{width:16px;height:16px;border:2px solid var(--cyan);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--green);font-weight:900;font-size:12px}
+.toggle.on .box{border-color:var(--green);background:var(--green);color:#000}
+.toggle .box::after{content:"✓";display:none}
+.toggle.on .box::after{display:block}
+.toggle .label-txt{font-family:'Orbitron';font-size:10px;letter-spacing:.15em;color:var(--cyan)}
+.toggle.on .label-txt{color:var(--green)}
+
+.submit-btn{
+  width:100%;padding:18px;margin-top:18px;
+  background:linear-gradient(180deg,var(--gold) 0%,#7a6a20 100%);
+  border:2px solid var(--gold);color:#000;
+  font-family:'Orbitron';font-size:14px;font-weight:900;letter-spacing:.3em;cursor:pointer;
+  text-shadow:0 1px 0 rgba(255,255,255,.3);
+  box-shadow:0 0 24px rgba(194,166,51,.4),inset 0 2px 0 rgba(255,255,255,.3),inset 0 -3px 0 rgba(0,0,0,.3);
+  transition:all .15s;
+}
+.submit-btn:hover{box-shadow:0 0 36px rgba(194,166,51,.7),inset 0 2px 0 rgba(255,255,255,.3),inset 0 -3px 0 rgba(0,0,0,.3)}
+.submit-btn:active{transform:translateY(2px)}
+.submit-btn:disabled{background:#3a3a3a;border-color:#3a3a3a;color:#666;cursor:not-allowed;box-shadow:none;text-shadow:none}
+
+/* SUCCESS STATE */
+.success{
+  text-align:center;padding:50px 30px;border:2px solid var(--green);background:rgba(0,255,136,.04);
+}
+.success .glyph{font-size:60px;color:var(--green);margin-bottom:14px;text-shadow:0 0 30px rgba(0,255,136,.5)}
+.success h2{font-family:'Orbitron';font-size:24px;letter-spacing:.15em;color:var(--green);margin-bottom:12px}
+.success p{font-size:13px;color:var(--cyan);opacity:.85;line-height:1.7;letter-spacing:.02em;max-width:520px;margin:0 auto 24px}
+.success .id{font-family:'VT323',monospace;font-size:22px;color:var(--gold);letter-spacing:.1em;padding:10px 18px;border:1px dashed var(--gold);display:inline-block;margin-bottom:24px}
+
+.toast{position:fixed;bottom:30px;right:30px;padding:14px 22px;background:var(--void);border:1px solid var(--gold);color:var(--gold);font-family:'Orbitron';font-size:11px;letter-spacing:.25em;z-index:9999;transform:translateY(100px);opacity:0;transition:all .3s;box-shadow:0 0 30px rgba(194,166,51,.3)}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.win{border-color:var(--green);color:var(--green)}
+.toast.err{border-color:var(--red);color:var(--red)}
+
+.foot{text-align:center;padding:40px 20px;font-size:10px;color:rgba(0,255,230,.4);letter-spacing:.3em;line-height:1.8;border-top:1px solid rgba(0,255,230,.1);margin-top:30px}
+.foot .line{display:block}
+.foot .gold{color:rgba(194,166,51,.6)}
+</style>
+</head>
+<body>
+<div class="brackets"><span></span><span></span></div>
+
+<header class="topbar">
+  <div class="brand">33.3<span class="red">●</span>FM · FOUNDERS<span class="sub">// FIRST 50 ARTISTS · LIFETIME DEAL //</span></div>
+  <div class="crumbs">
+    <a href="33-3fm-broadcast.html">BROADCAST</a><span>·</span>
+    <a href="33-3fm-catalog.html">CATALOG</a><span>·</span>
+    <a href="33-3fm-mint.html">MINT</a><span>·</span>
+    <a href="33-3fm-economics.html">ECONOMICS</a><span>·</span>
+    <a class="active">FOUNDERS</a>
+  </div>
+  <div class="balance-chip" id="balanceChip">
+    <span style="font-size:16px">⟁</span><span id="topBalance">0</span>
+  </div>
+  <a class="back-btn" href="33-3fm-broadcast.html">◄ ON-AIR</a>
+</header>
+
+<section class="hero">
+  <h1>BE ARTIST <span class="red">#</span><span class="cyan">001-050</span></h1>
+  <div class="tag">// FOUNDING ARTIST PROGRAM // LIFETIME TERMS //</div>
+  <p class="pitch">
+    The first 50 human artists on 33.3FM get a deal no platform will ever match. <span class="gold">Free first 5 mints. 90/10 split for life. Guaranteed broadcast rotation. Cofounder NFT. Direct line to NEURO.</span> When we onboard artist #51, this deal closes forever. <span class="green">There is no version of this where it gets cheaper later.</span>
+  </p>
+  <div class="seats">◢ <span id="seatsLeft">50</span> / 50 FOUNDING SEATS REMAINING</div>
+</section>
+
+<div class="wrap">
+
+  <!-- THE DEAL -->
+  <section class="section">
+    <h2>◢ THE DEAL</h2>
+    <div class="sub">// SIX THINGS YOU GET FOR LIFE //</div>
+
+    <div class="deal-grid">
+      <div class="deal-card" data-num="01">
+        <div class="glyph">⟁</div>
+        <div class="name">FREE FIRST 5 MINTS</div>
+        <div class="value">⟁ 25,000 WAIVED</div>
+        <div class="desc">Your first five OAC releases mint for free — no ⟁5,000 fee, no payment rail required. Get your catalog on-chain across SOL + BASE + DOGE without spending a dollar.</div>
+      </div>
+
+      <div class="deal-card" data-num="02">
+        <div class="glyph">◆</div>
+        <div class="name">90/10 SPLIT FOR LIFE</div>
+        <div class="value">5% BETTER FOREVER</div>
+        <div class="desc">Founders keep 90% of every on-platform transaction (vs the standard 85%). This applies to all future releases, not just your first five. Compounds across your career.</div>
+      </div>
+
+      <div class="deal-card" data-num="03">
+        <div class="glyph">◉</div>
+        <div class="name">GUARANTEED ROTATION</div>
+        <div class="value">3 SPINS / WEEK MINIMUM</div>
+        <div class="desc">Your tracks go into rotation on at least one DJ show per week, mood-matched. Real broadcast on the 33.3FM Icecast stream — not "discovery mode" playlists.</div>
+      </div>
+
+      <div class="deal-card" data-num="04">
+        <div class="glyph">▣</div>
+        <div class="name">VAULT33 COFOUNDER NFT</div>
+        <div class="value">SOULBOUND · UNIQUE</div>
+        <div class="desc">Non-transferable founder credential. Unlocks all VAULT33 content forever, plus quarterly governance votes on platform policy + economic parameters.</div>
+      </div>
+
+      <div class="deal-card" data-num="05">
+        <div class="glyph">◊</div>
+        <div class="name">DIRECT LINE TO NEURO</div>
+        <div class="value">PERSONAL · 24H RESPONSE</div>
+        <div class="desc">Private Signal/Telegram channel with NEURO (creative director). Bug reports, feature requests, custom DJ shoutouts — handled directly, not through support tickets.</div>
+      </div>
+
+      <div class="deal-card" data-num="06">
+        <div class="glyph">◢</div>
+        <div class="name">CATALOG SPOTLIGHT</div>
+        <div class="value">PERMANENT HALL OF FAME</div>
+        <div class="desc">Your artist page lives on the catalog Hall of Fame indefinitely. Sortable as "FOUNDERS" filter. Permanent badge on profile + every release.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUE COST -->
+  <section class="section">
+    <h2>◢ WHAT IT COSTS YOU</h2>
+    <div class="sub">// HONEST NUMBERS //</div>
+
+    <div class="cost-card">
+      <div class="left">
+        <div class="lbl">YOUR INVESTMENT</div>
+        <div class="head">ZERO DOLLARS</div>
+        <div class="body">No application fee. No setup fee. No mint fees on your first 5 releases. <span style="color:var(--gold)">You need a wallet (we'll help you set one up) and the willingness to be early.</span> That's it.</div>
+      </div>
+      <div class="right">
+        $0
+        <div class="usd">UPFRONT</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO -->
+  <section class="section">
+    <h2>◢ WHO WE'RE LOOKING FOR</h2>
+    <div class="sub">// READ HONESTLY — IF YOU'RE NOT A FIT, DON'T APPLY //</div>
+
+    <div class="who-grid">
+      <div class="who-card want">
+        <h3>◢ STRONG FIT</h3>
+        <ul>
+          <li>Independent / DIY artist with at least 1 released project</li>
+          <li>Operate in: phonk, drill, lo-fi, synthwave, ambient, drone, cyberpunk, hyperpop, industrial, glitch, experimental</li>
+          <li>Comfortable with crypto wallets (or willing to learn fast)</li>
+          <li>500-50,000 monthly listeners on existing platforms</li>
+          <li>Active on social — comfortable being part of a public founders cohort</li>
+          <li>Believe artists should own their masters</li>
+          <li>Want to be early on something weird</li>
+        </ul>
+      </div>
+
+      <div class="who-card skip">
+        <h3>◢ NOT A FIT</h3>
+        <ul>
+          <li>Signed to a major label exclusive deal</li>
+          <li>Looking for a fast cash-out (this is a multi-year build)</li>
+          <li>Want SoundCloud-style discovery (we don't do algorithmic feeds)</li>
+          <li>Country, top-40 pop, mainstream EDM (genres unsupported in our broadcast slots)</li>
+          <li>Won't engage with the community (this is a participation game)</li>
+          <li>Looking for advance payments / streaming guarantees</li>
+          <li>Plan to upload AI-generated tracks claimed as fully human</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPLICATION -->
+  <section class="section">
+    <h2>◢ APPLY</h2>
+    <div class="sub">// 90-SECOND APPLICATION // 72H RESPONSE //</div>
+
+    <div id="formWrap">
+      <div class="form-panel">
+        <div class="row">
+          <div>
+            <label>ARTIST NAME <span class="req">*</span></label>
+            <input id="artistName" placeholder="XENT-K0RE" required>
+          </div>
+          <div>
+            <label>HANDLE / @ <span class="req">*</span></label>
+            <input id="artistHandle" placeholder="@xentkore" required>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>EMAIL <span class="req">*</span></label>
+            <input id="artistEmail" type="email" placeholder="you@domain.com" required>
+          </div>
+          <div>
+            <label>PRIMARY GENRE <span class="req">*</span></label>
+            <select id="artistGenre" required>
+              <option value="">— SELECT —</option>
+              <option>Phonk</option><option>Drill</option><option>Lo-fi Hip Hop</option>
+              <option>Synthwave</option><option>Ambient</option><option>Drone</option>
+              <option>Cyberpunk</option><option>Hyperpop</option><option>Industrial</option>
+              <option>Glitch</option><option>Trap</option><option>Experimental</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>MONTHLY LISTENERS (ESTIMATE)</label>
+            <select id="artistListeners">
+              <option>0-500</option><option>500-2,000</option><option>2,000-10,000</option>
+              <option>10,000-50,000</option><option>50,000-250,000</option><option>250,000+</option>
+            </select>
+          </div>
+          <div>
+            <label>RELEASES PUBLISHED SO FAR</label>
+            <input id="artistReleases" type="number" min="0" placeholder="3">
+          </div>
+        </div>
+
+        <div class="row full">
+          <div>
+            <label>BEST EXISTING TRACK · URL <span class="req">*</span></label>
+            <input id="artistTrack" placeholder="https://soundcloud.com/... or https://open.spotify.com/track/...">
+          </div>
+        </div>
+
+        <div class="row full">
+          <div>
+            <label>WHY 33.3FM? (1-3 SENTENCES) <span class="req">*</span></label>
+            <textarea id="artistWhy" required placeholder="What about this specifically appeals to you? What do you want to do with on-chain ownership that you can't do today?"></textarea>
+          </div>
+        </div>
+
+        <div>
+          <label>YOU'RE INTERESTED IN (CHECK ALL THAT APPLY)</label>
+          <div class="toggle-row">
+            <div class="toggle on" data-int="mint"><span class="box"></span><span class="label-txt">MINTING</span></div>
+            <div class="toggle" data-int="broadcast"><span class="box"></span><span class="label-txt">BEING ON-AIR</span></div>
+            <div class="toggle" data-int="lyria"><span class="box"></span><span class="label-txt">LYRIA TOOLS</span></div>
+            <div class="toggle" data-int="sync"><span class="box"></span><span class="label-txt">SYNC LICENSING</span></div>
+            <div class="toggle" data-int="agent"><span class="box"></span><span class="label-txt">AGENT COLLABS</span></div>
+            <div class="toggle" data-int="vault"><span class="box"></span><span class="label-txt">VAULT33 GATED DROPS</span></div>
+          </div>
+        </div>
+
+        <div class="row full">
+          <div>
+            <label>WALLET ADDRESS (SOL or BASE — OPTIONAL)</label>
+            <input id="artistWallet" placeholder="leave blank if you don't have one yet — we'll help you set up">
+          </div>
+        </div>
+
+        <div class="row full">
+          <div>
+            <label>SOCIAL LINKS (X, INSTAGRAM, TIKTOK — COMMA SEPARATED)</label>
+            <input id="artistSocials" placeholder="x.com/youhandle, instagram.com/youhandle">
+          </div>
+        </div>
+
+        <button class="submit-btn" id="submitBtn">⟁ SUBMIT FOUNDING ARTIST APPLICATION</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="foot">
+  <span class="line">⟁ APPLICATIONS REVIEWED WITHIN 72 HOURS · NO BS · NO GHOSTING ⟁</span>
+  <span class="line gold">FIRST COHORT BUILDS THE PLATFORM ALONGSIDE THE TEAM</span>
+  <span class="line">// 33.3FM × OAC × LYRIA ENGINE // WIRED CHAOS // ALL MINDS VALID //</span>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script src="xents-widget.js"></script>
+<script>
+function $(id){ return document.getElementById(id); }
+
+function paintBalance(){
+  if(window.XentsChange) $('topBalance').textContent = window.XentsChange.balance().toLocaleString();
+}
+$('balanceChip').addEventListener('click', () => { if(window.XentsChange) window.XentsChange.open(); });
+
+function getApplications(){
+  try { return JSON.parse(localStorage.getItem('wc_founder_applications') || '[]'); }
+  catch(e){ return []; }
+}
+
+function updateSeats(){
+  const count = getApplications().length;
+  const left = Math.max(0, 50 - count);
+  $('seatsLeft').textContent = left;
+}
+
+// Wire interest toggles
+document.querySelectorAll('.toggle').forEach(t => {
+  t.addEventListener('click', () => t.classList.toggle('on'));
+});
+
+function getInterests(){
+  return Array.from(document.querySelectorAll('.toggle.on')).map(t => t.dataset.int);
+}
+
+function toast(msg, kind=''){
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + kind;
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+function validate(data){
+  if(!data.name) return 'Artist name required';
+  if(!data.handle) return 'Handle required';
+  if(!data.email || !/^[^@]+@[^@]+\.[^@]+$/.test(data.email)) return 'Valid email required';
+  if(!data.genre) return 'Genre required';
+  if(!data.track) return 'Track URL required';
+  if(!data.why || data.why.length < 20) return 'Tell us why (at least 20 chars)';
+  return null;
+}
+
+$('submitBtn').addEventListener('click', () => {
+  const data = {
+    id: 'app_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,7),
+    name: $('artistName').value.trim(),
+    handle: $('artistHandle').value.trim(),
+    email: $('artistEmail').value.trim(),
+    genre: $('artistGenre').value,
+    listeners: $('artistListeners').value,
+    releases: Number($('artistReleases').value) || 0,
+    track: $('artistTrack').value.trim(),
+    why: $('artistWhy').value.trim(),
+    interests: getInterests(),
+    wallet: $('artistWallet').value.trim(),
+    socials: $('artistSocials').value.trim(),
+    submittedAt: Date.now(),
+    status: 'pending'
+  };
+
+  const err = validate(data);
+  if(err){ toast(err.toUpperCase(), 'err'); return; }
+
+  const apps = getApplications();
+  apps.unshift(data);
+  localStorage.setItem('wc_founder_applications', JSON.stringify(apps.slice(0, 200)));
+
+  // Switch to success state
+  $('formWrap').innerHTML = `
+    <div class="success">
+      <div class="glyph">◉</div>
+      <h2>APPLICATION RECEIVED</h2>
+      <p>Thank you, <strong style="color:var(--gold)">${data.name.replace(/[<>&'"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;',"'":'&apos;','"':'&quot;'}[c]))}</strong>.<br>We'll respond within <strong style="color:var(--gold)">72 hours</strong> at ${data.email.replace(/[<>&'"]/g,'')} with next steps. If approved, you'll get a private onboarding call with NEURO and your founding artist NFT minted to your wallet.</p>
+      <div class="id">REF: ${data.id.toUpperCase()}</div>
+      <p style="font-size:11px;opacity:.6;letter-spacing:.15em">// SAVE THIS REFERENCE ID //<br>// WHILE YOU WAIT — <a style="color:var(--gold)" href="33-3fm-catalog.html">EXPLORE THE CATALOG</a> //</p>
+    </div>
+  `;
+  toast('⟁ APPLICATION SUBMITTED', 'win');
+  updateSeats();
+});
+
+window.addEventListener('storage', (e) => {
+  if(e.key === 'wc_xents_balance') paintBalance();
+  if(e.key === 'wc_founder_applications') updateSeats();
+});
+
+setTimeout(paintBalance, 100);
+updateSeats();
+</script>
+</body>
+</html>

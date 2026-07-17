@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>33.3FM // ARTIST // WIRED CHAOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=VT323&family=Major+Mono+Display&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cyan:#00ffe6; --red:#ff1a2e; --gold:#c2a633;
+  --base:#0052ff; --sol:#9945ff; --green:#00ff88;
+  --void:#000000; --ink:#0a0a0c; --hud:rgba(0,255,230,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  background:
+    radial-gradient(ellipse at 30% 0%, rgba(0,255,230,.05), transparent 60%),
+    radial-gradient(ellipse at 70% 100%, rgba(255,26,46,.04), transparent 60%),
+    var(--void);
+  color:var(--cyan);font-family:'Share Tech Mono',monospace;min-height:100vh;
+}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;background:repeating-linear-gradient(0deg,rgba(0,255,230,.03) 0,rgba(0,255,230,.03) 1px,transparent 1px,transparent 3px);mix-blend-mode:overlay}
+
+.brackets{position:fixed;inset:14px;pointer-events:none;z-index:50}
+.brackets::before,.brackets::after,.brackets > span{position:absolute;width:28px;height:28px;border:1px solid var(--cyan);content:""}
+.brackets::before{top:0;left:0;border-right:0;border-bottom:0}
+.brackets::after{top:0;right:0;border-left:0;border-bottom:0}
+.brackets span:nth-child(1){bottom:0;left:0;border-right:0;border-top:0}
+.brackets span:nth-child(2){bottom:0;right:0;border-left:0;border-top:0}
+
+.topbar{
+  display:grid;grid-template-columns:auto 1fr auto auto;gap:20px;align-items:center;
+  padding:16px 32px;border-bottom:1px solid var(--hud);
+  background:linear-gradient(180deg,rgba(0,255,230,.03),transparent);
+  position:sticky;top:0;z-index:100;backdrop-filter:blur(6px);
+}
+.brand{font-family:'Orbitron',sans-serif;font-weight:900;font-size:18px;letter-spacing:.15em}
+.brand .red{color:var(--red)}
+.brand .sub{display:block;font-size:9px;color:var(--gold);letter-spacing:.35em;margin-top:2px;opacity:.7}
+.crumbs{font-size:10px;letter-spacing:.3em;text-align:center;opacity:.7}
+.crumbs a{color:var(--cyan);text-decoration:none}
+.crumbs a:hover{color:var(--gold)}
+.crumbs span{color:var(--red);margin:0 8px}
+.balance-chip{display:flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid var(--gold);background:rgba(194,166,51,.06);color:var(--gold);font-family:'Orbitron';font-size:11px;letter-spacing:.15em;cursor:pointer}
+.balance-chip:hover{background:var(--gold);color:var(--void);box-shadow:0 0 16px var(--gold)}
+.back-btn{padding:6px 14px;border:1px solid var(--cyan);color:var(--cyan);font-family:'Orbitron';font-size:10px;letter-spacing:.3em;background:transparent;text-decoration:none}
+.back-btn:hover{background:var(--cyan);color:var(--void)}
+
+/* ARTIST HERO */
+.hero{
+  display:grid;grid-template-columns:auto 1fr auto;gap:32px;align-items:center;
+  padding:50px 32px;border-bottom:1px solid var(--hud);
+  background:radial-gradient(ellipse at center,rgba(0,255,230,.04),transparent 70%);
+}
+@media (max-width:800px){.hero{grid-template-columns:1fr;text-align:center;gap:18px;padding:32px 18px}}
+
+.big-avatar{
+  width:140px;height:140px;border:3px solid currentColor;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron';font-weight:900;font-size:64px;
+  background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.06),transparent 70%);
+  box-shadow:0 0 40px currentColor;position:relative;
+}
+.big-avatar::before{
+  content:"";position:absolute;inset:-6px;border:1px dashed currentColor;opacity:.3;
+}
+@media (max-width:800px){.big-avatar{margin:0 auto;width:110px;height:110px;font-size:50px}}
+
+.hero-info h1{
+  font-family:'Orbitron';font-weight:900;font-size:42px;letter-spacing:.06em;color:var(--cyan);
+  text-shadow:0 0 24px rgba(0,255,230,.4);line-height:1.05;margin-bottom:8px;
+}
+.hero-info .handle{font-size:13px;color:var(--gold);letter-spacing:.25em;font-family:'Share Tech Mono';margin-bottom:14px}
+.hero-info .meta-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+@media (max-width:800px){.hero-info .meta-row{justify-content:center}}
+.pill{padding:4px 10px;border:1px solid currentColor;font-family:'Orbitron';font-size:9px;letter-spacing:.25em}
+.pill.agent{color:var(--sol)}
+.pill.human{color:var(--green)}
+.pill.founder{color:var(--gold)}
+.pill.genre{color:var(--cyan);border-color:var(--cyan)}
+.pill.district{color:var(--red);border-color:var(--red);font-family:'Major Mono Display'}
+.hero-info .bio{font-size:13px;color:var(--cyan);opacity:.75;max-width:580px;line-height:1.6;letter-spacing:.02em}
+@media (max-width:800px){.hero-info .bio{margin:0 auto}}
+
+.hero-actions{display:flex;flex-direction:column;gap:10px;min-width:180px}
+@media (max-width:800px){.hero-actions{flex-direction:row;justify-content:center;min-width:auto;flex-wrap:wrap}}
+.act{
+  padding:12px 18px;font-family:'Orbitron';font-weight:900;font-size:11px;letter-spacing:.25em;
+  cursor:pointer;border:2px solid currentColor;background:transparent;text-decoration:none;text-align:center;
+  transition:all .15s;
+}
+.act.primary{
+  color:#000;background:linear-gradient(180deg,var(--gold),#7a6a20);border-color:var(--gold);
+  box-shadow:0 0 18px rgba(194,166,51,.3),inset 0 2px 0 rgba(255,255,255,.3),inset 0 -3px 0 rgba(0,0,0,.3);
+  text-shadow:0 1px 0 rgba(255,255,255,.3);
+}
+.act.primary:hover{box-shadow:0 0 28px rgba(194,166,51,.6),inset 0 2px 0 rgba(255,255,255,.3),inset 0 -3px 0 rgba(0,0,0,.3)}
+.act.secondary{color:var(--cyan);border-color:var(--cyan)}
+.act.secondary:hover{background:var(--cyan);color:var(--void)}
+.act.danger{color:var(--red);border-color:var(--red)}
+.act.danger:hover{background:var(--red);color:var(--void)}
+.act:active{transform:translateY(2px)}
+.act.following{background:var(--green);color:var(--void);border-color:var(--green)}
+
+/* STATS STRIP */
+.stats-strip{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;
+  background:var(--hud);padding:1px;
+}
+.stat-cell{
+  background:var(--ink);padding:18px;text-align:center;
+}
+.stat-cell .v{font-family:'Orbitron';font-weight:900;font-size:24px;color:var(--cyan);letter-spacing:.04em;text-shadow:0 0 12px rgba(0,255,230,.3)}
+.stat-cell .v.gold{color:var(--gold);text-shadow:0 0 12px rgba(194,166,51,.3)}
+.stat-cell .v.green{color:var(--green);text-shadow:0 0 12px rgba(0,255,136,.3)}
+.stat-cell .l{font-size:9px;color:rgba(0,255,230,.5);letter-spacing:.3em;margin-top:6px;font-family:'Orbitron'}
+
+/* MAIN */
+.main{display:grid;grid-template-columns:1fr 340px;gap:24px;padding:32px;max-width:1500px;margin:0 auto}
+@media (max-width:900px){.main{grid-template-columns:1fr;padding:18px;gap:18px}}
+
+.panel{
+  border:1px solid var(--hud);background:rgba(0,255,230,.015);
+  position:relative;padding:24px;
+}
+.panel::before{
+  content:attr(data-label);position:absolute;top:-9px;left:14px;
+  background:var(--void);padding:0 8px;font-size:10px;letter-spacing:.3em;
+  color:var(--cyan);font-family:'Orbitron';
+}
+.panel h2{font-family:'Orbitron';font-size:14px;letter-spacing:.25em;color:var(--cyan);margin-bottom:14px;padding-bottom:10px;border-bottom:1px dashed rgba(0,255,230,.2)}
+
+/* TRACK LIST */
+.track{
+  display:grid;grid-template-columns:auto 1fr auto auto;gap:14px;align-items:center;
+  padding:12px;border-bottom:1px dashed rgba(0,255,230,.12);transition:background .15s;cursor:pointer;
+}
+.track:hover{background:rgba(0,255,230,.04)}
+.track-num{font-family:'Orbitron';font-size:12px;color:var(--cyan);opacity:.4;width:24px;text-align:right}
+.track:hover .track-num{opacity:1;color:var(--gold)}
+.track-play{
+  width:32px;height:32px;border:1px solid var(--cyan);color:var(--cyan);
+  display:flex;align-items:center;justify-content:center;font-family:'Orbitron';font-size:10px;
+}
+.track:hover .track-play{background:var(--cyan);color:var(--void);box-shadow:0 0 12px var(--cyan)}
+.track-info{min-width:0}
+.track-title{font-family:'Orbitron';font-size:13px;color:var(--cyan);letter-spacing:.08em;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track-meta{font-size:10px;color:rgba(0,255,230,.5);letter-spacing:.1em;margin-top:3px;font-family:'Share Tech Mono'}
+.track-dur{font-family:'VT323',monospace;font-size:16px;color:var(--green);letter-spacing:.05em}
+.track-mint{font-family:'Orbitron';font-size:9px;color:var(--gold);letter-spacing:.2em;padding:3px 8px;border:1px solid var(--gold)}
+
+@media (max-width:600px){
+  .track{grid-template-columns:auto 1fr auto;gap:10px;padding:10px}
+  .track-mint{display:none}
+}
+
+/* SIDE PANELS */
+.side{display:flex;flex-direction:column;gap:18px}
+
+.mcp-box{padding:14px;background:rgba(153,69,255,.05);border:1px dashed var(--sol);font-size:10px}
+.mcp-box .lbl{font-family:'Orbitron';font-size:10px;letter-spacing:.25em;color:var(--sol);margin-bottom:8px}
+.mcp-url{font-family:'Share Tech Mono';color:var(--cyan);word-break:break-all;line-height:1.5;background:#000;padding:8px;border:1px solid rgba(153,69,255,.3);margin-bottom:8px}
+.mcp-copy{padding:6px 12px;border:1px solid var(--sol);background:transparent;color:var(--sol);font-family:'Orbitron';font-size:9px;letter-spacing:.2em;cursor:pointer;width:100%}
+.mcp-copy:hover{background:var(--sol);color:var(--void)}
+.mcp-box .hint{margin-top:8px;color:rgba(0,255,230,.5);font-size:9px;letter-spacing:.1em;line-height:1.5}
+
+.socials{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.social-link{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;
+  border:1px solid var(--hud);color:var(--cyan);text-decoration:none;
+  font-family:'Orbitron';font-size:10px;letter-spacing:.2em;transition:all .15s;
+}
+.social-link:hover{border-color:var(--gold);color:var(--gold);background:rgba(194,166,51,.04)}
+.social-link .glyph{font-size:14px;color:var(--gold)}
+
+.owns-list{font-size:11px;line-height:1.7;color:var(--cyan);opacity:.8}
+.owns-list .own{padding:8px 0;border-bottom:1px dashed rgba(0,255,230,.1);display:flex;justify-content:space-between;align-items:center}
+.owns-list .own:last-child{border-bottom:0}
+.owns-list .own .gold{color:var(--gold);font-family:'Orbitron';font-size:10px;letter-spacing:.15em}
+
+.toast{position:fixed;bottom:30px;right:30px;padding:14px 22px;background:var(--void);border:1px solid var(--gold);color:var(--gold);font-family:'Orbitron';font-size:11px;letter-spacing:.25em;z-index:9999;transform:translateY(100px);opacity:0;transition:all .3s;box-shadow:0 0 30px rgba(194,166,51,.3)}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.win{border-color:var(--green);color:var(--green);box-shadow:0 0 30px rgba(0,255,136,.4)}
+.toast.err{border-color:var(--red);color:var(--red)}
+
+/* NOT FOUND */
+.not-found{padding:80px 32px;text-align:center}
+.not-found .big{font-family:'Orbitron';font-size:36px;color:var(--red);letter-spacing:.1em;margin-bottom:14px;text-shadow:0 0 24px rgba(255,26,46,.4)}
+.not-found .msg{font-size:13px;color:rgba(0,255,230,.6);letter-spacing:.1em;line-height:1.7;margin-bottom:24px}
+</style>
+</head>
+<body>
+<div class="brackets"><span></span><span></span></div>
+
+<header class="topbar">
+  <div class="brand">
+    33.3<span class="red">●</span>FM <span style="opacity:.5">·</span> ARTIST
+    <span class="sub">// WIRED CHAOS //</span>
+  </div>
+  <div class="crumbs">
+    <a href="33-3fm-broadcast.html">BROADCAST</a><span>·</span>
+    <a href="33-3fm-catalog.html">CATALOG</a><span>·</span>
+    <a href="33-3fm-mint.html">MINT</a><span>·</span>
+    <a href="33-3fm-economics.html">ECONOMICS</a>
+  </div>
+  <div class="balance-chip" id="balanceChip">
+    <span style="font-size:16px">⟁</span><span id="topBalance">0</span>
+  </div>
+  <a class="back-btn" href="33-3fm-catalog.html">◄ CATALOG</a>
+</header>
+
+<div id="content"></div>
+
+<div class="toast" id="toast"></div>
+
+<script src="wc-seed.js"></script>
+<script src="xents-widget.js"></script>
+<script>
+if(window.WCSeed) window.WCSeed.ensure();
+
+function $(id){ return document.getElementById(id); }
+function $$(s){ return document.querySelectorAll(s); }
+function escapeHtml(s){ return String(s||'').replace(/[<>&'"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;',"'":'&apos;','"':'&quot;'}[c])); }
+
+function getParam(k){
+  return new URLSearchParams(location.search).get(k);
+}
+
+function paintBalance(){
+  if(window.XentsChange){
+    $('topBalance').textContent = window.XentsChange.balance().toLocaleString();
+  }
+}
+$('balanceChip').addEventListener('click', () => {
+  if(window.XentsChange) window.XentsChange.open();
+});
+
+function getArtist(id){
+  try {
+    const all = JSON.parse(localStorage.getItem('wc_artists') || '[]');
+    return all.find(a => a.id === id) || null;
+  } catch(e){ return null; }
+}
+function getReleases(artistId){
+  try {
+    const all = JSON.parse(localStorage.getItem('wc_oac_releases') || '[]');
+    return all.filter(r => r.artistId === artistId);
+  } catch(e){ return []; }
+}
+
+function isFollowing(artistId){
+  try {
+    const list = JSON.parse(localStorage.getItem('wc_following') || '[]');
+    return list.includes(artistId);
+  } catch(e){ return false; }
+}
+function toggleFollow(artistId){
+  let list = [];
+  try { list = JSON.parse(localStorage.getItem('wc_following') || '[]'); } catch(e){}
+  if(list.includes(artistId)){
+    list = list.filter(x => x !== artistId);
+    localStorage.setItem('wc_following', JSON.stringify(list));
+    return false;
+  } else {
+    list.push(artistId);
+    localStorage.setItem('wc_following', JSON.stringify(list));
+    return true;
+  }
+}
+
+function fmtDur(sec){
+  const m = Math.floor(sec/60);
+  const s = sec % 60;
+  return m + ':' + String(s).padStart(2,'0');
+}
+
+function fmtDate(ts){
+  const d = new Date(ts);
+  return d.toISOString().slice(0,10);
+}
+
+function toast(msg, kind=''){
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + kind;
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+function renderNotFound(){
+  $('content').innerHTML = `
+    <div class="not-found">
+      <div class="big">◢ ARTIST NOT FOUND</div>
+      <div class="msg">// THIS PROFILE DOESN'T EXIST IN THE CATALOG //<br>// IT MAY HAVE BEEN UNREGISTERED OR THE LINK IS STALE //</div>
+      <a class="act secondary" style="display:inline-block" href="33-3fm-catalog.html">◄ BROWSE CATALOG</a>
+    </div>
+  `;
+}
+
+function render(){
+  const id = getParam('id');
+  if(!id){ renderNotFound(); return; }
+  const artist = getArtist(id);
+  if(!artist){ renderNotFound(); return; }
+
+  document.title = `${artist.name} // 33.3FM`;
+  const releases = getReleases(id);
+  const color = artist.avatar_color || '#00ffe6';
+  const following = isFollowing(id);
+  const mcpUrl = `https://mcp.wiredchaos.xyz/music/artist/${id}`;
+
+  $('content').innerHTML = `
+    <section class="hero">
+      <div class="big-avatar" style="color:${color}">${artist.avatar_glyph || '◉'}</div>
+      <div class="hero-info">
+        <h1>${escapeHtml(artist.name)}</h1>
+        <div class="handle">${escapeHtml(artist.handle||'')}</div>
+        <div class="meta-row">
+          <span class="pill ${artist.type||'agent'}">${(artist.type||'AGENT').toUpperCase()}</span>
+          ${artist.founded ? '<span class="pill founder">⟁ FOUNDING CITIZEN</span>' : ''}
+          <span class="pill genre">${escapeHtml(artist.genre||'')}</span>
+          <span class="pill district" style="color:${artist.district_color||'#ff1a2e'};border-color:${artist.district_color||'#ff1a2e'}">${escapeHtml(artist.district||'')}</span>
+        </div>
+        <div class="bio">${escapeHtml(artist.bio||'')}</div>
+      </div>
+      <div class="hero-actions">
+        <button class="act primary" id="tipBtn">⟁ TIP ARTIST</button>
+        <button class="act ${following ? 'following' : 'secondary'}" id="followBtn">${following ? '◉ FOLLOWING' : '◢ FOLLOW'}</button>
+        <a class="act secondary" href="33-3fm-broadcast.html">◄ HEAR ON 33.3FM</a>
+      </div>
+    </section>
+
+    <section class="stats-strip">
+      <div class="stat-cell"><div class="v">${(artist.stats?.plays||0).toLocaleString()}</div><div class="l">TOTAL PLAYS</div></div>
+      <div class="stat-cell"><div class="v gold">${(artist.stats?.listeners||0).toLocaleString()}</div><div class="l">LISTENERS</div></div>
+      <div class="stat-cell"><div class="v green">${releases.length}</div><div class="l">RELEASES</div></div>
+      <div class="stat-cell"><div class="v">${artist.founded ? fmtDate(new Date(artist.founded).getTime()) : '—'}</div><div class="l">FOUNDED</div></div>
+    </section>
+
+    <main class="main">
+      <section>
+        <div class="panel" data-label="RELEASES">
+          <h2>◢ ON-CHAIN CATALOG</h2>
+          ${releases.length === 0 ? '<div style="padding:30px;text-align:center;color:rgba(0,255,230,.4);font-size:11px;letter-spacing:.3em">// NO RELEASES YET //</div>' :
+            releases.map((r, idx) => `
+              <div class="track" data-track="${idx}">
+                <div class="track-num">${String(idx+1).padStart(2,'0')}</div>
+                <div class="track-play">►</div>
+                <div class="track-info">
+                  <div class="track-title">${escapeHtml(r.trackTitle)}</div>
+                  <div class="track-meta">${escapeHtml(r.meta?.genre||'')} · ${r.meta?.bpm||'?'} BPM · ${escapeHtml(r.meta?.key||'')} · ${escapeHtml(r.meta?.mood||'')}</div>
+                </div>
+                <div class="track-dur">${fmtDur(r.meta?.durationSec||180)}</div>
+                <div class="track-mint">⟁ MINTED</div>
+              </div>
+            `).join('')
+          }
+        </div>
+      </section>
+
+      <aside class="side">
+        <div class="panel" data-label="OWNERSHIP">
+          <h2>◢ WHAT THIS ARTIST OWNS</h2>
+          <div class="owns-list">
+            <div class="own">ON-CHAIN MASTERS <span class="gold">SOL + BASE</span></div>
+            <div class="own">DDEX DISTRIBUTION <span class="gold">4 STORES</span></div>
+            <div class="own">SMART-CONTRACT ROYALTIES <span class="gold">EIP-2981</span></div>
+            <div class="own">C2PA PROVENANCE <span class="gold">SIGNED</span></div>
+            <div class="own">MCP CATALOG ENDPOINT <span class="gold">ACTIVE</span></div>
+            <div class="own">DIRECT-TO-FAN STORE <span class="gold">LIVE</span></div>
+          </div>
+        </div>
+
+        <div class="panel" data-label="AGENT DISCOVERY">
+          <div class="mcp-box">
+            <div class="lbl">◢ MCP ENDPOINT</div>
+            <div class="mcp-url">${mcpUrl}</div>
+            <button class="mcp-copy" onclick="copyMcp('${mcpUrl}')">COPY ENDPOINT</button>
+            <div class="hint">// AI agents can discover, preview, and license this catalog via the Model Context Protocol //</div>
+          </div>
+        </div>
+
+        ${artist.socials ? `
+        <div class="panel" data-label="LINKS">
+          <h2>◢ CONNECT</h2>
+          <div class="socials">
+            ${artist.socials.x ? `<a class="social-link" href="${artist.socials.x}" target="_blank" rel="noopener"><span class="glyph">𝕏</span> ${artist.socials.x.replace('https://','')}</a>` : ''}
+            ${artist.socials.sc ? `<a class="social-link" href="${artist.socials.sc}" target="_blank" rel="noopener"><span class="glyph">◉</span> ${artist.socials.sc.replace('https://','')}</a>` : ''}
+            ${artist.socials.site ? `<a class="social-link" href="${artist.socials.site}" target="_blank" rel="noopener"><span class="glyph">◢</span> ${artist.socials.site.replace('https://','')}</a>` : ''}
+          </div>
+        </div>` : ''}
+      </aside>
+    </main>
+  `;
+
+  wireActions(artist);
+}
+
+function wireActions(artist){
+  $('tipBtn').addEventListener('click', () => {
+    if(!window.XentsChange){ toast('WIDGET NOT LOADED', 'err'); return; }
+    const ok = window.XentsChange.spend({
+      amount: 100,
+      label: `TIP: ${artist.name}`,
+      category: 'tip',
+      autoTopUp: true
+    });
+    if(ok){
+      paintBalance();
+      toast('⟁100 SENT TO ' + artist.name, 'win');
+    }
+  });
+
+  $('followBtn').addEventListener('click', () => {
+    const now = toggleFollow(artist.id);
+    const btn = $('followBtn');
+    btn.textContent = now ? '◉ FOLLOWING' : '◢ FOLLOW';
+    btn.className = 'act ' + (now ? 'following' : 'secondary');
+    toast(now ? 'FOLLOWING ' + artist.name : 'UNFOLLOWED', now ? 'win' : '');
+  });
+
+  $$('.track').forEach((row, idx) => {
+    row.addEventListener('click', () => {
+      toast('► TRACK QUEUED FOR NEXT BROADCAST CYCLE');
+    });
+  });
+}
+
+function copyMcp(url){
+  navigator.clipboard.writeText(url).then(() => {
+    toast('MCP ENDPOINT COPIED', 'win');
+  }, () => {
+    toast('COPY FAILED', 'err');
+  });
+}
+
+window.addEventListener('storage', (e) => {
+  if(e.key === 'wc_xents_balance') paintBalance();
+});
+
+setTimeout(paintBalance, 100);
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>$XENTS CHANGE MACHINE // WIRED CHAOS // 33.3FM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=VT323&family=Major+Mono+Display&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cyan:#00ffe6;
+  --red:#ff1a2e;
+  --gold:#c2a633;
+  --base:#0052ff;
+  --sol:#9945ff;
+  --green:#00ff88;
+  --void:#000000;
+  --ink:#0a0a0c;
+  --chrome:#2a2d33;
+  --chrome-lit:#4a4f58;
+  --hud:rgba(0,255,230,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(0,255,230,.06), transparent 60%),
+    radial-gradient(ellipse at 50% 100%, rgba(255,26,46,.05), transparent 60%),
+    var(--void);
+  color:var(--cyan);
+  font-family:'Share Tech Mono',monospace;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ====== SCANLINES + CRT GRAIN ====== */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,rgba(0,255,230,.035) 0,rgba(0,255,230,.035) 1px,transparent 1px,transparent 3px);
+  mix-blend-mode:overlay;
+}
+body::after{
+  content:"";position:fixed;inset:-50%;pointer-events:none;z-index:9998;opacity:.05;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation:grain .3s steps(3) infinite;
+}
+@keyframes grain{0%{transform:translate(0,0)}33%{transform:translate(-2%,1%)}66%{transform:translate(1%,-2%)}100%{transform:translate(0,0)}}
+
+/* ====== HUD CORNER BRACKETS ====== */
+.brackets{position:fixed;inset:14px;pointer-events:none;z-index:50}
+.brackets::before,.brackets::after,.brackets > span{position:absolute;width:28px;height:28px;border:1px solid var(--cyan);content:""}
+.brackets::before{top:0;left:0;border-right:0;border-bottom:0}
+.brackets::after{top:0;right:0;border-left:0;border-bottom:0}
+.brackets span:nth-child(1){bottom:0;left:0;border-right:0;border-top:0}
+.brackets span:nth-child(2){bottom:0;right:0;border-left:0;border-top:0}
+
+/* ====== TOP BAR ====== */
+.topbar{
+  display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;
+  padding:16px 32px;border-bottom:1px solid var(--hud);
+  background:linear-gradient(180deg,rgba(194,166,51,.05),transparent);
+  position:sticky;top:0;z-index:100;backdrop-filter:blur(6px);
+}
+.brand{font-family:'Orbitron',sans-serif;font-weight:900;font-size:18px;letter-spacing:.15em}
+.brand .gold{color:var(--gold)}
+.brand .sub{display:block;font-size:9px;color:var(--cyan);letter-spacing:.35em;margin-top:2px;opacity:.7}
+
+.crumbs{font-size:10px;letter-spacing:.3em;text-align:center;opacity:.7}
+.crumbs a{color:var(--cyan);text-decoration:none}
+.crumbs a:hover{color:var(--gold)}
+.crumbs span{color:var(--red);margin:0 8px}
+
+.back-btn{
+  padding:6px 14px;border:1px solid var(--cyan);color:var(--cyan);
+  font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:.3em;
+  background:transparent;text-decoration:none;display:inline-block;
+}
+.back-btn:hover{background:var(--cyan);color:var(--void)}
+
+/* ====== MAIN STAGE ====== */
+.stage{
+  display:grid;grid-template-columns:1fr 460px 1fr;gap:30px;
+  padding:32px;max-width:1400px;margin:0 auto;
+  align-items:start;
+}
+@media(max-width:1100px){
+  .stage{grid-template-columns:1fr;gap:20px;padding:18px}
+  .machine{margin:0 auto}
+}
+
+/* ============================================
+   THE MACHINE — vending machine chassis
+============================================ */
+.machine{
+  width:460px;background:linear-gradient(180deg,#1a1d22 0%,#0a0b0e 100%);
+  border:3px solid #2a2d33;border-radius:12px;
+  box-shadow:
+    0 0 60px rgba(194,166,51,.15),
+    inset 0 2px 0 rgba(255,255,255,.08),
+    inset 0 -2px 0 rgba(0,0,0,.6),
+    0 30px 60px rgba(0,0,0,.8);
+  padding:24px 22px 28px;position:relative;
+}
+.machine::before{
+  /* top vent / model badge area */
+  content:"WC-CM-Ð33.3";position:absolute;top:8px;right:18px;
+  font-family:'Major Mono Display',monospace;font-size:9px;
+  color:rgba(0,255,230,.4);letter-spacing:.3em;
+}
+
+/* ====== MACHINE HEADER ====== */
+.m-head{
+  text-align:center;padding:8px 0 16px;
+  border-bottom:2px solid #2a2d33;margin-bottom:18px;
+}
+.m-title{
+  font-family:'Orbitron',sans-serif;font-weight:900;
+  font-size:28px;letter-spacing:.06em;color:var(--gold);
+  text-shadow:
+    0 0 20px rgba(194,166,51,.4),
+    0 0 4px rgba(255,255,255,.6),
+    0 2px 0 #000;
+}
+.m-title .arrow{color:var(--cyan);font-family:'Share Tech Mono',monospace;margin:0 8px}
+.m-sub{
+  font-family:'Major Mono Display',monospace;font-size:10px;
+  color:rgba(0,255,230,.7);letter-spacing:.4em;margin-top:6px;
+}
+.m-rate{
+  margin-top:8px;display:inline-block;padding:3px 10px;
+  border:1px dashed var(--gold);color:var(--gold);font-size:10px;letter-spacing:.2em;
+}
+
+/* ====== LED DISPLAY (the receipt printer / amount) ====== */
+.display{
+  background:#000;border:1px solid #1a1a1a;border-radius:4px;
+  padding:14px 18px;margin-bottom:18px;
+  box-shadow:inset 0 0 30px rgba(0,255,136,.15),inset 0 2px 6px rgba(0,0,0,.9);
+  font-family:'VT323',monospace;
+}
+.display .row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.display .label{font-size:11px;color:#00ff88;letter-spacing:.2em;opacity:.7;text-transform:uppercase;font-family:'Share Tech Mono'}
+.display .value{font-size:32px;color:#00ff88;text-shadow:0 0 10px rgba(0,255,136,.7);letter-spacing:.05em;line-height:1}
+.display .sub-row{display:flex;justify-content:space-between;font-size:11px;color:#00ff88;opacity:.6;font-family:'Share Tech Mono';letter-spacing:.1em;margin-top:6px;padding-top:6px;border-top:1px dashed rgba(0,255,136,.2)}
+
+/* ====== RAIL TABS (which payment method) ====== */
+.rails{
+  display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;margin-bottom:16px;
+}
+.rail{
+  padding:10px 4px;border:1px solid #2a2d33;background:#15171c;
+  color:#666;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:.15em;
+  text-align:center;cursor:pointer;transition:all .2s;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+}
+.rail .icon{font-size:18px;line-height:1}
+.rail:hover{color:var(--cyan);border-color:var(--cyan)}
+.rail.active{
+  background:linear-gradient(180deg,#15171c,#1a1d22);
+  border-color:var(--gold);color:var(--gold);
+  box-shadow:inset 0 0 12px rgba(194,166,51,.2),0 0 12px rgba(194,166,51,.2);
+}
+
+/* ====== SLOTS (coin / bill / chain) ====== */
+.slot-area{
+  background:#0a0c10;border:1px solid #1a1d22;border-radius:6px;
+  padding:18px;margin-bottom:16px;position:relative;min-height:160px;
+  box-shadow:inset 0 4px 12px rgba(0,0,0,.8);
+}
+
+/* Coin slot — for fiat (Stripe/Apple Pay) */
+.coin-slot{
+  width:84px;height:14px;margin:0 auto 14px;border-radius:8px;
+  background:linear-gradient(180deg,#000 0%,#1a1a1a 50%,#000 100%);
+  border:1px solid #2a2d33;
+  box-shadow:inset 0 4px 10px rgba(0,0,0,.95),0 1px 0 rgba(255,255,255,.05);
+  position:relative;
+}
+.coin-slot::after{
+  content:"INSERT";position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+  font-family:'Major Mono Display';font-size:8px;color:rgba(194,166,51,.6);letter-spacing:.3em;
+}
+
+/* Bill slot — for USDC / larger transfers */
+.bill-slot{
+  width:200px;height:8px;margin:0 auto 14px;
+  background:linear-gradient(180deg,#000 0%,#0a0a0a 50%,#000 100%);
+  border:1px solid #1a1a1a;border-radius:2px;
+  box-shadow:inset 0 3px 8px rgba(0,0,0,.95);
+  position:relative;
+}
+.bill-slot::after{
+  content:"BILLS / USDC";position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+  font-family:'Major Mono Display';font-size:8px;color:rgba(194,166,51,.6);letter-spacing:.3em;
+}
+
+/* Amount input */
+.amount-input-wrap{
+  background:#000;border:2px solid #2a2d33;border-radius:4px;
+  padding:12px 16px;display:flex;align-items:center;gap:10px;
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.8);
+  transition:border-color .2s;
+}
+.amount-input-wrap:focus-within{border-color:var(--gold);box-shadow:inset 0 2px 6px rgba(0,0,0,.8),0 0 10px rgba(194,166,51,.3)}
+.amount-input-wrap .dollar{color:var(--gold);font-family:'Orbitron';font-size:24px;font-weight:900}
+.amount-input{
+  flex:1;background:transparent;border:0;outline:0;
+  color:#00ff88;font-family:'VT323',monospace;font-size:36px;
+  text-shadow:0 0 10px rgba(0,255,136,.5);
+}
+.amount-input::-webkit-outer-spin-button,.amount-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+
+/* Quick amount chips */
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.quick button{
+  padding:8px 4px;background:#15171c;border:1px solid #2a2d33;color:var(--cyan);
+  font-family:'Orbitron';font-size:10px;letter-spacing:.1em;cursor:pointer;transition:all .15s;
+}
+.quick button:hover{border-color:var(--cyan);background:#1f2228;transform:translateY(-1px)}
+.quick button.active{border-color:var(--gold);color:var(--gold);background:#1a1d22}
+
+/* Conversion preview */
+.preview{
+  margin-top:14px;padding:12px;background:rgba(194,166,51,.05);
+  border:1px dashed var(--gold);text-align:center;
+  font-family:'Orbitron';
+}
+.preview .you-get{font-size:10px;letter-spacing:.3em;color:var(--gold);opacity:.7}
+.preview .xents{font-size:28px;color:var(--gold);font-weight:900;text-shadow:0 0 14px rgba(194,166,51,.5);margin-top:4px}
+.preview .xents::before{content:"⟁ ";color:var(--cyan)}
+
+/* ====== BIG BUTTON (the action) ====== */
+.big-btn{
+  width:100%;padding:18px;margin-top:18px;
+  background:linear-gradient(180deg,#ff1a2e 0%,#a8101f 100%);
+  border:2px solid #ff1a2e;border-radius:6px;
+  color:#fff;font-family:'Orbitron',sans-serif;font-size:14px;
+  font-weight:900;letter-spacing:.3em;cursor:pointer;
+  box-shadow:
+    0 0 24px rgba(255,26,46,.5),
+    inset 0 2px 0 rgba(255,255,255,.25),
+    inset 0 -3px 0 rgba(0,0,0,.4);
+  text-shadow:0 1px 0 rgba(0,0,0,.5);
+  transition:all .1s;position:relative;overflow:hidden;
+}
+.big-btn::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(135deg,transparent 30%,rgba(255,255,255,.15) 50%,transparent 70%);
+  transform:translateX(-100%);transition:transform .6s;
+}
+.big-btn:hover::before{transform:translateX(100%)}
+.big-btn:active{
+  transform:translateY(2px);
+  box-shadow:0 0 12px rgba(255,26,46,.5),inset 0 2px 6px rgba(0,0,0,.5);
+}
+.big-btn:disabled{
+  background:linear-gradient(180deg,#3a3a3a,#1a1a1a);border-color:#3a3a3a;
+  color:#666;cursor:not-allowed;box-shadow:none;
+}
+
+/* ====== STATUS LIGHTS ====== */
+.lights{
+  display:flex;justify-content:center;gap:14px;margin-top:14px;
+}
+.light{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:8px;letter-spacing:.2em;color:#444;font-family:'Major Mono Display'}
+.light .dot{
+  width:10px;height:10px;border-radius:50%;background:#2a2d33;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.8);
+}
+.light.on .dot{background:var(--green);box-shadow:0 0 10px var(--green),inset 0 1px 2px rgba(0,0,0,.4)}
+.light.on{color:var(--green)}
+.light.warn .dot{background:var(--gold);box-shadow:0 0 10px var(--gold)}
+.light.warn{color:var(--gold)}
+
+/* Dispenser tray */
+.dispenser{
+  margin-top:18px;padding:10px 12px;
+  background:linear-gradient(180deg,#000,#0a0a0a);
+  border:1px solid #1a1d22;border-radius:0 0 8px 8px;
+  border-top:2px solid #2a2d33;
+  font-family:'Major Mono Display';font-size:9px;
+  color:rgba(0,255,230,.4);letter-spacing:.4em;text-align:center;
+}
+
+/* ============================================
+   LEFT PANEL — balance + cash-out notice
+============================================ */
+.side-panel{display:flex;flex-direction:column;gap:18px}
+.panel{
+  border:1px solid var(--hud);background:rgba(0,255,230,.015);
+  position:relative;padding:20px;
+}
+.panel::before{
+  content:attr(data-label);position:absolute;top:-9px;left:14px;
+  background:var(--void);padding:0 8px;font-size:10px;letter-spacing:.3em;
+  color:var(--cyan);font-family:'Orbitron',sans-serif;
+}
+.panel h3{font-family:'Orbitron';font-size:13px;letter-spacing:.25em;color:var(--cyan);margin-bottom:14px;padding-bottom:8px;border-bottom:1px dashed rgba(0,255,230,.2)}
+
+.balance-card{
+  text-align:center;padding:24px 16px;
+  background:radial-gradient(circle at 50% 30%,rgba(194,166,51,.1),transparent 70%);
+  border:1px solid var(--gold);
+}
+.balance-card .lbl{font-size:9px;letter-spacing:.4em;color:var(--gold);opacity:.7;font-family:'Orbitron'}
+.balance-card .amount{
+  font-family:'Orbitron';font-weight:900;font-size:44px;color:var(--gold);
+  text-shadow:0 0 24px rgba(194,166,51,.5),0 0 4px #fff;
+  margin:10px 0 6px;letter-spacing:.02em;line-height:1;
+}
+.balance-card .amount .sym{color:var(--cyan)}
+.balance-card .usd{font-size:11px;color:var(--cyan);opacity:.6;letter-spacing:.2em;font-family:'Share Tech Mono'}
+
+.no-cashout{
+  margin-top:14px;padding:12px;background:rgba(255,26,46,.05);
+  border:1px solid rgba(255,26,46,.3);font-size:10px;line-height:1.5;
+  color:var(--red);letter-spacing:.05em;
+}
+.no-cashout .lbl{display:block;font-family:'Orbitron';font-size:9px;letter-spacing:.3em;margin-bottom:4px}
+
+/* Where can I spend it */
+.spend-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.spend-cell{
+  padding:10px;border:1px solid rgba(0,255,230,.15);
+  font-size:10px;cursor:pointer;transition:all .2s;
+}
+.spend-cell:hover{border-color:var(--cyan);background:rgba(0,255,230,.05);transform:translateY(-1px)}
+.spend-cell .ico{font-size:18px;color:var(--gold);margin-bottom:4px}
+.spend-cell .nm{font-family:'Orbitron';font-size:10px;color:var(--cyan);letter-spacing:.15em;margin-bottom:2px}
+.spend-cell .cost{font-size:9px;color:var(--gold);letter-spacing:.1em}
+
+/* ============================================
+   RIGHT PANEL — transaction history
+============================================ */
+.txn{
+  padding:10px 12px;border-bottom:1px dashed rgba(0,255,230,.1);
+  display:grid;grid-template-columns:auto 1fr auto;gap:10px;
+  font-size:10px;align-items:center;
+}
+.txn .ico{
+  width:28px;height:28px;border:1px solid;display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron';font-weight:900;font-size:12px;
+}
+.txn.deposit .ico{color:var(--green);border-color:var(--green)}
+.txn.spend .ico{color:var(--red);border-color:var(--red)}
+.txn.bonus .ico{color:var(--gold);border-color:var(--gold)}
+.txn .body .nm{font-family:'Orbitron';font-size:10px;color:var(--cyan);letter-spacing:.15em}
+.txn .body .meta{font-size:9px;color:var(--cyan);opacity:.5;letter-spacing:.1em;margin-top:2px}
+.txn .amt{font-family:'Orbitron';font-weight:900;font-size:13px;text-align:right}
+.txn.deposit .amt{color:var(--green)}
+.txn.spend .amt{color:var(--red)}
+.txn.bonus .amt{color:var(--gold)}
+
+/* ====== TOAST + DROP ANIMATION ====== */
+.toast{
+  position:fixed;bottom:30px;right:30px;padding:14px 22px;
+  background:var(--void);border:1px solid var(--gold);color:var(--gold);
+  font-family:'Orbitron';font-size:11px;letter-spacing:.25em;z-index:9999;
+  transform:translateY(100px);opacity:0;transition:all .3s;
+  box-shadow:0 0 30px rgba(194,166,51,.3);
+}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.err{border-color:var(--red);color:var(--red);box-shadow:0 0 30px rgba(255,26,46,.3)}
+.toast.win{border-color:var(--green);color:var(--green);box-shadow:0 0 30px rgba(0,255,136,.4)}
+
+/* Coin drop animation */
+@keyframes coinDrop{
+  0%  {transform:translate(-50%,-200px) rotate(0deg);opacity:1}
+  60% {transform:translate(-50%,0) rotate(720deg);opacity:1}
+  100%{transform:translate(-50%,40px) rotate(900deg);opacity:0}
+}
+.coin-anim{
+  position:fixed;left:50%;top:50%;width:40px;height:40px;
+  border-radius:50%;background:radial-gradient(circle at 30% 30%,#fde47e,#c2a633 60%,#7a6a20);
+  font-family:'Orbitron';font-weight:900;color:#000;
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+  box-shadow:0 0 30px rgba(194,166,51,.8);z-index:9000;
+  animation:coinDrop 1.2s cubic-bezier(.22,.61,.36,1) forwards;
+}
+
+/* Confetti rail */
+.confetti-piece{
+  position:fixed;width:6px;height:10px;background:var(--gold);
+  z-index:9001;pointer-events:none;animation:confettiFall 2s linear forwards;
+}
+@keyframes confettiFall{
+  0%{transform:translateY(0) rotate(0)}
+  100%{transform:translateY(110vh) rotate(720deg)}
+}
+
+/* Subtle hum */
+@keyframes hum{0%,100%{opacity:.4}50%{opacity:.8}}
+.hum{animation:hum 2s ease-in-out infinite}
+
+/* ====== PAGE FOOTER ====== */
+.foot{
+  text-align:center;padding:30px 20px 50px;font-size:10px;
+  color:rgba(0,255,230,.4);letter-spacing:.3em;line-height:1.6;
+}
+.foot .line{display:block;margin:4px 0}
+.foot .gold{color:rgba(194,166,51,.6)}
+</style>
+</head>
+<body>
+<div class="brackets"><span></span><span></span></div>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="brand">
+    <span class="gold">$XENTS</span> CHANGE MACHINE
+    <span class="sub">// WIRED CHAOS // 33.3FM DOGECHAIN</span>
+  </div>
+  <div class="crumbs">
+    <a href="33-3fm-broadcast.html">BROADCAST</a><span>·</span>
+    <a href="33-3fm-studio.html">STUDIO</a><span>·</span>
+    <a href="33-3fm-mint.html">MINT</a>
+  </div>
+  <a class="back-btn" href="33-3fm-broadcast.html">◄ ON-AIR</a>
+</header>
+
+<!-- MAIN STAGE -->
+<main class="stage">
+
+  <!-- LEFT: BALANCE + SPEND -->
+  <aside class="side-panel">
+    <div class="panel" data-label="WALLET">
+      <div class="balance-card">
+        <div class="lbl">⟁ $XENTS BALANCE</div>
+        <div class="amount"><span class="sym">⟁</span><span id="balance">0</span></div>
+        <div class="usd">≈ $<span id="usdEquiv">0.00</span> USD VALUE</div>
+      </div>
+      <div class="no-cashout">
+        <span class="lbl">◉ NO CASH-OUT</span>
+        $XENTS is one-way utility credit. Spendable across the WIRED CHAOS ecosystem only. No swap to USD. No secondary market. Not a security.
+      </div>
+    </div>
+
+    <div class="panel" data-label="SPEND $XENTS ON">
+      <h3>◢ ECOSYSTEM SINKS</h3>
+      <div class="spend-grid">
+        <div class="spend-cell">
+          <div class="ico">⟁</div>
+          <div class="nm">MINT TRACK</div>
+          <div class="cost">5,000 ⟁ / release</div>
+        </div>
+        <div class="spend-cell">
+          <div class="ico">◉</div>
+          <div class="nm">DJ TIP</div>
+          <div class="cost">100 ⟁ minimum</div>
+        </div>
+        <div class="spend-cell">
+          <div class="ico">▣</div>
+          <div class="nm">VAULT33 PASS</div>
+          <div class="cost">2,500 ⟁ / mo</div>
+        </div>
+        <div class="spend-cell">
+          <div class="ico">▤</div>
+          <div class="nm">PLAYLIST SLOT</div>
+          <div class="cost">1,000 ⟁ / spin</div>
+        </div>
+        <div class="spend-cell">
+          <div class="ico">◈</div>
+          <div class="nm">AGENT HOUR</div>
+          <div class="cost">500 ⟁ / hr</div>
+        </div>
+        <div class="spend-cell">
+          <div class="ico">◊</div>
+          <div class="nm">SIM. → ATV</div>
+          <div class="cost">3,000 ⟁ / block</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CENTER: THE MACHINE -->
+  <div class="machine">
+    <!-- Machine header -->
+    <div class="m-head">
+      <div class="m-title">$1<span class="arrow">→</span>⟁100</div>
+      <div class="m-sub hum">// CHANGE MACHINE //</div>
+      <div class="m-rate">RATE LOCKED · ONE-WAY · NO CASH-OUT</div>
+    </div>
+
+    <!-- LED display -->
+    <div class="display">
+      <div class="row">
+        <span class="label">YOU PAY</span>
+        <span class="value">$<span id="displayUsd">0</span></span>
+      </div>
+      <div class="sub-row">
+        <span>RAIL: <span id="displayRail">— SELECT —</span></span>
+        <span id="displayStatus">READY</span>
+      </div>
+    </div>
+
+    <!-- Rail selector -->
+    <div class="rails">
+      <div class="rail" data-rail="stripe">
+        <span class="icon">◉</span>
+        STRIPE
+      </div>
+      <div class="rail" data-rail="apple">
+        <span class="icon">◈</span>
+        APPLE PAY
+      </div>
+      <div class="rail" data-rail="usdc">
+        <span class="icon">▣</span>
+        USDC BASE
+      </div>
+      <div class="rail" data-rail="x402">
+        <span class="icon">⟁</span>
+        x402 MICRO
+      </div>
+    </div>
+
+    <!-- Slot area (visual flavor) -->
+    <div class="slot-area">
+      <div class="coin-slot"></div>
+      <div class="bill-slot"></div>
+
+      <div class="amount-input-wrap">
+        <span class="dollar">$</span>
+        <input type="number" class="amount-input" id="amountInput" placeholder="0" min="0" step="1">
+      </div>
+
+      <div class="quick">
+        <button data-amt="5">$5</button>
+        <button data-amt="10">$10</button>
+        <button data-amt="25">$25</button>
+        <button data-amt="50">$50</button>
+      </div>
+
+      <div class="preview">
+        <div class="you-get">YOU RECEIVE</div>
+        <div class="xents"><span id="previewXents">0</span></div>
+      </div>
+    </div>
+
+    <!-- Big button -->
+    <button class="big-btn" id="depositBtn" disabled>⟁ INSERT &amp; CONVERT</button>
+
+    <!-- Status lights -->
+    <div class="lights">
+      <div class="light on"><span class="dot"></span>POWER</div>
+      <div class="light on"><span class="dot"></span>RAIL</div>
+      <div class="light warn"><span class="dot"></span>READY</div>
+      <div class="light"><span class="dot"></span>BUSY</div>
+    </div>
+
+    <!-- Dispenser tray -->
+    <div class="dispenser">◆ COINS DISPENSED HERE ◆</div>
+  </div>
+
+  <!-- RIGHT: TRANSACTION HISTORY -->
+  <aside class="side-panel">
+    <div class="panel" data-label="LEDGER">
+      <h3>◢ TRANSACTION HISTORY</h3>
+      <div id="txnList"></div>
+    </div>
+
+    <div class="panel" data-label="TREASURY">
+      <h3>◢ PROTOCOL STATS</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:10px">
+        <div>
+          <div style="color:var(--cyan);opacity:.6;letter-spacing:.2em;font-family:'Orbitron';font-size:9px">CIRCULATING</div>
+          <div style="color:var(--gold);font-family:'Orbitron';font-size:18px;font-weight:900;margin-top:4px">⟁ <span id="circulating">847,392</span></div>
+        </div>
+        <div>
+          <div style="color:var(--cyan);opacity:.6;letter-spacing:.2em;font-family:'Orbitron';font-size:9px">USD BACKING</div>
+          <div style="color:var(--green);font-family:'Orbitron';font-size:18px;font-weight:900;margin-top:4px">$<span id="backing">8,473.92</span></div>
+        </div>
+        <div>
+          <div style="color:var(--cyan);opacity:.6;letter-spacing:.2em;font-family:'Orbitron';font-size:9px">24H VOL</div>
+          <div style="color:var(--cyan);font-family:'Orbitron';font-size:18px;font-weight:900;margin-top:4px">$<span id="volume">2,140</span></div>
+        </div>
+        <div>
+          <div style="color:var(--cyan);opacity:.6;letter-spacing:.2em;font-family:'Orbitron';font-size:9px">HOLDERS</div>
+          <div style="color:var(--cyan);font-family:'Orbitron';font-size:18px;font-weight:900;margin-top:4px"><span id="holders">419</span></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="foot">
+  <span class="line">⟁ $1 USD = 100 $XENTS · 1:1 RATE LOCKED FOREVER ⟁</span>
+  <span class="line gold">$XENTS IS UTILITY CREDIT · NOT A SECURITY · NO CASH-OUT · NO SECONDARY MARKET</span>
+  <span class="line">// WIRED CHAOS // 33.3FM DOGECHAIN // ALL MINDS VALID //</span>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================
+   $XENTS CHANGE MACHINE — RUNTIME
+   Persists balance & ledger to localStorage:
+     wc_xents_balance      — integer $XENTS
+     wc_xents_ledger       — array of txns
+     wc_xents_treasury     — protocol stats
+============================================ */
+
+const RATE = 100; // $1 = 100 $XENTS, locked
+
+const RAIL_INFO = {
+  stripe: { name:'STRIPE',    icon:'◉', desc:'Card via Stripe Checkout', min:5,  max:500 },
+  apple:  { name:'APPLE PAY', icon:'◈', desc:'Apple Pay',                min:5,  max:500 },
+  usdc:   { name:'USDC BASE', icon:'▣', desc:'USDC on Base mainnet',     min:10, max:10000 },
+  x402:   { name:'x402 MICRO',icon:'⟁', desc:'x402 stablecoin micropayments', min:1, max:5 }
+};
+
+let selectedRail = null;
+let amount = 0;
+
+// ----- STATE -----
+function getBalance(){ return Number(localStorage.getItem('wc_xents_balance') || 0); }
+function setBalance(v){ localStorage.setItem('wc_xents_balance', String(v)); paintBalance(); }
+function getLedger(){ try{return JSON.parse(localStorage.getItem('wc_xents_ledger')||'[]')}catch(e){return []} }
+function setLedger(l){ localStorage.setItem('wc_xents_ledger', JSON.stringify(l.slice(0,50))); paintLedger(); }
+
+function paintBalance(){
+  const b = getBalance();
+  document.getElementById('balance').textContent = b.toLocaleString();
+  document.getElementById('usdEquiv').textContent = (b / RATE).toFixed(2);
+}
+function paintLedger(){
+  const list = document.getElementById('txnList');
+  const ledger = getLedger();
+  if(!ledger.length){
+    list.innerHTML = '<div style="padding:20px;text-align:center;color:rgba(0,255,230,.4);font-size:10px;letter-spacing:.2em">// NO TRANSACTIONS YET //</div>';
+    return;
+  }
+  list.innerHTML = ledger.slice(0,8).map(t => `
+    <div class="txn ${t.type}">
+      <div class="ico">${t.type === 'deposit' ? '+' : t.type === 'bonus' ? '★' : '−'}</div>
+      <div class="body">
+        <div class="nm">${t.label}</div>
+        <div class="meta">${t.rail || ''} ${t.rail?'·':''} ${formatTime(t.ts)}</div>
+      </div>
+      <div class="amt">${t.type === 'spend' ? '−' : '+'}⟁${Math.abs(t.xents).toLocaleString()}</div>
+    </div>
+  `).join('');
+}
+function formatTime(ts){
+  const d = new Date(ts);
+  return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+// ----- RAIL SELECT -----
+document.querySelectorAll('.rail').forEach(r => {
+  r.addEventListener('click', () => {
+    document.querySelectorAll('.rail').forEach(x => x.classList.remove('active'));
+    r.classList.add('active');
+    selectedRail = r.dataset.rail;
+    document.getElementById('displayRail').textContent = RAIL_INFO[selectedRail].name;
+    document.getElementById('displayStatus').textContent = 'AWAITING AMOUNT';
+    updateButton();
+  });
+});
+
+// ----- AMOUNT -----
+const amountInput = document.getElementById('amountInput');
+amountInput.addEventListener('input', () => {
+  amount = Math.max(0, Math.floor(Number(amountInput.value) || 0));
+  document.getElementById('displayUsd').textContent = amount;
+  document.getElementById('previewXents').textContent = (amount * RATE).toLocaleString();
+  document.querySelectorAll('.quick button').forEach(b => b.classList.toggle('active', Number(b.dataset.amt) === amount));
+  updateButton();
+});
+
+document.querySelectorAll('.quick button').forEach(b => {
+  b.addEventListener('click', () => {
+    amount = Number(b.dataset.amt);
+    amountInput.value = amount;
+    amountInput.dispatchEvent(new Event('input'));
+  });
+});
+
+function updateButton(){
+  const btn = document.getElementById('depositBtn');
+  if(!selectedRail){ btn.disabled = true; btn.textContent = '◢ SELECT A RAIL'; return; }
+  if(amount <= 0)   { btn.disabled = true; btn.textContent = '◢ ENTER AMOUNT'; return; }
+
+  const info = RAIL_INFO[selectedRail];
+  if(amount < info.min){ btn.disabled = true; btn.textContent = `◢ MIN $${info.min} ON ${info.name}`; return; }
+  if(amount > info.max){ btn.disabled = true; btn.textContent = `◢ MAX $${info.max} ON ${info.name}`; return; }
+
+  btn.disabled = false;
+  btn.textContent = `⟁ DEPOSIT $${amount} → ⟁${(amount*RATE).toLocaleString()}`;
+}
+
+// ----- THE BIG MOMENT: DEPOSIT -----
+document.getElementById('depositBtn').addEventListener('click', () => {
+  if(!selectedRail || amount <= 0) return;
+  const info = RAIL_INFO[selectedRail];
+
+  // Lock UI
+  const btn = document.getElementById('depositBtn');
+  btn.disabled = true;
+  btn.textContent = '◉ PROCESSING...';
+  document.getElementById('displayStatus').textContent = 'PROCESSING';
+  document.querySelectorAll('.light').forEach(l => l.classList.remove('warn'));
+  document.querySelectorAll('.light')[3].classList.add('warn'); // BUSY
+
+  // Drop coin animation
+  for(let i = 0; i < Math.min(5, Math.ceil(amount/5)); i++){
+    setTimeout(() => spawnCoin(), i * 100);
+  }
+
+  // Simulate rail processing time
+  const delay = selectedRail === 'x402' ? 400 : selectedRail === 'usdc' ? 1400 : 900;
+
+  setTimeout(() => {
+    // Credit
+    const xentsToAdd = amount * RATE;
+    setBalance(getBalance() + xentsToAdd);
+
+    // Append ledger
+    const ledger = getLedger();
+    ledger.unshift({
+      type: 'deposit',
+      label: `DEPOSIT VIA ${info.name}`,
+      rail: info.name,
+      usd: amount,
+      xents: xentsToAdd,
+      ts: Date.now()
+    });
+    setLedger(ledger);
+
+    // Treasury bump
+    bumpTreasury(amount);
+
+    // Confetti for $25+
+    if(amount >= 25) confetti();
+
+    // Reset
+    amount = 0; amountInput.value = '';
+    document.getElementById('displayUsd').textContent = '0';
+    document.getElementById('previewXents').textContent = '0';
+    document.querySelectorAll('.quick button').forEach(b => b.classList.remove('active'));
+    document.getElementById('displayStatus').textContent = 'COMPLETE';
+    document.querySelectorAll('.light').forEach(l => l.classList.remove('warn'));
+    document.querySelectorAll('.light')[2].classList.add('warn'); // READY
+
+    toast(`+ ⟁${xentsToAdd.toLocaleString()} CREDITED`, 'win');
+    updateButton();
+    publishState();
+  }, delay);
+});
+
+// ----- COIN DROP -----
+function spawnCoin(){
+  const c = document.createElement('div');
+  c.className = 'coin-anim';
+  c.textContent = '⟁';
+  c.style.left = (45 + Math.random()*10) + '%';
+  c.style.top = (40 + Math.random()*5) + '%';
+  document.body.appendChild(c);
+  setTimeout(() => c.remove(), 1300);
+}
+
+// ----- CONFETTI -----
+function confetti(){
+  const colors = ['#c2a633','#00ffe6','#ff1a2e','#00ff88'];
+  for(let i = 0; i < 40; i++){
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.left = (Math.random() * 100) + '%';
+    p.style.top = '-20px';
+    p.style.background = colors[Math.floor(Math.random()*colors.length)];
+    p.style.animationDelay = (Math.random() * 0.5) + 's';
+    p.style.animationDuration = (1.6 + Math.random()*0.8) + 's';
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 2500);
+  }
+}
+
+// ----- TOAST -----
+function toast(msg, kind=''){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + kind;
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ----- TREASURY -----
+function getTreasury(){
+  try { return JSON.parse(localStorage.getItem('wc_xents_treasury') || 'null') || defaultTreasury(); }
+  catch(e){ return defaultTreasury(); }
+}
+function defaultTreasury(){ return { circulating: 847392, backing: 8473.92, volume24h: 2140, holders: 419 }; }
+function setTreasury(t){ localStorage.setItem('wc_xents_treasury', JSON.stringify(t)); paintTreasury(); }
+function bumpTreasury(usd){
+  const t = getTreasury();
+  t.circulating += usd * RATE;
+  t.backing     += usd;
+  t.volume24h   += usd;
+  setTreasury(t);
+}
+function paintTreasury(){
+  const t = getTreasury();
+  document.getElementById('circulating').textContent = t.circulating.toLocaleString();
+  document.getElementById('backing').textContent     = t.backing.toFixed(2);
+  document.getElementById('volume').textContent      = t.volume24h.toLocaleString();
+  document.getElementById('holders').textContent     = t.holders;
+}
+
+// ----- CROSS-APP STATE BROADCAST -----
+function publishState(){
+  const state = {
+    balance: getBalance(),
+    rate: RATE,
+    direction: 'one-way',
+    ts: Date.now()
+  };
+  localStorage.setItem('wc_xents_state', JSON.stringify(state));
+  // GTM hook
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ event:'xents_state', ...state });
+}
+
+// ----- SPEND CELL CLICK (preview hook) -----
+document.querySelectorAll('.spend-cell').forEach(c => {
+  c.addEventListener('click', () => {
+    toast('SPEND FLOWS LIVE IN MINT / BROADCAST SURFACES', '');
+  });
+});
+
+// ----- INIT -----
+paintBalance();
+paintLedger();
+paintTreasury();
+publishState();
+
+// Listen for cross-tab changes
+window.addEventListener('storage', (e) => {
+  if(e.key === 'wc_xents_balance') paintBalance();
+  if(e.key === 'wc_xents_ledger') paintLedger();
+});
+
+// Light keyboard shortcut: enter to deposit
+amountInput.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter' && !document.getElementById('depositBtn').disabled){
+    document.getElementById('depositBtn').click();
+  }
+});
+
+// Auto-select Stripe on first paint (most common rail)
+setTimeout(() => document.querySelector('[data-rail="stripe"]').click(), 200);
+</script>
+</body>
+</html>

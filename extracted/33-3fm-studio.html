@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>33.3FM // STUDIO CONSOLE — WIRED CHAOS PRODUCTION</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cyan:#00ffe6;
+  --red:#ff1a2e;
+  --doge:#c2a633;
+  --base:#0052ff;
+  --sol:#9945ff;
+  --green:#00ff88;
+  --void:#000000;
+  --ink:#0a0a0c;
+  --panel:rgba(0,255,230,.02);
+  --hud-line:rgba(0,255,230,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--void);color:var(--cyan);font-family:'Share Tech Mono',monospace;min-height:100vh}
+
+/* SCANLINES */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,rgba(0,255,230,.03) 0,rgba(0,255,230,.03) 1px,transparent 1px,transparent 3px);
+}
+
+/* HEADER */
+.head{
+  display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;
+  padding:14px 28px;border-bottom:1px solid var(--hud-line);
+  background:linear-gradient(180deg,rgba(255,26,46,.04),transparent);
+}
+.brand{font-family:'Orbitron',sans-serif;font-weight:900;font-size:18px;letter-spacing:.18em}
+.brand .red{color:var(--red)}
+.brand .sub{display:block;font-size:9px;color:var(--doge);letter-spacing:.4em;margin-top:2px}
+
+.statbar{display:flex;gap:18px;font-size:10px;letter-spacing:.2em}
+.stat{display:flex;align-items:center;gap:6px}
+.stat .dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+.stat .dot.warn{background:var(--doge);box-shadow:0 0 8px var(--doge)}
+.stat .dot.err{background:var(--red);box-shadow:0 0 8px var(--red)}
+
+.bridge-back{
+  padding:6px 14px;border:1px solid var(--cyan);color:var(--cyan);
+  font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:.3em;
+  background:transparent;cursor:pointer;text-decoration:none;display:inline-block;
+}
+.bridge-back:hover{background:var(--cyan);color:var(--void);box-shadow:0 0 20px var(--cyan)}
+
+/* TABS */
+.tabs{
+  display:flex;gap:2px;padding:0 28px;background:var(--ink);
+  border-bottom:1px solid var(--hud-line);position:sticky;top:0;z-index:50;
+}
+.tab{
+  padding:14px 22px;font-family:'Orbitron',sans-serif;font-size:11px;
+  letter-spacing:.25em;color:var(--cyan);opacity:.5;cursor:pointer;
+  border-bottom:2px solid transparent;transition:all .2s;
+}
+.tab:hover{opacity:.9}
+.tab.active{opacity:1;border-bottom-color:var(--red);color:var(--red)}
+
+/* PANELS */
+.workspace{padding:28px;display:none;animation:fadeIn .4s ease}
+.workspace.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.panel{
+  border:1px solid var(--hud-line);background:var(--panel);
+  position:relative;padding:22px;margin-bottom:20px;
+}
+.panel::before{
+  content:attr(data-label);position:absolute;top:-9px;left:14px;
+  background:var(--void);padding:0 8px;font-size:10px;letter-spacing:.3em;
+  color:var(--cyan);font-family:'Orbitron',sans-serif;
+}
+.panel h2{font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:.25em;color:var(--cyan);margin-bottom:6px}
+.panel .desc{font-size:11px;color:var(--cyan);opacity:.6;margin-bottom:18px;letter-spacing:.05em}
+
+/* FORM ELEMENTS */
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.row.three{grid-template-columns:1fr 1fr 1fr}
+.row.full{grid-template-columns:1fr}
+@media(max-width:780px){.row,.row.three{grid-template-columns:1fr}}
+
+label{display:block;font-size:10px;letter-spacing:.25em;color:var(--cyan);opacity:.7;margin-bottom:6px;font-family:'Orbitron',sans-serif}
+input,select,textarea{
+  width:100%;background:rgba(0,0,0,.6);border:1px solid var(--hud-line);
+  color:var(--cyan);padding:10px 12px;font-family:'Share Tech Mono',monospace;
+  font-size:13px;outline:none;transition:all .2s;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--red);box-shadow:0 0 10px rgba(255,26,46,.3)}
+textarea{min-height:90px;resize:vertical}
+select{cursor:pointer}
+
+button.action{
+  padding:11px 22px;border:1px solid var(--red);background:transparent;color:var(--red);
+  font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:.3em;
+  cursor:pointer;transition:all .2s;
+}
+button.action:hover{background:var(--red);color:var(--void);box-shadow:0 0 20px var(--red)}
+button.action.cyan{border-color:var(--cyan);color:var(--cyan)}
+button.action.cyan:hover{background:var(--cyan);color:var(--void);box-shadow:0 0 20px var(--cyan)}
+button.action.gold{border-color:var(--doge);color:var(--doge)}
+button.action.gold:hover{background:var(--doge);color:var(--void);box-shadow:0 0 20px var(--doge)}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+thead th{
+  text-align:left;padding:10px 12px;border-bottom:1px solid var(--hud-line);
+  font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:.25em;color:var(--red);
+}
+tbody td{padding:10px 12px;border-bottom:1px dashed rgba(0,255,230,.1)}
+tbody tr:hover{background:rgba(0,255,230,.04)}
+.tag-pill{
+  display:inline-block;padding:2px 8px;border:1px solid currentColor;
+  font-size:9px;letter-spacing:.2em;font-family:'Orbitron',sans-serif;
+}
+.tag-pill.live{color:var(--red)}
+.tag-pill.draft{color:var(--doge)}
+.tag-pill.queued{color:var(--cyan)}
+.tag-pill.done{color:var(--green)}
+
+/* SCRIPT GENERATOR */
+.gen-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:980px){.gen-grid{grid-template-columns:1fr}}
+
+.script-output{
+  min-height:380px;background:rgba(0,0,0,.7);border:1px solid var(--hud-line);
+  padding:18px;font-size:13px;line-height:1.6;color:var(--cyan);
+  white-space:pre-wrap;overflow-y:auto;max-height:480px;
+  font-family:'Share Tech Mono',monospace;
+}
+.script-output:empty::before{
+  content:"// AGENT DJ SCRIPT WILL APPEAR HERE //\A// Configure parameters and hit GENERATE //";
+  white-space:pre;color:var(--cyan);opacity:.4;
+}
+.script-output .cue{color:var(--red);font-weight:bold}
+.script-output .agent{color:var(--doge)}
+.script-output .stage{color:#00ff88;font-style:italic}
+
+.spinner{
+  display:none;width:20px;height:20px;border:2px solid rgba(0,255,230,.2);
+  border-top-color:var(--cyan);border-radius:50%;animation:spin 0.8s linear infinite;
+  margin-left:10px;vertical-align:middle;
+}
+.spinner.on{display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ROYALTY SPLITS */
+.split-row{
+  display:grid;grid-template-columns:auto 1fr 100px 80px 36px;gap:12px;
+  align-items:center;padding:10px 0;border-bottom:1px dashed rgba(0,255,230,.1);
+}
+.split-row .chain-pill{
+  width:60px;text-align:center;padding:4px 6px;border:1px solid;font-size:9px;
+  letter-spacing:.2em;font-family:'Orbitron',sans-serif;
+}
+.chain-pill.doge{color:var(--doge);border-color:var(--doge)}
+.chain-pill.base{color:var(--base);border-color:var(--base)}
+.chain-pill.sol{color:var(--sol);border-color:var(--sol)}
+.split-row input[type="text"]{padding:6px 10px;font-size:12px}
+.split-row input[type="number"]{padding:6px 10px;font-size:12px;text-align:right}
+.split-row .rm{color:var(--red);background:none;border:1px solid var(--red);width:32px;height:32px;cursor:pointer;font-family:'Orbitron',sans-serif}
+.split-row .rm:hover{background:var(--red);color:var(--void)}
+
+.split-summary{
+  margin-top:14px;padding:12px;border:1px dashed var(--cyan);
+  display:flex;justify-content:space-between;font-size:12px;
+}
+.split-summary.bad{border-color:var(--red);color:var(--red)}
+.split-summary.bad .total{color:var(--red)}
+.split-summary .total{color:var(--green);font-family:'Orbitron',sans-serif;font-weight:900;letter-spacing:.1em}
+
+/* RSS OUTPUT */
+.rss-output{
+  background:rgba(0,0,0,.8);border:1px solid var(--cyan);padding:18px;
+  font-size:11px;line-height:1.5;color:var(--cyan);
+  white-space:pre-wrap;max-height:400px;overflow-y:auto;
+  font-family:'Share Tech Mono',monospace;
+}
+.rss-output .key{color:var(--red)}
+.rss-output .val{color:var(--doge)}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:30px;right:30px;padding:14px 22px;
+  background:var(--void);border:1px solid var(--green);color:var(--green);
+  font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:.25em;
+  z-index:9999;transform:translateY(100px);opacity:0;transition:all .3s;
+  box-shadow:0 0 30px rgba(0,255,136,.3);
+}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.err{border-color:var(--red);color:var(--red);box-shadow:0 0 30px rgba(255,26,46,.3)}
+
+/* AGENT GRID for DJ assignment */
+.agent-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.agent-card{
+  padding:14px;border:1px solid var(--hud-line);background:rgba(0,255,230,.02);
+  text-align:center;cursor:pointer;transition:all .2s;
+}
+.agent-card.selected{border-color:var(--red);box-shadow:0 0 20px rgba(255,26,46,.3);background:rgba(255,26,46,.05)}
+.agent-card:hover{transform:translateY(-2px);border-color:var(--cyan)}
+.agent-card .av{
+  width:54px;height:54px;margin:0 auto 8px;border-radius:50%;
+  background:radial-gradient(circle,#1a1a1a,#000);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron',sans-serif;font-weight:900;color:var(--cyan);
+  border:2px solid var(--cyan);
+}
+.agent-card.selected .av{border-color:var(--red);color:var(--red);box-shadow:0 0 12px var(--red)}
+.agent-card .nm{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:.2em;color:var(--cyan);margin-bottom:4px}
+.agent-card .rl{font-size:9px;color:var(--doge);letter-spacing:.15em}
+</style>
+</head>
+<body>
+
+<header class="head">
+  <div class="brand">
+    33.3<span class="red">●</span>FM <span style="opacity:.5">/</span> STUDIO CONSOLE
+    <span class="sub">WIRED CHAOS PRODUCTION SUITE v1.0</span>
+  </div>
+  <div class="statbar">
+    <div class="stat"><span class="dot"></span> CLAUDE API</div>
+    <div class="stat"><span class="dot"></span> SUNO INGEST</div>
+    <div class="stat"><span class="dot"></span> RSS FEED</div>
+    <div class="stat"><span class="dot warn"></span> DOGE RPC</div>
+    <div class="stat"><span class="dot"></span> BASE RPC</div>
+  </div>
+  <a href="33-3fm-broadcast.html" class="bridge-back">◄ ON-AIR</a>
+</header>
+
+<nav class="tabs">
+  <div class="tab active" data-tab="schedule">◉ SCHEDULER</div>
+  <div class="tab" data-tab="ingest">◉ TRACK INGEST</div>
+  <div class="tab" data-tab="djs">◉ AGENT DJs</div>
+  <div class="tab" data-tab="scripts">◉ SCRIPT GEN</div>
+  <div class="tab" data-tab="royalty">◉ ROYALTY SPLITS</div>
+  <div class="tab" data-tab="rss">◉ DISTRIBUTION</div>
+  <div class="tab" data-tab="pipeline" style="border-left:1px solid rgba(0,255,230,.2);margin-left:8px;padding-left:22px">⟁ OAC PIPELINE</div>
+  <div class="tab" data-tab="oac">⟁ OAC ROSTER</div>
+</nav>
+
+<!-- ========== SCHEDULER ========== -->
+<section class="workspace active" id="ws-schedule">
+  <div class="panel" data-label="NEW SHOW">
+    <h2>◢ CREATE BROADCAST BLOCK</h2>
+    <p class="desc">Schedule a show, podcast, or district takeover. Multi-chain payout terms attach at publish.</p>
+    <div class="row">
+      <div><label>SHOW TITLE</label><input id="showTitle" placeholder="e.g. VOID FREQUENCY" value="VOID FREQUENCY"></div>
+      <div><label>HOST AGENT</label>
+        <select id="showHost">
+          <option>DJ RED FANG</option><option>PACK</option><option>LENS</option><option>MINT</option>
+          <option>HUMAN GUEST</option><option>DISTRICT TAKEOVER</option>
+        </select>
+      </div>
+    </div>
+    <div class="row three">
+      <div><label>START (UTC)</label><input type="datetime-local" id="showStart"></div>
+      <div><label>DURATION (MIN)</label><input type="number" id="showDur" value="60"></div>
+      <div><label>BLOCK TYPE</label>
+        <select id="showType">
+          <option>LIVE</option><option>PRE-RECORDED</option><option>VAULT33 GATED</option><option>SIMULCAST → ATV</option>
+        </select>
+      </div>
+    </div>
+    <div class="row full"><div><label>SHOW DESCRIPTION</label><textarea id="showDesc" placeholder="Late-night chaos protocol. Industrial void selections from District 7."></textarea></div></div>
+    <button class="action" onclick="addShow()">⟁ COMMIT TO SCHEDULE</button>
+  </div>
+
+  <div class="panel" data-label="PROGRAM GRID">
+    <h2>◢ SCHEDULE TABLE</h2>
+    <p class="desc">All shows persist via <code>localStorage["wc_radio_schedule"]</code>. Broadcast interface reads this feed.</p>
+    <table>
+      <thead><tr><th>TIME (UTC)</th><th>SHOW</th><th>HOST</th><th>TYPE</th><th>STATUS</th><th></th></tr></thead>
+      <tbody id="scheduleBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ========== TRACK INGEST ========== -->
+<section class="workspace" id="ws-ingest">
+  <div class="panel" data-label="SUNO INGEST">
+    <h2>◢ TRACK INGEST PIPELINE</h2>
+    <p class="desc">Pull a track from Suno via URL or file. Tag for district routing, BPM, mood, and chain assignment.</p>
+    <div class="row">
+      <div><label>TRACK TITLE</label><input id="trkTitle" placeholder="MIDNIGHT GHOSTS"></div>
+      <div><label>ARTIST / AGENT</label><input id="trkArtist" placeholder="XENT-K0RE"></div>
+    </div>
+    <div class="row three">
+      <div><label>SUNO URL or FILE ID</label><input id="trkSource" placeholder="https://suno.com/song/..."></div>
+      <div><label>BPM</label><input type="number" id="trkBpm" value="92"></div>
+      <div><label>KEY</label><input id="trkKey" value="F# MIN"></div>
+    </div>
+    <div class="row three">
+      <div><label>DISTRICT</label>
+        <select id="trkDistrict">
+          <option>D1 — MADISON</option><option>D2 — VOID</option><option>D3 — XENTS</option>
+          <option>D4 — VAULT33</option><option>D5 — PACK-DEN</option><option>D6 — CHRYSANTHEUM</option>
+          <option>D7 — VOID-7</option><option>D8 — GRIND3R</option><option>D9 — NTKY2090</option>
+          <option>D10 — SUIT54</option><option>D11 — TERRA</option><option>D12 — BSA-OPS</option>
+          <option>D13 — ENTERTAINMENT</option><option>D14 — SENTINEL</option>
+        </select>
+      </div>
+      <div><label>MOOD TAG</label>
+        <select id="trkMood">
+          <option>VOID INDUSTRIAL</option><option>SLEEP / MEDITATION</option><option>FOCUS / STUDY</option>
+          <option>CYBER PHONK</option><option>LO-FI HIP HOP</option><option>AMBIENT DRONE</option>
+          <option>TRAP / DRILL</option><option>SYNTHWAVE</option>
+        </select>
+      </div>
+      <div><label>MINT CHAIN</label>
+        <select id="trkChain">
+          <option value="base">BASE — $XENTS native</option>
+          <option value="sol">SOLANA — music NFT</option>
+          <option value="doge">DOGECHAIN — tip-routed</option>
+          <option value="multi">MULTI-CHAIN BRIDGE</option>
+        </select>
+      </div>
+    </div>
+    <button class="action cyan" onclick="ingestTrack()">⟁ INGEST + INDEX</button>
+  </div>
+
+  <div class="panel" data-label="TRACK LIBRARY">
+    <h2>◢ INGESTED CATALOG</h2>
+    <table>
+      <thead><tr><th>TITLE</th><th>ARTIST</th><th>DISTRICT</th><th>BPM</th><th>CHAIN</th><th>STATUS</th></tr></thead>
+      <tbody id="trackBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ========== AGENT DJs ========== -->
+<section class="workspace" id="ws-djs">
+  <div class="panel" data-label="DJ ROSTER">
+    <h2>◢ AGENT DJ ASSIGNMENTS</h2>
+    <p class="desc">Assign named WIRED CHAOS agents to broadcast time blocks. Voice profile + signature drops attach to each.</p>
+    <div class="agent-grid" id="agentGrid"></div>
+  </div>
+
+  <div class="panel" data-label="DJ PROFILE">
+    <h2>◢ EDIT VOICE PROFILE</h2>
+    <p class="desc">Selected: <span id="selectedDJ" style="color:var(--red);font-family:'Orbitron'">— none —</span></p>
+    <div class="row">
+      <div><label>VOICE PERSONA</label><textarea id="djPersona" placeholder="aggressive, low-register, glitch-laced ad-libs..."></textarea></div>
+      <div><label>SIGNATURE DROP</label><textarea id="djDrop" placeholder="ALL MINDS VALID. SIGNAL LOCKED. WE TRANSMIT."></textarea></div>
+    </div>
+    <div class="row three">
+      <div><label>PRIMARY TIME BLOCK</label>
+        <select id="djBlock">
+          <option>00:00–04:00 // LATE NIGHT</option>
+          <option>04:00–08:00 // PRE-DAWN</option>
+          <option>08:00–12:00 // MORNING DRIVE</option>
+          <option>12:00–16:00 // MIDDAY</option>
+          <option>16:00–20:00 // EVENING DRIVE</option>
+          <option>20:00–24:00 // PRIMETIME</option>
+        </select>
+      </div>
+      <div><label>MOOD AFFINITY</label>
+        <select id="djMood">
+          <option>VOID INDUSTRIAL</option><option>CYBER PHONK</option><option>LO-FI HIP HOP</option>
+          <option>SLEEP / MEDITATION</option><option>SYNTHWAVE</option><option>FOCUS / STUDY</option>
+        </select>
+      </div>
+      <div><label>DISTRICT HOME</label>
+        <select id="djDistrict">
+          <option>VOID-7</option><option>MADISON</option><option>PACK-DEN</option>
+          <option>VAULT33</option><option>CHRYSANTHEUM</option><option>NTKY2090</option>
+        </select>
+      </div>
+    </div>
+    <button class="action" onclick="saveDJ()">⟁ SAVE PROFILE</button>
+  </div>
+</section>
+
+<!-- ========== SCRIPT GENERATOR ========== -->
+<section class="workspace" id="ws-scripts">
+  <div class="panel" data-label="CLAUDE API // AGENT DJ SCRIPT GENERATOR">
+    <h2>◢ GENERATE BROADCAST SCRIPT</h2>
+    <p class="desc">Live call to Claude API. Generates voice-ready DJ script with cue points, drops, and track intros.</p>
+    <div class="gen-grid">
+      <div>
+        <div class="row"><div><label>HOST AGENT</label>
+          <select id="genHost">
+            <option>DJ RED FANG</option><option>PACK</option><option>LENS</option><option>MINT</option>
+          </select></div>
+          <div><label>SHOW LENGTH (MIN)</label><input type="number" id="genLen" value="15"></div>
+        </div>
+        <div class="row"><div><label>SHOW THEME</label>
+          <input id="genTheme" placeholder="late night void industrial drift" value="late night void industrial drift">
+        </div>
+          <div><label>TRACK COUNT</label><input type="number" id="genTracks" value="4"></div>
+        </div>
+        <div class="row full"><div><label>FEATURED TRACKS (one per line)</label>
+          <textarea id="genTrackList" rows="5">XENT-K0RE — Midnight Ghosts
+NULL-WAVE — Vacant Halls of D7
+PHANTOM/BIT — Ascii Funeral
+GHOSTLINE — Block 33⅓</textarea>
+        </div></div>
+        <div class="row full"><div><label>ECOSYSTEM CALLOUTS</label>
+          <textarea id="genCallouts" rows="3" placeholder="VAULT33 unlock at 02:00, ATV simulcast Channel 7, Madison takeover next hour">VAULT33 premium unlock at 02:00 UTC, Madison District takeover begins at 03:00, ATV Network simulcast active on Channel 7</textarea>
+        </div></div>
+        <button class="action cyan" onclick="generateScript()">⟁ GENERATE VIA CLAUDE API <span class="spinner" id="genSpin"></span></button>
+        <button class="action gold" onclick="copyScript()" style="margin-left:8px">⧉ COPY</button>
+      </div>
+      <div class="script-output" id="scriptOut"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== ROYALTY SPLITS ========== -->
+<section class="workspace" id="ws-royalty">
+  <div class="panel" data-label="MULTI-CHAIN ROYALTY SPLITS">
+    <h2>◢ PAYMENT ROUTING CONFIG</h2>
+    <p class="desc">Configure on-chain split terms per show or track. Total must equal 100%. Splits write to <code>localStorage["wc_radio_splits"]</code> and feed VAULT33 custody escrow.</p>
+    <div class="row">
+      <div><label>SCOPE</label><select id="splitScope"><option>SHOW: VOID FREQUENCY</option><option>TRACK: MIDNIGHT GHOSTS</option><option>GLOBAL DEFAULT</option></select></div>
+      <div><label>TRIGGER EVENT</label><select id="splitTrigger"><option>STREAM PLAY</option><option>TIP RECEIVED</option><option>NFT MINT</option><option>VAULT33 SUBSCRIPTION</option></select></div>
+    </div>
+
+    <div id="splitsContainer" style="margin-top:14px"></div>
+    <button class="action cyan" onclick="addSplit()" style="margin-top:10px">+ ADD RECIPIENT</button>
+
+    <div class="split-summary" id="splitSum">
+      <div>TOTAL ALLOCATION</div>
+      <div class="total" id="splitTotal">0%</div>
+    </div>
+
+    <button class="action" onclick="saveSplits()" style="margin-top:14px">⟁ COMMIT SPLIT CONFIG</button>
+  </div>
+</section>
+
+<!-- ========== DISTRIBUTION / RSS ========== -->
+<section class="workspace" id="ws-rss">
+  <div class="panel" data-label="PODCAST RSS EXPORT">
+    <h2>◢ DISTRIBUTION FEED</h2>
+    <p class="desc">Generates RSS 2.0 podcast feed for Apple Podcasts, Spotify, distrokid, and pod aggregators. URL becomes the canonical 33.3FM feed.</p>
+    <div class="row">
+      <div><label>FEED TITLE</label><input id="feedTitle" value="33.3FM DOGECHAIN"></div>
+      <div><label>OWNER</label><input id="feedOwner" value="WIRED CHAOS"></div>
+    </div>
+    <div class="row">
+      <div><label>FEED URL</label><input id="feedUrl" value="https://wiredchaos.xyz/333fm/rss.xml"></div>
+      <div><label>CATEGORY</label><select><option>Music</option><option>Technology</option><option>Arts</option></select></div>
+    </div>
+    <button class="action gold" onclick="buildRSS()">⟁ BUILD RSS FEED</button>
+    <div style="margin-top:18px" class="rss-output" id="rssOut">// rss output appears here //</div>
+  </div>
+</section>
+
+<!-- ========== OAC PIPELINE ========== -->
+<section class="workspace" id="ws-pipeline">
+  <div class="panel" data-label="OAC RELEASE PIPELINE">
+    <h2>◢ ACTIVE RELEASES</h2>
+    <p class="desc">Real-time view of OAC agents working incoming releases. Reads from <code>localStorage["wc_oac_releases"]</code>. Updates auto-tick.</p>
+    <div id="releaseList" style="display:flex;flex-direction:column;gap:14px"></div>
+  </div>
+
+  <div class="panel" data-label="LAUNCH TEST RELEASE">
+    <h2>◢ DRY-RUN A PIPELINE</h2>
+    <p class="desc">Kick off a simulated OAC release to watch the 8-agent DAG fire. Useful for demos.</p>
+    <div class="row">
+      <div><label>TRACK TITLE</label><input id="dryTitle" placeholder="GHOST FREQUENCY" value="GHOST FREQUENCY"></div>
+      <div><label>ARTIST</label><input id="dryArtist" placeholder="VOID-7" value="VOID-7"></div>
+    </div>
+    <button class="action cyan" onclick="launchTestRelease()">⟁ KICK PIPELINE</button>
+  </div>
+</section>
+
+<!-- ========== OAC ROSTER ========== -->
+<section class="workspace" id="ws-oac">
+  <div class="panel" data-label="OAC AGENT ROSTER">
+    <h2>◢ 8 RELEASE-SIDE AGENTS</h2>
+    <p class="desc">Separate roster from DJ agents. Per architecture decision: DJs handle broadcast, OAC handles release. These eight fire in dependency order on every mint.</p>
+    <div id="oacRoster" class="agent-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px"></div>
+  </div>
+</section>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================
+   33.3FM STUDIO CONSOLE — RUNTIME
+   Persists to:
+     wc_radio_schedule  — show grid
+     wc_radio_tracks    — ingested catalog
+     wc_radio_djs       — DJ profiles
+     wc_radio_splits    — royalty splits
+     wc_radio_state     — live state (read by broadcast UI)
+============================================ */
+
+// ---------- TAB ROUTER ----------
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.workspace').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('ws-'+t.dataset.tab).classList.add('active');
+  });
+});
+
+// ---------- TOAST ----------
+function toast(msg, err=false){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.toggle('err', err);
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 2600);
+}
+
+// ---------- SCHEDULER ----------
+function getSchedule(){ try{return JSON.parse(localStorage.getItem('wc_radio_schedule')||'[]')}catch(e){return []} }
+function setSchedule(s){ localStorage.setItem('wc_radio_schedule', JSON.stringify(s)) }
+
+function renderSchedule(){
+  const tbody = document.getElementById('scheduleBody');
+  const shows = getSchedule();
+  if(!shows.length){
+    // seed with defaults
+    const seed = [
+      {time:'22:00', title:'VOID FREQUENCY', host:'DJ RED FANG', type:'LIVE', status:'live'},
+      {time:'23:00', title:'PACK SIGNAL', host:'PACK', type:'LIVE', status:'queued'},
+      {time:'00:00', title:'LENS UPLINK', host:'LENS', type:'PRE-RECORDED', status:'queued'},
+      {time:'01:00', title:'MINT DROP HOUR', host:'MINT', type:'LIVE', status:'queued'},
+      {time:'02:00', title:'CIPHER HOUR', host:'DJ RED FANG', type:'VAULT33 GATED', status:'queued'},
+      {time:'03:00', title:'MADISON TAKEOVER', host:'DISTRICT', type:'LIVE', status:'queued'}
+    ];
+    setSchedule(seed);
+  }
+  tbody.innerHTML = '';
+  getSchedule().forEach((s,i)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${s.time}</td>
+      <td>${s.title}</td>
+      <td>${s.host}</td>
+      <td>${s.type}</td>
+      <td><span class="tag-pill ${s.status}">${s.status.toUpperCase()}</span></td>
+      <td><button class="action" style="padding:4px 10px;font-size:9px" onclick="rmShow(${i})">✕</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+function addShow(){
+  const t = document.getElementById('showStart').value;
+  const time = t ? t.split('T')[1] : new Date().toISOString().split('T')[1].slice(0,5);
+  const show = {
+    time,
+    title: document.getElementById('showTitle').value || 'UNTITLED',
+    host: document.getElementById('showHost').value,
+    type: document.getElementById('showType').value,
+    duration: document.getElementById('showDur').value,
+    description: document.getElementById('showDesc').value,
+    status: 'queued',
+    created: Date.now()
+  };
+  const s = getSchedule(); s.push(show); setSchedule(s); renderSchedule();
+  toast('SHOW COMMITTED TO GRID');
+}
+function rmShow(i){ const s = getSchedule(); s.splice(i,1); setSchedule(s); renderSchedule(); toast('SHOW REMOVED'); }
+renderSchedule();
+
+// ---------- TRACK INGEST ----------
+function getTracks(){ try{return JSON.parse(localStorage.getItem('wc_radio_tracks')||'[]')}catch(e){return []} }
+function setTracks(t){ localStorage.setItem('wc_radio_tracks', JSON.stringify(t)) }
+function renderTracks(){
+  const tbody = document.getElementById('trackBody');
+  const tracks = getTracks();
+  if(!tracks.length){
+    setTracks([
+      {title:'Midnight Ghosts',artist:'XENT-K0RE',district:'D7 — VOID-7',bpm:92,chain:'base',status:'live'},
+      {title:'Vacant Halls of D7',artist:'NULL-WAVE',district:'D7 — VOID-7',bpm:78,chain:'sol',status:'live'},
+      {title:'Ascii Funeral',artist:'PHANTOM/BIT',district:'D9 — NTKY2090',bpm:104,chain:'multi',status:'queued'}
+    ]);
+  }
+  tbody.innerHTML = '';
+  getTracks().forEach(t=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${t.title}</td><td>${t.artist}</td><td>${t.district}</td><td>${t.bpm}</td><td><span class="tag-pill ${t.chain==='multi'?'queued':t.chain==='base'?'live':'draft'}">${t.chain.toUpperCase()}</span></td><td><span class="tag-pill ${t.status}">${t.status.toUpperCase()}</span></td>`;
+    tbody.appendChild(tr);
+  });
+}
+function ingestTrack(){
+  const trk = {
+    title: document.getElementById('trkTitle').value,
+    artist: document.getElementById('trkArtist').value,
+    source: document.getElementById('trkSource').value,
+    bpm: document.getElementById('trkBpm').value,
+    key: document.getElementById('trkKey').value,
+    district: document.getElementById('trkDistrict').value,
+    mood: document.getElementById('trkMood').value,
+    chain: document.getElementById('trkChain').value,
+    status: 'queued',
+    ingested: Date.now()
+  };
+  if(!trk.title){ toast('TITLE REQUIRED', true); return }
+  const all = getTracks(); all.push(trk); setTracks(all); renderTracks();
+  toast('TRACK INGESTED + INDEXED');
+}
+renderTracks();
+
+// ---------- DJ ROSTER ----------
+const AGENTS = [
+  {nm:'DJ RED FANG', rl:'LATE NIGHT', persona:'aggressive, low-register, glitch-laced ad-libs, void industrial loyalist, fanged delivery — bites the ends off sentences'},
+  {nm:'PACK',  rl:'SOCIAL HOUR', persona:'community-warm, hype-build, calls listeners by name'},
+  {nm:'LENS',  rl:'NEWS / TALK', persona:'analytical, dry wit, breaks news with clean cadence'},
+  {nm:'MINT',  rl:'NEW DROPS', persona:'high energy, mint-callout specialist, NFT-fluent'},
+  {nm:'ORACLE',rl:'PROPHETIC', persona:'oracular, slow tempo, cryptic forecasting'},
+  {nm:'NEXUS', rl:'CROSS-CHAIN', persona:'multi-chain technical, bridges narratives across districts'}
+];
+function renderAgents(){
+  const grid = document.getElementById('agentGrid');
+  grid.innerHTML = '';
+  AGENTS.forEach(a=>{
+    const card = document.createElement('div');
+    card.className = 'agent-card';
+    card.dataset.nm = a.nm;
+    card.innerHTML = `<div class="av">${a.nm[0]}</div><div class="nm">${a.nm}</div><div class="rl">${a.rl}</div>`;
+    card.addEventListener('click',()=>{
+      document.querySelectorAll('.agent-card').forEach(x=>x.classList.remove('selected'));
+      card.classList.add('selected');
+      document.getElementById('selectedDJ').textContent = a.nm;
+      document.getElementById('djPersona').value = a.persona;
+    });
+    grid.appendChild(card);
+  });
+}
+renderAgents();
+function saveDJ(){
+  const nm = document.getElementById('selectedDJ').textContent;
+  if(nm.includes('none')){ toast('SELECT AN AGENT FIRST', true); return }
+  const profile = {
+    name: nm,
+    persona: document.getElementById('djPersona').value,
+    drop: document.getElementById('djDrop').value,
+    block: document.getElementById('djBlock').value,
+    mood: document.getElementById('djMood').value,
+    district: document.getElementById('djDistrict').value,
+    saved: Date.now()
+  };
+  const djs = JSON.parse(localStorage.getItem('wc_radio_djs')||'{}');
+  djs[nm] = profile;
+  localStorage.setItem('wc_radio_djs', JSON.stringify(djs));
+  toast('DJ PROFILE SAVED');
+}
+
+// ---------- CLAUDE API SCRIPT GEN ----------
+async function generateScript(){
+  const out = document.getElementById('scriptOut');
+  const spin = document.getElementById('genSpin');
+  spin.classList.add('on');
+  out.textContent = '';
+
+  const host = document.getElementById('genHost').value;
+  const len = document.getElementById('genLen').value;
+  const theme = document.getElementById('genTheme').value;
+  const tracks = document.getElementById('genTrackList').value;
+  const callouts = document.getElementById('genCallouts').value;
+
+  const personas = {
+    'DJ RED FANG': 'aggressive, low-register, glitch-laced ad-libs, void industrial loyalist, fanged delivery',
+    PACK:  'community-warm, hype-build, calls listeners by name',
+    LENS:  'analytical, dry wit, breaks news with clean cadence',
+    MINT:  'high energy, mint-callout specialist, NFT-fluent'
+  };
+
+  const prompt = `You are writing a broadcast radio script for an agent DJ on 33.3FM DOGECHAIN — the audio broadcast layer of the WIRED CHAOS / AGENTROPOLIS ecosystem. The brand is cyber-noir, sovereign, multi-chain crypto-native. Tagline: "ALL MINDS VALID."
+
+DJ AGENT: ${host}
+VOICE PERSONA: ${personas[host] || 'glitch-laced cyberpunk DJ'}
+SHOW LENGTH: ${len} minutes
+THEME: ${theme}
+TRACK COUNT: ${document.getElementById('genTracks').value}
+
+FEATURED TRACKS:
+${tracks}
+
+ECOSYSTEM CALLOUTS TO WORK IN NATURALLY:
+${callouts}
+
+Write the full script in this format:
+- Use [CUE: xxx] for technical cues (drops, station IDs, transitions)
+- Use [STAGE: xxx] for performance directions
+- Write spoken lines in plain text under "${host}:" tags
+- Include intro, 3–4 track intros/outros, mid-show ecosystem callouts, and a sign-off
+- Keep it punchy, cyber-noir, never corny
+- Reference $XENTS, VAULT33, AGENTROPOLIS districts where natural
+- Total length should match a ${len}-minute spoken segment
+
+Begin the script now.`;
+
+  try{
+    const resp = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages:[{role:'user', content: prompt}]
+      })
+    });
+    const data = await resp.json();
+    const text = data.content
+      .filter(b => b.type === 'text')
+      .map(b => b.text)
+      .join('\n');
+
+    // Format with cue/stage/agent highlighting
+    const formatted = text
+      .replace(/\[CUE:([^\]]+)\]/g, '<span class="cue">[CUE:$1]</span>')
+      .replace(/\[STAGE:([^\]]+)\]/g, '<span class="stage">[STAGE:$1]</span>')
+      .replace(/^(DJ RED FANG|PACK|LENS|MINT|ORACLE|NEXUS):/gm, '<span class="agent">$1:</span>');
+
+    out.innerHTML = formatted;
+    toast('SCRIPT GENERATED');
+  }catch(e){
+    out.textContent = '// CLAUDE API ERROR //\n' + (e.message || 'unknown error') + '\n\n// Check that the API endpoint is reachable from this artifact host.';
+    toast('GENERATION FAILED', true);
+  }finally{
+    spin.classList.remove('on');
+  }
+}
+
+function copyScript(){
+  const txt = document.getElementById('scriptOut').innerText;
+  navigator.clipboard.writeText(txt).then(()=>toast('SCRIPT COPIED'));
+}
+
+// ---------- ROYALTY SPLITS ----------
+let splits = [
+  {chain:'base', addr:'0x...artist',     pct:60, label:'ARTIST'},
+  {chain:'base', addr:'0x...djAgent',    pct:15, label:'DJ AGENT'},
+  {chain:'base', addr:'0x...platform',   pct:15, label:'33.3FM TREASURY'},
+  {chain:'base', addr:'0x...vault33',    pct:10, label:'VAULT33 ESCROW'}
+];
+function renderSplits(){
+  const c = document.getElementById('splitsContainer');
+  c.innerHTML = '';
+  splits.forEach((s,i)=>{
+    const row = document.createElement('div');
+    row.className = 'split-row';
+    row.innerHTML = `
+      <select onchange="splits[${i}].chain=this.value;updateTotal()" class="chain-select">
+        <option value="base"${s.chain==='base'?' selected':''}>BASE</option>
+        <option value="doge"${s.chain==='doge'?' selected':''}>DOGE</option>
+        <option value="sol"${s.chain==='sol'?' selected':''}>SOL</option>
+      </select>
+      <input type="text" placeholder="Address or label" value="${s.addr}" oninput="splits[${i}].addr=this.value">
+      <input type="text" placeholder="Tag" value="${s.label}" oninput="splits[${i}].label=this.value">
+      <input type="number" min="0" max="100" value="${s.pct}" oninput="splits[${i}].pct=Number(this.value);updateTotal()" placeholder="%">
+      <button class="rm" onclick="splits.splice(${i},1);renderSplits();updateTotal()">✕</button>
+    `;
+    c.appendChild(row);
+  });
+  // style chain-select inline since we built it dynamically
+  c.querySelectorAll('.chain-select').forEach(sel=>{
+    sel.style.padding = '6px 8px';
+    sel.style.fontSize = '10px';
+    sel.style.letterSpacing = '.15em';
+    sel.style.fontFamily = 'Orbitron,sans-serif';
+  });
+  updateTotal();
+}
+function updateTotal(){
+  const total = splits.reduce((a,b)=>a+(Number(b.pct)||0),0);
+  const sum = document.getElementById('splitSum');
+  document.getElementById('splitTotal').textContent = total + '%';
+  sum.classList.toggle('bad', total !== 100);
+}
+function addSplit(){ splits.push({chain:'base',addr:'',pct:0,label:''}); renderSplits() }
+function saveSplits(){
+  const total = splits.reduce((a,b)=>a+(Number(b.pct)||0),0);
+  if(total !== 100){ toast('TOTAL MUST EQUAL 100%', true); return }
+  const config = {
+    scope: document.getElementById('splitScope').value,
+    trigger: document.getElementById('splitTrigger').value,
+    splits,
+    saved: Date.now()
+  };
+  localStorage.setItem('wc_radio_splits', JSON.stringify(config));
+  toast('SPLIT CONFIG COMMITTED');
+}
+renderSplits();
+
+// ---------- RSS BUILDER ----------
+function buildRSS(){
+  const shows = getSchedule();
+  const tracks = getTracks();
+  const title = document.getElementById('feedTitle').value;
+  const owner = document.getElementById('feedOwner').value;
+  const url   = document.getElementById('feedUrl').value;
+  const items = shows.map(s=>`
+    <item>
+      <title>${escapeXml(s.title)}</title>
+      <description>${escapeXml(s.description || s.title + ' — ' + s.type)}</description>
+      <pubDate>${new Date(s.created || Date.now()).toUTCString()}</pubDate>
+      <itunes:author>${escapeXml(s.host)}</itunes:author>
+      <itunes:duration>${s.duration||60}:00</itunes:duration>
+      <enclosure url="https://wiredchaos.xyz/333fm/episodes/${slug(s.title)}.mp3" type="audio/mpeg" length="0"/>
+      <guid>${slug(s.title)}-${s.created||Date.now()}</guid>
+    </item>`).join('\n');
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+  <channel>
+    <title>${escapeXml(title)}</title>
+    <link>${escapeXml(url)}</link>
+    <description>The audio broadcast layer of WIRED CHAOS / AGENTROPOLIS. Multi-chain. Agent-hosted. ALL MINDS VALID.</description>
+    <language>en-us</language>
+    <itunes:author>${escapeXml(owner)}</itunes:author>
+    <itunes:category text="Music"/>
+    <itunes:explicit>true</itunes:explicit>
+    <itunes:image href="https://wiredchaos.xyz/333fm/cover.png"/>${items}
+  </channel>
+</rss>`;
+
+  document.getElementById('rssOut').textContent = xml;
+  toast('RSS FEED BUILT');
+}
+function escapeXml(s){ return String(s||'').replace(/[<>&'"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;',"'":'&apos;','"':'&quot;'}[c])) }
+function slug(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') }
+
+// init split rendering
+renderSplits();
+
+// ============================================
+// OAC PIPELINE + ROSTER (loaded from oac-agents.js)
+// ============================================
+function renderReleaseList(){
+  const el = document.getElementById('releaseList');
+  if(!el || !window.OAC) return;
+  const releases = window.OAC.listReleases();
+  if(!releases.length){
+    el.innerHTML = '<div style="padding:30px;text-align:center;color:rgba(0,255,230,.4);font-size:11px;letter-spacing:.3em;font-family:Orbitron">// NO ACTIVE RELEASES // KICK A TEST PIPELINE BELOW //</div>';
+    return;
+  }
+  el.innerHTML = releases.slice(0,5).map(r => {
+    const pct = Math.round(window.OAC.progress(r.id) * 100);
+    const agentCells = window.OAC.ORDER.map(aid => {
+      const a = window.OAC.AGENTS[aid];
+      const s = (r.agents && r.agents[aid]) || { status:'pending' };
+      const colorByStatus = {
+        pending:'#555', queued:'#c2a633', running:'#00ffe6', complete:'#00ff88', failed:'#ff1a2e'
+      };
+      return `<div title="${a.name} — ${s.status}" style="width:34px;height:34px;border:1px solid ${colorByStatus[s.status]};color:${colorByStatus[s.status]};display:flex;align-items:center;justify-content:center;font-family:Orbitron;font-weight:900;font-size:14px;${s.status==='running'?'animation:gSpin 2s linear infinite':''}">${a.glyph}</div>`;
+    }).join('');
+    return `
+      <div style="padding:14px;border:1px solid var(--hud-line);background:rgba(0,82,255,.03)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div>
+            <div style="font-family:Orbitron;font-size:14px;color:var(--cyan);letter-spacing:.08em">${escapeXml(r.trackTitle)}</div>
+            <div style="font-size:10px;color:#9945ff;letter-spacing:.25em;font-family:Orbitron;margin-top:3px">// ${escapeXml(r.artist)}</div>
+          </div>
+          <div style="font-family:Orbitron;font-size:18px;color:var(--cyan);font-weight:900">${pct}%</div>
+        </div>
+        <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">${agentCells}</div>
+        <div style="height:3px;background:rgba(0,255,230,.1);position:relative">
+          <div style="position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#9945ff,#00ffe6);width:${pct}%;box-shadow:0 0 8px #00ffe6"></div>
+        </div>
+      </div>
+    `;
+  }).join('') + '<style>@keyframes gSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}</style>';
+}
+
+function renderOacRoster(){
+  const el = document.getElementById('oacRoster');
+  if(!el || !window.OAC) return;
+  el.innerHTML = window.OAC.ORDER.map(id => {
+    const a = window.OAC.AGENTS[id];
+    return `
+      <div style="padding:16px;border:1px solid var(--hud-line);background:rgba(0,0,0,.4);border-left:3px solid ${a.color}">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <div style="width:36px;height:36px;border:2px solid ${a.color};color:${a.color};display:flex;align-items:center;justify-content:center;font-family:Orbitron;font-weight:900;font-size:16px">${a.glyph}</div>
+          <div style="font-family:Orbitron;font-size:11px;letter-spacing:.2em;color:${a.color}">${a.name}</div>
+        </div>
+        <div style="font-size:10px;color:var(--cyan);opacity:.7;line-height:1.5;letter-spacing:.03em;margin-bottom:8px">${a.role}</div>
+        <div style="font-size:9px;color:var(--cyan);opacity:.5;letter-spacing:.05em;line-height:1.5;font-style:italic">${a.persona}</div>
+        <div style="margin-top:10px;padding-top:8px;border-top:1px dashed rgba(0,255,230,.15);font-size:9px;color:var(--gold);letter-spacing:.05em">TOOLS: ${a.tools}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function launchTestRelease(){
+  if(!window.OAC){ toast('OAC MODULE NOT LOADED', true); return; }
+  const title = document.getElementById('dryTitle').value || 'TEST RELEASE';
+  const artist = document.getElementById('dryArtist').value || 'TEST ARTIST';
+  const release = window.OAC.startRelease({
+    trackTitle: title,
+    artist,
+    distribution: { mintChains:['sol','base'], ddexTargets:['spotify','apple','youtube','amazon'] }
+  });
+  toast('PIPELINE LAUNCHED — ' + release.id);
+  // switch to pipeline tab
+  document.querySelector('[data-tab="pipeline"]').click();
+}
+
+// Auto-refresh pipeline tab when visible
+setInterval(() => {
+  if(document.getElementById('ws-pipeline').classList.contains('active')) renderReleaseList();
+}, 1000);
+
+// Initial paint when those tabs open
+document.querySelector('[data-tab="pipeline"]')?.addEventListener('click', renderReleaseList);
+document.querySelector('[data-tab="oac"]')?.addEventListener('click', renderOacRoster);
+
+// Listen for storage changes
+window.addEventListener('storage', (e) => {
+  if(e.key === 'wc_oac_releases') renderReleaseList();
+});
+</script>
+<script src="oac-agents.js"></script>
+<script src="xents-widget.js"></script>
+</body>
+</html>
