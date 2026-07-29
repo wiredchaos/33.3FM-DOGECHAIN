@@ -218,7 +218,7 @@ export default function GlobalSearch({
   const tracksResults = filteredResults.filter(r => r.category === 'TRACKS');
 
   return (
-    <div ref={containerRef} className="relative w-full max-w-xs md:max-w-sm font-mono text-xs z-55">
+    <div ref={containerRef} className="relative w-full md:max-w-sm font-mono text-xs z-55">
       {/* Search Bar Input Container */}
       <div className="relative flex items-center">
         <Search className="absolute left-3 h-3.5 w-3.5 text-neutral-500 pointer-events-none" />

@@ -15,6 +15,7 @@ interface MintViewProps {
   releases: OacRelease[];
   setReleases: React.Dispatch<React.SetStateAction<OacRelease[]>>;
   setTracks: React.Dispatch<React.SetStateAction<RadioTrack[]>>;
+  brandChain?: 'dogechain' | 'solchain';
 }
 
 export default function MintView({
@@ -22,7 +23,8 @@ export default function MintView({
   artists,
   releases,
   setReleases,
-  setTracks
+  setTracks,
+  brandChain = 'dogechain'
 }: MintViewProps) {
   const [selectedArtistId, setSelectedArtistId] = useState('');
   const [trackTitle, setTrackTitle] = useState('');
@@ -224,13 +226,15 @@ export default function MintView({
       {/* LEFT FORM FIELD CONTROLS */}
       <div className="lg:col-span-7 flex flex-col gap-6">
         <div className="border border-neutral-800 bg-neutral-950 p-6 rounded-xl relative overflow-hidden">
-          <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#c2a633] to-transparent animate-pulse" />
+          <div className={`absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-transparent to-transparent animate-pulse ${
+            brandChain === 'solchain' ? 'via-[#14f195]' : 'via-[#c2a633]'
+          }`} />
 
           <div className="flex items-center justify-between border-b border-neutral-900 pb-3 mb-5">
             <h2 className="font-orbitron font-extrabold text-lg text-white tracking-widest uppercase">
               ◢ MINT A RELEASE
             </h2>
-            <div className="text-[10px] font-mono text-[#c2a633]">
+            <div className={`text-[10px] font-mono transition-colors duration-500 ${brandChain === 'solchain' ? 'text-[#14f195]' : 'text-[#c2a633]'}`}>
               STATUS // ONE DEPOSIT, 150+ PORTAL STORES
             </div>
           </div>
@@ -243,7 +247,9 @@ export default function MintView({
               <select
                 value={selectedArtistId}
                 onChange={e => setSelectedArtistId(e.target.value)}
-                className="w-full bg-black border border-neutral-800 rounded p-3 text-sm text-[#00ffe6] font-mono focus:border-[#c2a633] outline-none"
+                className={`w-full bg-black border border-neutral-800 rounded p-3 text-sm font-mono outline-none transition-colors duration-500 ${
+                  brandChain === 'solchain' ? 'text-[#14f195] focus:border-[#9945ff]' : 'text-[#00ffe6] focus:border-[#c2a633]'
+                }`}
               >
                 {artists.map(a => (
                   <option key={a.id} value={a.id} className="bg-neutral-950">
@@ -262,7 +268,9 @@ export default function MintView({
                 value={trackTitle}
                 onChange={e => setTrackTitle(e.target.value)}
                 placeholder="e.g. MOON SHOT PROTOCOL"
-                className="w-full bg-black border border-neutral-800 rounded p-3 text-sm text-[#00ffe6] font-mono focus:border-[#c2a633] outline-none placeholder-neutral-700"
+                className={`w-full bg-black border border-neutral-800 rounded p-3 text-sm font-mono outline-none placeholder-neutral-700 transition-colors duration-500 ${
+                  brandChain === 'solchain' ? 'text-[#14f195] focus:border-[#9945ff]' : 'text-[#00ffe6] focus:border-[#c2a633]'
+                }`}
               />
             </div>
 
@@ -274,7 +282,9 @@ export default function MintView({
                 <select
                   value={genre}
                   onChange={e => setGenre(e.target.value)}
-                  className="w-full bg-black border border-neutral-800 rounded p-3 text-sm text-[#00ffe6] font-mono focus:border-[#c2a633] outline-none"
+                  className={`w-full bg-black border border-neutral-800 rounded p-3 text-sm font-mono outline-none transition-colors duration-500 ${
+                    brandChain === 'solchain' ? 'text-[#14f195] focus:border-[#9945ff]' : 'text-[#00ffe6] focus:border-[#c2a633]'
+                  }`}
                 >
                   <option>Phonk</option>
                   <option>Drill</option>
@@ -294,7 +304,9 @@ export default function MintView({
                     type="number"
                     value={bpm}
                     onChange={e => setBpm(Number(e.target.value))}
-                    className="w-full bg-black border border-neutral-800 rounded p-3 text-sm text-center text-[#00ffe6] font-mono focus:border-[#c2a633] outline-none"
+                    className={`w-full bg-black border border-neutral-800 rounded p-3 text-sm text-center font-mono outline-none transition-colors duration-500 ${
+                      brandChain === 'solchain' ? 'text-[#14f195] focus:border-[#9945ff]' : 'text-[#00ffe6] focus:border-[#c2a633]'
+                    }`}
                   />
                 </div>
                 <div>
@@ -305,7 +317,9 @@ export default function MintView({
                     type="text"
                     value={keyScale}
                     onChange={e => setKeyScale(e.target.value)}
-                    className="w-full bg-black border border-neutral-800 rounded p-3 text-sm text-center text-[#00ffe6] font-mono focus:border-[#c2a633] outline-none placeholder-neutral-700"
+                    className={`w-full bg-black border border-neutral-800 rounded p-3 text-sm text-center font-mono outline-none placeholder-neutral-700 transition-colors duration-500 ${
+                      brandChain === 'solchain' ? 'text-[#14f195] focus:border-[#9945ff]' : 'text-[#00ffe6] focus:border-[#c2a633]'
+                    }`}
                     placeholder="A min"
                   />
                 </div>
@@ -317,12 +331,14 @@ export default function MintView({
               <label className="block text-xs font-orbitron text-neutral-400 mb-1.5 uppercase">
                 Upload Master File (WAV, FLAC)
               </label>
-              <div className="border-2 border-dashed border-neutral-800 bg-black/40 hover:border-[#00ffe6] transition-colors p-6 rounded text-center cursor-pointer">
-                <Upload className="h-8 w-8 text-[#00ffe6] mx-auto mb-2 animate-pulse" />
+              <div className={`border-2 border-dashed border-neutral-800 bg-black/40 transition-colors p-6 rounded text-center cursor-pointer ${
+                brandChain === 'solchain' ? 'hover:border-[#14f195]' : 'hover:border-[#00ffe6]'
+              }`}>
+                <Upload className={`h-8 w-8 mx-auto mb-2 animate-pulse ${brandChain === 'solchain' ? 'text-[#14f195]' : 'text-[#00ffe6]'}`} />
                 <span className="font-mono text-xs text-neutral-400 block mb-1">
                   DRAG & DROP MASTER TRANSCRIPT ASSET
                 </span>
-                <span className="font-mono text-[9px] text-[#c2a633]">
+                <span className={`font-mono text-[9px] transition-colors duration-500 ${brandChain === 'solchain' ? 'text-[#14f195]' : 'text-[#c2a633]'}`}>
                   MAX FILE SIZE 100MB (STORES SECURELY IPFS)
                 </span>
               </div>
@@ -338,8 +354,10 @@ export default function MintView({
 
             {/* Hackathon check bypass */}
             <div className="border border-neutral-900 bg-neutral-950 p-4 rounded flex flex-col md:flex-row gap-3 items-center">
-              <div className="flex-1">
-                <label className="block text-[9px] font-orbitron text-[#c2a633] uppercase">
+              <div className="flex-1 w-full">
+                <label className={`block text-[9px] font-orbitron uppercase transition-colors duration-500 ${
+                  brandChain === 'solchain' ? 'text-[#14f195]' : 'text-[#c2a633]'
+                }`}>
                   Judge Bypass Access Key
                 </label>
                 <input
@@ -347,12 +365,18 @@ export default function MintView({
                   placeholder="WC-MUSICATHON-2026"
                   value={bypassCode}
                   onChange={e => setBypassCode(e.target.value)}
-                  className="w-full bg-black border border-neutral-900 rounded p-2 text-xs text-[#00ffe6] font-mono outline-none placeholder-neutral-800"
+                  className={`w-full bg-black border border-neutral-900 rounded p-2 text-xs font-mono outline-none placeholder-neutral-800 transition-colors duration-500 ${
+                    brandChain === 'solchain' ? 'text-[#14f195] focus:border-[#9945ff]' : 'text-[#00ffe6] focus:border-[#c2a633]'
+                  }`}
                 />
               </div>
               <button
                 onClick={handleBypassCheck}
-                className="w-full md:w-auto mt-4 md:mt-2 py-2 px-4 border border-[#c2a633] text-[#c2a633] hover:bg-[#c2a633] hover:text-black font-bold font-orbitron text-xs transition-all cursor-pointer"
+                className={`w-full md:w-auto mt-4 md:mt-2 py-2 px-4 border font-bold font-orbitron text-xs transition-all cursor-pointer ${
+                  brandChain === 'solchain'
+                    ? 'border-[#9945ff] text-[#14f195] hover:bg-[#9945ff] hover:text-white'
+                    : 'border-[#c2a633] text-[#c2a633] hover:bg-[#c2a633] hover:text-black'
+                }`}
               >
                 APPLY CODE
               </button>
@@ -380,10 +404,12 @@ export default function MintView({
       <div className="lg:col-span-5 flex flex-col gap-6">
         <div className="border border-neutral-800 bg-black/60 p-5 rounded-xl flex flex-col gap-4">
           <div className="flex items-center justify-between border-b border-neutral-900 pb-2">
-            <span className="font-orbitron font-black text-xs text-[#00ffe6] tracking-[0.2em] uppercase">
+            <span className={`font-orbitron font-black text-xs tracking-[0.2em] uppercase transition-colors duration-500 ${
+              brandChain === 'solchain' ? 'text-[#14f195]' : 'text-[#00ffe6]'
+            }`}>
               ◢ OAC PIPELINE STATUS
             </span>
-            <Cpu className="h-4 w-4 text-[#00ffe6]" />
+            <Cpu className={`h-4 w-4 transition-colors duration-500 ${brandChain === 'solchain' ? 'text-[#14f195]' : 'text-[#00ffe6]'}`} />
           </div>
 
           <div className="flex flex-col gap-4">
@@ -395,7 +421,9 @@ export default function MintView({
                   key={agent.id}
                   className={`p-3 border rounded transition-all flex items-center gap-3 ${
                     active
-                      ? 'bg-neutral-900/60 border-yellow-500 shadow-[0_0_15px_rgba(234,179,8,0.15)] animate-pulse'
+                      ? brandChain === 'solchain'
+                        ? 'bg-neutral-900/60 border-[#9945ff] shadow-[0_0_15px_rgba(153,69,255,0.25)] animate-pulse'
+                        : 'bg-neutral-900/60 border-yellow-500 shadow-[0_0_15px_rgba(234,179,8,0.15)] animate-pulse'
                       : complete
                       ? 'bg-neutral-950/20 border-emerald-500 text-emerald-400'
                       : 'bg-neutral-950/30 border-neutral-900 text-neutral-600'
@@ -404,7 +432,9 @@ export default function MintView({
                   <div
                     className={`h-6 w-6 rounded-full border-2 flex items-center justify-center text-[10px] font-bold ${
                       active
-                        ? 'border-yellow-500 text-yellow-500'
+                        ? brandChain === 'solchain'
+                          ? 'border-[#9945ff] text-[#14f195]'
+                          : 'border-yellow-500 text-yellow-500'
                         : complete
                         ? 'border-emerald-500 bg-emerald-500 text-black'
                         : 'border-neutral-800 text-neutral-700'
@@ -432,7 +462,9 @@ export default function MintView({
             <h3 className="font-orbitron font-bold text-[10px] text-neutral-400 mb-2 uppercase">
               ◢ OAC LOG PIPELINE STREAM
             </h3>
-            <div className="h-48 overflow-y-auto font-mono text-[9px] text-[#00ffe6]/80 leading-relaxed">
+            <div className={`h-48 overflow-y-auto font-mono text-[9px] leading-relaxed transition-colors duration-500 ${
+              brandChain === 'solchain' ? 'text-[#14f195]/80' : 'text-[#00ffe6]/80'
+            }`}>
               {pipelineLogs.map((log, idx) => (
                 <div key={idx} className="hover:bg-neutral-900/40 p-0.5 rounded">
                   {log}

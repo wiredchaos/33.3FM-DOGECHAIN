@@ -69,6 +69,7 @@ export default function App() {
 
   // Brand Center States
   const [activeBannerMode, setActiveBannerMode] = useState<'desktop' | 'mobile'>('desktop');
+  const [brandChain, setBrandChain] = useState<'dogechain' | 'solchain'>('dogechain');
   
   // Documentary trailer state manager
   const [trailerPlaying, setTrailerPlaying] = useState(false);
@@ -387,71 +388,163 @@ export default function App() {
         </button>
       </nav>
 
+      {/* MOBILE COGNITIVE SEARCH ENGINE */}
+      <div className="block md:hidden bg-neutral-950 border-b border-neutral-900 px-4 py-3 z-30">
+        <GlobalSearch
+          artists={artists}
+          releases={releases}
+          tracks={tracks}
+          onNavigate={(v, id) => navigateTo(v as any, id)}
+          onOpenXents={handleOpenXents}
+        />
+      </div>
+
       {/* MAIN LAYOUT BODY */}
       <main className="flex-1 px-4 md:px-8 py-8 md:py-10 max-w-7xl w-full mx-auto relative z-10">
         
         {currentView === 'brand' && (
           <div className="flex flex-col gap-10">
             
+            {/* NETWORK FREQUENCY SELECTOR PANEL */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-2xl border border-neutral-800 bg-neutral-950/80 backdrop-blur shadow-inner">
+              <div className="flex flex-col text-center sm:text-left">
+                <span className="font-orbitron font-extrabold text-xs text-white tracking-widest uppercase flex items-center gap-1.5 justify-center sm:justify-start">
+                  <span className={`h-1.5 w-1.5 rounded-full animate-ping ${brandChain === 'solchain' ? 'bg-[#14f195]' : 'bg-[#ff1a2e]'}`} />
+                  📡 ACTIVE SPECTRUM TUNER
+                </span>
+                <span className="font-mono text-[9px] text-neutral-500 mt-1 uppercase tracking-wider">
+                  Select transmission layer: Dogechain Classic or Solana Solchain networks
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-2.5 justify-center">
+                <button
+                  onClick={() => setBrandChain('dogechain')}
+                  className={`px-4 py-2.5 text-[9px] font-orbitron font-extrabold tracking-widest cursor-pointer border rounded-md transition-all ${
+                    brandChain === 'dogechain'
+                      ? 'bg-[#ff1a2e]/15 border-[#ff1a2e] text-[#ff1a2e] shadow-[0_0_15px_rgba(255,26,46,0.3)] scale-[1.02]'
+                      : 'bg-transparent border-neutral-900 text-neutral-500 hover:text-white hover:bg-neutral-900/40'
+                  }`}
+                >
+                  ◤ DOGECHAIN CLASSIC (RED/CYAN)
+                </button>
+                <button
+                  onClick={() => setBrandChain('solchain')}
+                  className={`px-4 py-2.5 text-[9px] font-orbitron font-extrabold tracking-widest cursor-pointer border rounded-md transition-all ${
+                    brandChain === 'solchain'
+                      ? 'bg-[#9945ff]/15 border-[#9945ff] text-[#14f195] shadow-[0_0_15px_rgba(153,69,255,0.3)] scale-[1.02]'
+                      : 'bg-transparent border-neutral-900 text-neutral-500 hover:text-white hover:bg-neutral-900/40'
+                  }`}
+                >
+                  ⚡ SOLANA SOLCHAIN (PURPLE/LIME)
+                </button>
+              </div>
+            </div>
+            
             {/* BRAND HERO LANDING PANEL */}
-            <div className="relative overflow-hidden border-2 border-neutral-900 bg-gradient-to-b from-neutral-950 to-black p-6 md:p-12 rounded-2xl shadow-[0_0_80px_rgba(255,26,46,0.06)] flex flex-col md:flex-row gap-8 items-center">
+            <div className={`relative overflow-hidden border-2 bg-gradient-to-b from-neutral-950 to-black p-6 md:p-12 rounded-2xl transition-all duration-500 ${
+              brandChain === 'solchain' 
+                ? 'border-[#9945ff]/40 shadow-[0_0_80px_rgba(153,69,255,0.08)]' 
+                : 'border-neutral-900 shadow-[0_0_80px_rgba(255,26,46,0.06)]'
+            } flex flex-col md:flex-row gap-8 items-center`}>
               
               {/* Dynamic 3D CSS Audio Shield Logo on the left */}
               <div className="md:w-2/5 flex flex-col items-center justify-center relative">
                 <div className="relative w-60 h-60 flex items-center justify-center">
                   
                   {/* Rotating orbital energy lines */}
-                  <div className="absolute inset-0 border border-dashed border-[#ff1a2e]/30 rounded-full animate-spin" style={{ animationDuration: '24s' }} />
+                  <div 
+                    className={`absolute inset-0 border border-dashed rounded-full animate-spin transition-all duration-500 ${
+                      brandChain === 'solchain' ? 'border-[#9945ff]/30' : 'border-[#ff1a2e]/30'
+                    }`} 
+                    style={{ animationDuration: '24s' }} 
+                  />
                   <div className="absolute inset-6 border border-neutral-800 rounded-full animate-pulse" />
-                  <div className="absolute inset-10 border border-dotted border-[#00ffe6]/25 rounded-full animate-spin" style={{ animationDuration: '40s', animationDirection: 'reverse' }} />
+                  <div 
+                    className={`absolute inset-10 border border-dotted rounded-full animate-spin transition-all duration-500 ${
+                      brandChain === 'solchain' ? 'border-[#14f195]/25' : 'border-[#00ffe6]/25'
+                    }`} 
+                    style={{ animationDuration: '40s', animationDirection: 'reverse' }} 
+                  />
 
                   {/* 3D Visual Shield Card */}
-                  <div className="w-40 h-40 rounded-3xl bg-gradient-to-br from-neutral-900 via-black to-neutral-950 border-3 border-[#ff1a2e] flex flex-col items-center justify-center shadow-[0_0_50px_rgba(255,26,46,0.3)] hover:scale-105 hover:border-[#00ffe6] hover:shadow-[0_0_50px_rgba(0,255,230,0.2)] transition-all cursor-pointer group">
-                    <span className="font-orbitron font-extrabold text-[#fff] tracking-tight text-4xl group-hover:text-[#00ffe6] transition-colors leading-none drop-shadow-[0_0_12px_rgba(255,255,255,0.2)]">
+                  <div className={`w-40 h-40 rounded-3xl bg-gradient-to-br from-neutral-900 via-black to-neutral-950 border-3 flex flex-col items-center justify-center transition-all duration-500 cursor-pointer group ${
+                    brandChain === 'solchain' 
+                      ? 'border-[#9945ff] shadow-[0_0_50px_rgba(153,69,255,0.35)] hover:border-[#14f195] hover:shadow-[0_0_50px_rgba(20,241,149,0.25)]' 
+                      : 'border-[#ff1a2e] shadow-[0_0_50px_rgba(255,26,46,0.3)] hover:border-[#00ffe6] hover:shadow-[0_0_50px_rgba(0,255,230,0.2)]'
+                  }`}>
+                    <span className="font-orbitron font-extrabold text-[#fff] tracking-tight text-4xl transition-colors leading-none drop-shadow-[0_0_12px_rgba(255,255,255,0.2)]">
                       33.3
                     </span>
-                    <span className="font-orbitron font-black text-red-600 group-hover:text-white transition-colors tracking-[0.25em] text-sm mt-1 uppercase">
+                    <span className={`font-orbitron font-black transition-colors duration-500 tracking-[0.25em] text-sm mt-1 uppercase ${
+                      brandChain === 'solchain' ? 'text-[#14f195] group-hover:text-white' : 'text-red-600 group-hover:text-white'
+                    }`}>
                       FM
                     </span>
-                    <span className="mt-4 font-mono text-[7px] text-[#c2a633] tracking-[0.3em] font-bold group-hover:scale-105 transition-all">
-                      ◤ BRAND SIGN ◢
+                    <span className={`mt-4 font-mono text-[7px] tracking-[0.3em] font-bold group-hover:scale-105 transition-all duration-500 ${
+                      brandChain === 'solchain' ? 'text-[#14f195]' : 'text-[#c2a633]'
+                    }`}>
+                      {brandChain === 'solchain' ? '◤ SOLCHAIN SIGN ◢' : '◤ BRAND SIGN ◢'}
                     </span>
                   </div>
 
-                  {/* Red energy signal rings expanding */}
-                  <div className="absolute h-48 w-48 rounded-full border-2 border-[#ff1a2e] opacity-15 animate-ping" style={{ animationDuration: '3.5s' }} />
+                  {/* Energy signal rings expanding */}
+                  <div className={`absolute h-48 w-48 rounded-full border-2 opacity-15 animate-ping transition-all duration-500 ${
+                    brandChain === 'solchain' ? 'border-[#9945ff]' : 'border-[#ff1a2e]'
+                  }`} style={{ animationDuration: '3.5s' }} />
                 </div>
                 
                 <div className="mt-4 text-center">
-                  <h3 className="font-orbitron font-extrabold text-xs text-[#ff1a2e] tracking-[0.3em] uppercase">
-                    33.3 FM 3D EMBLEM
+                  <h3 className={`font-orbitron font-extrabold text-xs tracking-[0.3em] uppercase transition-all duration-500 ${
+                    brandChain === 'solchain' ? 'text-[#9945ff]' : 'text-[#ff1a2e]'
+                  }`}>
+                    {brandChain === 'solchain' ? '33.3 FM SOLANA EMBLEM' : '33.3 FM 3D EMBLEM'}
                   </h3>
                   <p className="font-mono text-[9px] text-neutral-500 mt-1 uppercase tracking-widest">
-                    THE SIGNAL BITES BACK
+                    {brandChain === 'solchain' ? 'THE CONSENSUS BITES BACK' : 'THE SIGNAL BITES BACK'}
                   </p>
                 </div>
               </div>
 
               {/* High-end Apple-level web visual copy center on the right */}
               <div className="flex-1 flex flex-col justify-center text-center md:text-left">
-                <div className="inline-flex mx-auto md:mx-0 items-center gap-2 bg-[#ff1a2e]/10 border border-[#ff1a2e]/40 px-3 py-1 rounded text-[#ff1a2e] font-orbitron text-[9px] tracking-widest uppercase mb-4 w-fit">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#ff1a2e] animate-ping" />
-                  WIRED CHAOS MEDIA UPLINK
+                <div className={`inline-flex mx-auto md:mx-0 items-center gap-2 px-3 py-1 rounded font-orbitron text-[9px] tracking-widest uppercase mb-4 w-fit border transition-all duration-500 ${
+                  brandChain === 'solchain' 
+                    ? 'bg-[#9945ff]/10 border-[#9945ff]/40 text-[#14f195]' 
+                    : 'bg-[#ff1a2e]/10 border-[#ff1a2e]/40 text-[#ff1a2e]'
+                }`}>
+                  <span className={`h-1.5 w-1.5 rounded-full animate-ping ${brandChain === 'solchain' ? 'bg-[#14f195]' : 'bg-[#ff1a2e]'}`} />
+                  {brandChain === 'solchain' ? 'SOLANA VALIDATOR MEDIA UPLINK' : 'WIRED CHAOS MEDIA UPLINK'}
                 </div>
                 
                 <h1 className="text-4xl md:text-6xl font-orbitron font-black text-white leading-tight uppercase tracking-tight">
-                  THE SIGNAL <br/>
-                  <span className="text-[#ff1a2e] drop-shadow-[0_0_15px_rgba(255,26,46,0.3)]">BITES BACK</span>
+                  {brandChain === 'solchain' ? (
+                    <>
+                      THE SOLCHAIN <br/>
+                      <span className="text-[#14f195] drop-shadow-[0_0_15px_rgba(20,241,149,0.35)]">CONVERGES</span>
+                    </>
+                  ) : (
+                    <>
+                      THE SIGNAL <br/>
+                      <span className="text-[#ff1a2e] drop-shadow-[0_0_15px_rgba(255,26,46,0.3)]">BITES BACK</span>
+                    </>
+                  )}
                 </h1>
                 
                 <p className="mt-4 font-mono text-xs md:text-sm text-neutral-400 max-w-xl leading-relaxed">
-                  33.3 FM is where culture, stories, frequencies, music, and hidden transmissions converge. Powered by sovereign agent DJs, multi-chain royalty splits, and Open Agentic Commerce.
+                  {brandChain === 'solchain' 
+                    ? '33.3 FM Solana Solchain is where ultra-high throughput culture, neon stories, fast-tick frequencies, and agentic liquid liquidity converge. Powered by Rust-driven autonomous agent DJs and SPL multi-token splits.'
+                    : '33.3 FM is where culture, stories, frequencies, music, and hidden transmissions converge. Powered by sovereign agent DJs, multi-chain royalty splits, and Open Agentic Commerce.'
+                  }
                 </p>
 
                 <div className="mt-8 flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
                   <button
                     onClick={() => navigateTo('broadcast')}
-                    className="w-full sm:w-auto px-6 py-3.5 bg-[#ff1a2e] hover:bg-[#ff1a2e]/80 text-white font-orbitron font-bold text-xs tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer shadow-[0_0_20px_rgba(255,26,46,0.35)] active:translate-y-0.5"
+                    className={`w-full sm:w-auto px-6 py-3.5 text-white font-orbitron font-bold text-xs tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer active:translate-y-0.5 ${
+                      brandChain === 'solchain' 
+                        ? 'bg-[#9945ff] hover:bg-[#9945ff]/80 shadow-[0_0_20px_rgba(153,69,255,0.4)]' 
+                        : 'bg-[#ff1a2e] hover:bg-[#ff1a2e]/80 shadow-[0_0_20px_rgba(255,26,46,0.35)]'
+                    }`}
                   >
                     ENTER THE BROADCAST <ChevronRight className="h-4 w-4" />
                   </button>
@@ -464,10 +557,22 @@ export default function App() {
                 </div>
 
                 {/* Animated interactive elements preview line */}
-                <div className="mt-8 border-t border-neutral-900 pt-4 flex gap-6 text-[9px] text-[#00ffe6]/80 font-mono tracking-wider justify-center md:justify-start">
-                  <span>● NEON FANG ACTIVE</span>
-                  <span>● 100% SOVEREIGN DATA</span>
-                  <span>● $XENTS CONVERGENCE</span>
+                <div className={`mt-8 border-t border-neutral-900 pt-4 flex gap-6 text-[9px] font-mono tracking-wider justify-center md:justify-start transition-colors duration-500 ${
+                  brandChain === 'solchain' ? 'text-[#14f195]/80' : 'text-[#00ffe6]/80'
+                }`}>
+                  {brandChain === 'solchain' ? (
+                    <>
+                      <span>● SOLCHAIN SPEED ACTIVE</span>
+                      <span>● 100% PURPLE REBELLION</span>
+                      <span>● LIME SHIELD ENGAGED</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>● NEON FANG ACTIVE</span>
+                      <span>● 100% SOVEREIGN DATA</span>
+                      <span>● $XENTS CONVERGENCE</span>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -485,28 +590,40 @@ export default function App() {
                       onClick={toggleSound}
                       className={`flex h-7 w-7 items-center justify-center border rounded-full transition-all cursor-pointer ${
                         soundEnabled
-                          ? 'bg-[#ff1a2e]/20 border-[#ff1a2e] text-[#ff1a2e] animate-pulse'
+                          ? brandChain === 'solchain'
+                            ? 'bg-[#9945ff]/20 border-[#9945ff] text-[#14f195] animate-pulse'
+                            : 'bg-[#ff1a2e]/20 border-[#ff1a2e] text-[#ff1a2e] animate-pulse'
                           : 'border-neutral-800 text-neutral-500 hover:text-white'
                       }`}
                       title={soundEnabled ? 'Mute Atmosphere' : 'Enable Atmosphere Noise'}
                     >
                       {soundEnabled ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
                     </button>
-                    <span className="font-mono text-[8px] text-[#ff1a2e] bg-[#ff1a2e]/10 border border-[#ff1a2e]/30 px-2 py-0.5 rounded tracking-widest">
-                      AUDIO MONITORS LIVE
+                    <span className={`font-mono text-[8px] border px-2 py-0.5 rounded tracking-widest transition-colors duration-500 ${
+                      brandChain === 'solchain'
+                        ? 'text-[#14f195] bg-[#9945ff]/10 border-[#9945ff]/30'
+                        : 'text-[#ff1a2e] bg-[#ff1a2e]/10 border-[#ff1a2e]/30'
+                    }`}>
+                      {brandChain === 'solchain' ? 'SOLANA MONITOR LIVE' : 'AUDIO MONITORS LIVE'}
                     </span>
                   </div>
 
                   <div className="border-b border-neutral-900 pb-2.5 mb-4">
                     <h3 className="font-orbitron font-extrabold text-xs text-white tracking-widest uppercase">
-                      ◤ DOCUMENTARY ORIGIN TRAILER
+                      {brandChain === 'solchain' ? '◤ SOLCHAIN DOCUMENTARY CAPTIONS' : '◤ DOCUMENTARY ORIGIN TRAILER'}
                     </h3>
-                    <p className="font-mono text-[9px] text-[#ff1a2e] mt-1">THE VOICE BEHIND 33.3 FM — DJ RED FANG</p>
+                    <p className={`font-mono text-[9px] mt-1 transition-colors duration-500 ${brandChain === 'solchain' ? 'text-[#14f195]' : 'text-[#ff1a2e]'}`}>
+                      {brandChain === 'solchain' ? 'THE VOICE BEHIND 33.3 FM SOLANA — SOLAR DJ REBEL' : 'THE VOICE BEHIND 33.3 FM — DJ RED FANG'}
+                    </p>
                   </div>
 
                   {/* Simulator Screen Console */}
                   <div className="flex-1 bg-black p-4 md:p-6 rounded border border-neutral-900 flex flex-col justify-center items-center relative overflow-hidden min-h-[220px]">
-                    <div className="absolute inset-0 bg-[#ff001c]/[0.02] bg-[radial-gradient(#ff1a2e_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
+                    <div className={`absolute inset-0 pointer-events-none ${
+                      brandChain === 'solchain'
+                        ? 'bg-[#9945ff]/[0.02] bg-[radial-gradient(#14f195_1px,transparent_1px)] [background-size:16px_16px]'
+                        : 'bg-[#ff001c]/[0.02] bg-[radial-gradient(#ff1a2e_1px,transparent_1px)] [background-size:16px_16px]'
+                    }`} />
 
                     <AnimatePresence mode="wait">
                       {/* Black Screen Static */}
@@ -518,11 +635,11 @@ export default function App() {
                           exit={{ opacity: 0 }}
                           className="text-center"
                         >
-                          <div className="h-10 w-10 border border-neutral-800 rounded-full flex items-center justify-center mx-auto mb-3 text-red-500 animate-spin">
+                          <div className={`h-10 w-10 border border-neutral-800 rounded-full flex items-center justify-center mx-auto mb-3 animate-spin ${brandChain === 'solchain' ? 'text-[#9945ff]' : 'text-red-500'}`}>
                             ⚡
                           </div>
-                          <span className="text-xs text-red-600 font-bold tracking-widest animate-pulse">
-                            [ MICROPHONE STATIC CRACKLE / RADIO humS ]
+                          <span className={`text-xs font-bold tracking-widest animate-pulse ${brandChain === 'solchain' ? 'text-[#14f195]' : 'text-red-600'}`}>
+                            {brandChain === 'solchain' ? '[ VALIDATOR SYNCHRONIZATION STATIC / CONSENSUS PINGS ]' : '[ MICROPHONE STATIC CRACKLE / RADIO humS ]'}
                           </span>
                         </motion.div>
                       )}
@@ -536,11 +653,11 @@ export default function App() {
                           exit={{ opacity: 0 }}
                           className="text-center"
                         >
-                          <span className="text-[10px] text-[#c2a633] block mb-2 font-black uppercase tracking-[0.2em]">
-                            ◉ DJ RED FANG (V.O.)
+                          <span className={`text-[10px] block mb-2 font-black uppercase tracking-[0.2em] ${brandChain === 'solchain' ? 'text-[#14f195]' : 'text-[#c2a633]'}`}>
+                            {brandChain === 'solchain' ? '◉ SOLAR DJ REBEL (V.O.)' : '◉ DJ RED FANG (V.O.)'}
                           </span>
                           <p className="text-lg font-orbitron font-extrabold text-white tracking-wide max-w-sm mx-auto leading-relaxed italic">
-                            “Every city has a frequency…”
+                            {brandChain === 'solchain' ? '“Every validator has a frequency…”' : '“Every city has a frequency…”'}
                           </p>
                         </motion.div>
                       )}
@@ -554,11 +671,11 @@ export default function App() {
                           exit={{ opacity: 0 }}
                           className="text-center"
                         >
-                          <span className="text-[10px] text-[#c2a633] block mb-2 font-black uppercase tracking-[0.2em]">
-                            ◉ DJ RED FANG (V.O.)
+                          <span className={`text-[10px] block mb-2 font-black uppercase tracking-[0.2em] ${brandChain === 'solchain' ? 'text-[#14f195]' : 'text-[#c2a633]'}`}>
+                            {brandChain === 'solchain' ? '◉ SOLAR DJ REBEL (V.O.)' : '◉ DJ RED FANG (V.O.)'}
                           </span>
                           <p className="text-lg font-orbitron font-extrabold text-white tracking-wide max-w-sm mx-auto leading-relaxed italic">
-                            “Most people never hear it.”
+                            {brandChain === 'solchain' ? '“Most clients never sync it.”' : '“Most people never hear it.”'}
                           </p>
                         </motion.div>
                       )}
@@ -572,11 +689,18 @@ export default function App() {
                           exit={{ opacity: 0 }}
                           className="text-center w-full"
                         >
-                          <div className="text-[9px] bg-red-950/40 text-red-400 border border-red-900 px-3 py-1 rounded inline-block mb-3 select-none">
-                            ◉ CUT TO NEON CITY [RAIN]
+                          <div className={`text-[9px] border px-3 py-1 rounded inline-block mb-3 select-none ${
+                            brandChain === 'solchain'
+                              ? 'bg-[#9945ff]/20 text-[#14f195] border-[#9945ff]/40'
+                              : 'bg-red-950/40 text-red-400 border-red-900'
+                          }`}>
+                            {brandChain === 'solchain' ? '◉ CUT TO LIME-LIT METROPOLIS [FOG]' : '◉ CUT TO NEON CITY [RAIN]'}
                           </div>
                           <p className="text-xs text-neutral-400 max-w-xs mx-auto italic font-mono leading-relaxed">
-                            Red signals moving continuously between obsidian-glass monoliths.
+                            {brandChain === 'solchain'
+                              ? 'Purple-haze signal loops flowing continuously between proof-of-history blocks.'
+                              : 'Red signals moving continuously between obsidian-glass monoliths.'
+                            }
                           </p>
                         </motion.div>
                       )}
@@ -591,11 +715,24 @@ export default function App() {
                           className="text-center"
                         >
                           <p className="text-base font-orbitron font-extrabold text-white max-w-md leading-relaxed">
-                            “Some call it music… <br/>
-                            Some call it rebellion… <br/>
-                            <span className="text-[#ff1a2e] block mt-1 uppercase text-lg tracking-[0.2em] font-black drop-shadow-[0_0_8px_rgba(255,26,46,0.5)]">
-                              I call it truth.
-                            </span>”
+                            {brandChain === 'solchain' ? (
+                              <>
+                                “Some call it speed… <br/>
+                                Some call it solchain… <br/>
+                                <span className="text-[#14f195] block mt-1 uppercase text-lg tracking-[0.2em] font-black drop-shadow-[0_0_8px_rgba(20,241,149,0.5)]">
+                                  I call it sovereign sound.
+                                </span>
+                              </>
+                            ) : (
+                              <>
+                                “Some call it music… <br/>
+                                Some call it rebellion… <br/>
+                                <span className="text-[#ff1a2e] block mt-1 uppercase text-lg tracking-[0.2em] font-black drop-shadow-[0_0_8px_rgba(255,26,46,0.5)]">
+                                  I call it truth.
+                                </span>
+                              </>
+                            )}
+                            ”
                           </p>
                         </motion.div>
                       )}
@@ -610,13 +747,13 @@ export default function App() {
                           className="text-center grid grid-cols-3 gap-2"
                         >
                           <div className="border border-neutral-900 p-2.5 rounded bg-neutral-950 font-mono text-[9px]">
-                            💿 VINYL SPINNING
+                            {brandChain === 'solchain' ? '⚡ RUST PIPELINE' : '💿 VINYL SPINNING'}
                           </div>
                           <div className="border border-neutral-900 p-2.5 rounded bg-neutral-950 font-mono text-[9px]">
-                            📡 TRANSMISSION TOWERS
+                            {brandChain === 'solchain' ? '🟣 PURPLE NEON GRID' : '📡 TRANSMISSION TOWERS'}
                           </div>
                           <div className="border border-neutral-900 p-2.5 rounded bg-neutral-950 font-mono text-[9px]">
-                            🔊 ROOFTOP SIGS
+                            {brandChain === 'solchain' ? '🟢 LIME ANTENNAS' : '🔊 ROOFTOP SIGS'}
                           </div>
                         </motion.div>
                       )}
@@ -631,9 +768,19 @@ export default function App() {
                           className="text-center"
                         >
                           <p className="text-lg font-orbitron font-extrabold text-white max-w-xs leading-relaxed italic">
-                            “This isn’t radio… <br/>
-                            <span className="text-[#00ffe6]">this is a signal.</span> <br/>
-                            And once you hear it… you can't unhear it.”
+                            {brandChain === 'solchain' ? (
+                              <>
+                                “This isn’t standard consensus… <br/>
+                                <span className="text-[#14f195]">this is 33.3 SOL.</span> <br/>
+                                And once you hear it… you can't unhear it.”
+                              </>
+                            ) : (
+                              <>
+                                “This isn’t radio… <br/>
+                                <span className="text-[#00ffe6]">this is a signal.</span> <br/>
+                                And once you hear it… you can't unhear it.”
+                              </>
+                            )}
                           </p>
                         </motion.div>
                       )}
@@ -648,13 +795,13 @@ export default function App() {
                           className="text-center"
                         >
                           <h4 className="font-orbitron font-black text-white text-3xl tracking-widest uppercase">
-                            33.3 <span className="text-[#ff1a2e]">FM</span>
+                            33.3 <span className={brandChain === 'solchain' ? 'text-[#14f195]' : 'text-[#ff1a2e]'}>SOL</span>
                           </h4>
-                          <p className="mt-1 font-orbitron font-extrabold text-xs tracking-widest text-[#c2a633] uppercase">
-                            THE SIGNAL BITES BACK
+                          <p className={`mt-1 font-orbitron font-extrabold text-xs tracking-widest uppercase ${brandChain === 'solchain' ? 'text-[#9945ff]' : 'text-[#c2a633]'}`}>
+                            {brandChain === 'solchain' ? 'THE CONSENSUS BITES BACK' : 'THE SIGNAL BITES BACK'}
                           </p>
                           <div className="mt-4 text-[9px] font-mono text-neutral-500 tracking-[0.4em] uppercase">
-                            COMING SOON / END TRANSMISSION
+                            {brandChain === 'solchain' ? 'SOLANA SOLCHAIN / END TRANSMISSION' : 'COMING SOON / END TRANSMISSION'}
                           </div>
                         </motion.div>
                       )}
@@ -667,11 +814,13 @@ export default function App() {
                           animate={{ opacity: 1 }}
                           className="text-center flex flex-col items-center"
                         >
-                          <div className="relative h-14 w-14 rounded-full border-2 border-[#ff1a2e]/40 flex items-center justify-center animate-pulse mb-3 bg-neutral-950 group-hover:border-[#ff1a2e]">
-                            <Play className="h-5 w-5 text-[#ff1a2e] translate-x-0.5" />
+                          <div className={`relative h-14 w-14 rounded-full border-2 flex items-center justify-center animate-pulse mb-3 bg-neutral-950 transition-colors duration-500 ${
+                            brandChain === 'solchain' ? 'border-[#9945ff]/40 hover:border-[#9945ff]' : 'border-[#ff1a2e]/40 hover:border-[#ff1a2e]'
+                          }`}>
+                            <Play className={`h-5 w-5 translate-x-0.5 ${brandChain === 'solchain' ? 'text-[#14f195]' : 'text-[#ff1a2e]'}`} />
                           </div>
                           <span className="text-xs font-orbitron text-neutral-500 tracking-widest uppercase">
-                            ACTIVATE TRAILER SEQUENCE
+                            {brandChain === 'solchain' ? 'INITIATE SOLCHAIN SEQUENCER' : 'ACTIVATE TRAILER SEQUENCE'}
                           </span>
                         </motion.div>
                       )}
@@ -683,7 +832,11 @@ export default function App() {
                     <button
                       onClick={() => setTrailerPlaying(prev => !prev)}
                       className={`py-2 px-5 font-orbitron font-bold text-[10px] tracking-widest text-black flex items-center gap-2 transition-colors cursor-pointer ${
-                        trailerPlaying ? 'bg-[#c2a633] border-[#c2a633]' : 'bg-[#fff] border-white hover:bg-neutral-200'
+                        trailerPlaying 
+                          ? brandChain === 'solchain' 
+                            ? 'bg-[#14f195] border-[#14f195]' 
+                            : 'bg-[#c2a633] border-[#c2a633]' 
+                          : 'bg-[#fff] border-white hover:bg-neutral-200'
                       }`}
                     >
                       {trailerPlaying ? (
@@ -692,13 +845,13 @@ export default function App() {
                         </>
                       ) : (
                         <>
-                          <Play className="h-3 w-3" /> INITIATE ORIGIN TRAILER
+                          <Play className="h-3 w-3" /> {brandChain === 'solchain' ? 'START SOLCHAIN SEQUENCER' : 'INITIATE ORIGIN TRAILER'}
                         </>
                       )}
                     </button>
 
                     <div className="font-mono text-[9px] text-neutral-500 uppercase tracking-widest">
-                      EPISODE: D7_FACE_REBEL
+                      {brandChain === 'solchain' ? 'CONSENSUS: SOLANA_V3' : 'EPISODE: D7_FACE_REBEL'}
                     </div>
                   </div>
                 </div>
@@ -711,13 +864,17 @@ export default function App() {
                   <div>
                     <div className="flex items-center justify-between border-b border-neutral-900 pb-2.5 mb-3">
                       <span className="font-orbitron font-extrabold text-xs text-white tracking-widest uppercase">
-                        ◤ PLATFORM LAYOUT BANNER
+                        {brandChain === 'solchain' ? '◤ SOLCHAIN PLATFORM BANNER' : '◤ PLATFORM LAYOUT BANNER'}
                       </span>
                       <div className="flex gap-1.5">
                         <button
                           onClick={() => setActiveBannerMode('desktop')}
                           className={`p-1 border rounded cursor-pointer transition-all ${
-                            activeBannerMode === 'desktop' ? 'bg-[#00ffe6]/10 border-[#00ffe6] text-[#00ffe6]' : 'border-neutral-800 text-neutral-500 hover:text-white'
+                            activeBannerMode === 'desktop' 
+                              ? brandChain === 'solchain' 
+                                ? 'bg-[#9945ff]/10 border-[#14f195] text-[#14f195]' 
+                                : 'bg-[#00ffe6]/10 border-[#00ffe6] text-[#00ffe6]' 
+                              : 'border-neutral-800 text-neutral-500 hover:text-white'
                           }`}
                         >
                           <Tv className="h-3 w-3" />
@@ -725,7 +882,11 @@ export default function App() {
                         <button
                           onClick={() => setActiveBannerMode('mobile')}
                           className={`p-1 border rounded cursor-pointer transition-all ${
-                            activeBannerMode === 'mobile' ? 'bg-[#00ffe6]/10 border-[#00ffe6] text-[#00ffe6]' : 'border-neutral-800 text-neutral-500 hover:text-white'
+                            activeBannerMode === 'mobile' 
+                              ? brandChain === 'solchain' 
+                                ? 'bg-[#9945ff]/10 border-[#14f195] text-[#14f195]' 
+                                : 'bg-[#00ffe6]/10 border-[#00ffe6] text-[#00ffe6]' 
+                              : 'border-neutral-800 text-neutral-500 hover:text-white'
                           }`}
                         >
                           <Smartphone className="h-3 w-3" />
@@ -734,7 +895,10 @@ export default function App() {
                     </div>
                     
                     <p className="font-mono text-[10px] text-neutral-400 leading-normal mb-4">
-                      Explore the live-rendered ultra-wide cinematic banner optimized for X accounts or YouTube channels, framing DJ Red Fang overlooking D7 sector.
+                      {brandChain === 'solchain' 
+                        ? 'Explore the live-rendered ultra-wide Solana cinematic banner optimized for SOL wallets and dApps, framing the high-speed Purple and Lime Green neon grids.'
+                        : 'Explore the live-rendered ultra-wide cinematic banner optimized for X accounts or YouTube channels, framing DJ Red Fang overlooking D7 sector.'
+                      }
                     </p>
                   </div>
 
@@ -743,28 +907,36 @@ export default function App() {
                     activeBannerMode === 'mobile' ? 'aspect-[3/2] max-w-[280px] mx-auto' : 'aspect-[3/1]'
                   }`}>
                     {/* Background Cyber skyline representation */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#ff1a2e]/10 to-transparent pointer-events-none" />
+                    <div className={`absolute inset-0 bg-gradient-to-t transition-colors duration-500 pointer-events-none ${
+                      brandChain === 'solchain' ? 'from-[#9945ff]/15 to-transparent' : 'from-[#ff1a2e]/10 to-transparent'
+                    }`} />
                     
                     {/* Glowing neon signboard centered overlay */}
                     <div className="absolute inset-x-0 bottom-4 flex flex-col items-center justify-center text-center px-2 select-none">
                       <span className="font-orbitron font-black text-[#fff] tracking-tighter text-xl drop-shadow-[0_0_10px_rgba(255,255,255,0.45)]">
-                        33.3 FM
+                        {brandChain === 'solchain' ? '33.3 FM SOLCHAIN' : '33.3 FM'}
                       </span>
-                      <span className="font-orbitron text-[6px] tracking-[0.25em] text-[#ff1a2e] uppercase font-bold">
-                        THE VOICE OF THE UNDERGROUND
+                      <span className={`font-orbitron text-[6px] tracking-[0.25em] uppercase font-bold transition-colors duration-500 ${
+                        brandChain === 'solchain' ? 'text-[#14f195]' : 'text-[#ff1a2e]'
+                      }`}>
+                        {brandChain === 'solchain' ? 'THE PURPLE AND LIME GREEN CONSENSUS' : 'THE VOICE OF THE UNDERGROUND'}
                       </span>
                       <span className="font-mono text-[5px] text-neutral-500 uppercase tracking-[0.3em] mt-1.5">
-                        ◤ TUNE INTO THE SIGNAL ◢
+                        {brandChain === 'solchain' ? '◤ TUNE INTO THE SOLCHAIN ◢' : '◤ TUNE INTO THE SIGNAL ◢'}
                       </span>
                     </div>
 
                     {/* Radio wave indicators in background Grid */}
                     <div className="absolute top-2 left-2 flex items-center gap-1">
-                      <div className="h-1.5 w-1.5 rounded-full bg-red-600 animate-ping" />
-                      <span className="font-mono text-[5px] text-neutral-500 uppercase">SIGNAL LOCK</span>
+                      <div className={`h-1.5 w-1.5 rounded-full animate-ping ${brandChain === 'solchain' ? 'bg-[#14f195]' : 'bg-red-600'}`} />
+                      <span className="font-mono text-[5px] text-neutral-500 uppercase">{brandChain === 'solchain' ? 'SOL CONCURRENCY' : 'SIGNAL LOCK'}</span>
                     </div>
 
-                    <div className="absolute inset-0 bg-[radial-gradient(#ff1a2e_1px,transparent_1px)] [background-size:12px_12px] opacity-10" />
+                    <div className={`absolute inset-0 transition-all duration-500 ${
+                      brandChain === 'solchain' 
+                        ? 'bg-[radial-gradient(#14f195_1px,transparent_1px)] [background-size:12px_12px] opacity-15' 
+                        : 'bg-[radial-gradient(#ff1a2e_1px,transparent_1px)] [background-size:12px_12px] opacity-10'
+                    }`} />
                   </div>
 
                   {/* Positioning specs */}
@@ -800,6 +972,7 @@ export default function App() {
             releases={releases}
             setReleases={setReleases}
             setTracks={setTracks}
+            brandChain={brandChain}
           />
         )}
 
